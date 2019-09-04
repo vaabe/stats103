@@ -1,2 +1,5 @@
-# stats103
-course notes
+## introstats
+
+material
+
+

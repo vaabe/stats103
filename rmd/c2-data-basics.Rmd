@@ -1,0 +1,173 @@
+---
+title: 'chapter 2 Getting Started with Data in R'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    toc: true
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+library(tufte)
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+--- 
+
+# Loading Data
+
+There are many functions in R for loading data of various formats: 
+
+* `read.csv()` for csv files (comma separated values) 
+* `read.tsv()` for tsv files (tab separated values) 
+* `read.xlsx()` for Excel files (from the `readxl` package)
+* `read.dta13()` for dat files (from the `readstata13` package)
+* `read.table()` for huge datasets
+
+When loading data you must specify the exact file path in the argument (see below). If you don't know how to find your file path, give it a google. Remember to name your dataset (i.e. assign your dataset to an object). 
+
+The following code loads a csv file called 'nyc-airbnb.csv' ^[Download the data <a href="base64 data" download="./data/nyc-airbnb.csv">here</a>. It has information on every Airbnb listing in New York City, as of August 2019. It was sourced from <a href="http://insideairbnb.com/about.html">Inside Airbnb</a>, where you can find Airbnb data for other cities too.] and assigns it to an object called `nycbnb`:
+
+```{r}
+nycbnb <- read.csv('./data/nyc-airbnb.csv', header = TRUE)
+```
+
+```{r, include=FALSE}
+nycbnb <- nycbnb %>%
+  mutate(price = as.numeric(price), 
+         cleaningfee = as.numeric(cleaningfee), 
+         availability365 = as.numeric(availability365), 
+         sqft = as.numeric(sqft))
+```
+
+Note the extra argument, `header = TRUE`, which specifies that the first row of the dataset is a header. If your dataset has no header you should specify `header = FALSE`.^[Here the `=` operator is not used for variable assignment, but rather to specify a parameter for the `read.csv()` function (this is the main difference between the `<-` and `=` operators).]  
+
+
+
+\ 
+
+---
+
+# Viewing Data 
+
+To view the entire dataset, use the `View()` command in the console. A table view of the dataset will open as a new tab. Don't use the `View()` command for large datasets as it is very memory intensive.  
+
+Another way to view your data is to print the first or last few rows using the `head()` or `tail()` function. You can specify exactly how many rows as an additional argument (by default it will print six):  
+
+```{r}
+head(nycbnb, n = 5)
+```
+
+To check the column names of your dataset, use `colnames()`:
+
+```{r}
+colnames(nycbnb)
+```
+
+To check the dimensions of your dataset (number of rows and columns), use `dim()`:
+
+```{r}
+dim(nycbnb)
+```
+
+
+
+\ 
+
+--- 
+
+# Basic Data Structures
+
+\ 
+
+## Forms of data 
+
+In statistics a **variable** usually refers to some characteristic that is measured. In tabular data the columns often correspond to variables, and the rows correspond to single observations or measurements of these variables. Data for a variable can be continuous, discrete, or categorical. 
+
+- **Continuous data** can take on infinitely many values (real numbers). E.g. the variable `latitude` in the Airbnb data. 
+- **Discrete data** can take on countable values only (integer numbers). E.g. the variable `bedrooms` in the Airbnb data. 
+- **Categorical data** fall into a finite number of categories or distinct groups. E.g. the variable `neighborhood` in the Airbnb data. 
+
+\ 
+
+## Data structures in R
+
+When you load data into R, it is parsed into objects.^[In fact, everything stored in R is an object. Programming in R is known as <a href="https://cs.lmu.edu/~ray/notes/paradigms/">object-oriented programming</a>.] Every object has a **data type** or **class**, which depends on the kind of values (letters, numbers, etc.) stored in the object. An object's class determines what you can/not do with it--e.g. you cannot perform multiplication between letters and numbers.
+
+Below are the five elementary data types in R: 
+
+* __character__ -- e.g. `'abcd'`
+* __integer__ -- integer numbers, e.g. `'2'`
+* __numeric__ -- decimal numbers, e.g. `'2.21'` 
+* __complex__ -- complex numbers, e.g. `'2+2i'`
+* __logical__ -- either `TRUE` or `FALSE`  
+
+Objects can be combined to form larger data structures. Some common ones:  
+
+* __vector__ -- a one-dimensional array; there are two kinds of vectors:
+    + __atomic vector__ -- holds data of a single data type
+    + __list__ -- holds data of multiple data types
+* __matrix__ -- a two-dimensional array; all columns have the same data type
+* __data frame__ -- a two-dimensional array; columns may have different data types  
+
+The data frame is a common structure for tabular data. You can check an object's data type using `class()`. 
+
+```{r}
+class(nycbnb)
+```
+
+To check the data type(s) present in the column `price`:
+
+`r margin_note("Note the extract operator, $\\$$ , which is used to extract a named object from a larger data structure--in this case extract a column from a data frame.")`
+
+```{r}
+class(nycbnb$price)
+```
+
+The data type(s) in the column `bedrooms`:
+
+```{r}
+class(nycbnb$bedrooms)
+```
+
+In categorical data, the levels/categories are parsed as **factors** in R:
+
+```{r}
+class(nycbnb$borough)
+```
+
+
+
+\ 
+
+---
+
+\ 
+
+

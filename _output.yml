@@ -1,0 +1,4 @@
+bookdown::tufte_html_book:
+  toc: yes
+  css: tufte.css
+  tufte_features: ["fonts", "background"]

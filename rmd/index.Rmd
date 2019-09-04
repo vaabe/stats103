@@ -1,0 +1,89 @@
+---
+title: 'introstats'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+\newcommand{\head}[2]{\text{#1} \hspace{0.5cm} \text{#2}}
+
+--- 
+
+\ 
+
+## PART I -- ELEMENTS
+
+- chapter 1 -- <a href="./rmd/c1-R.html">The R Environment</a>
+- chapter 2 -- <a href="./rmd/c2-getting-started.html">Getting Started with Data</a></li>
+- chapter 3 -- <a href="./rmd/c3-wrangle-visualize.html">Wrangling and Visualizing Data</a></li>
+- chapter 4 -- <a href="./rmd/c4-basic-analysis.html">Basic Data Analayis</a></li>
+- chapter 5 -- <a href="./rmd/c5-basic-modeling.html">Basic Data Modeling</a></li>
+- chapter 6 -- <a href="./rmd/c6-more-models.html">More Modeling Techniques</a></li>
+
+## PART I $\frac 12$ -- A PROBABILISTIC BRIDGE
+
+- chapter 7 -- Probability Axioms 
+- chapter 8 -- Random Variables and Distributions
+- chapter 9 -- Common Probability Distributions
+
+## PART II -- VARIABILITY
+
+- chapter 10 -- <a href="./rmd/c10-sampling.html">Samples, Sampling, and Variability</a></li>
+- chapter 11 -- <a href="./rmd/c11-clt.html">The Central Limit Theorem</a></li>
+- chapter 12 -- <a href="./rmd/c12-intervals.html">Interval Estimators</a></li>
+- chapter 13 -- <a href="./rmd/c13-hyptests.html">Significance Tests</a></li>
+- chapter 14 -- Joint Variability
+- chapter 15 -- Variability in Linear Models
+- chapter 16 -- The Assumptions of Linear Models
+- chapter 17 -- Inference from Linear Models 
+
+## PART III -- BIAS
+
+- chapter 18 -- <a href="./rmd/c17-validity-bias.html">Validity and Bias</a></li>
+- chapter 19 -- Sampling Bias 
+- chapter 20 -- Omitted Variable Bias
+- chapter 21 -- Specification Bias
+- chapter 22 -- Measurement Error Bias 
+
+## PART IV -- MODEL SELECTION 
+
+- chapter 23 -- Bias-Variance Tradeoff
+- chapter 24 -- Model Selection Algorithms 
+- ... 
+
+
+
+
+
+
