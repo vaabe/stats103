@@ -1,4 +1,4 @@
-## introstats
+## stats103
 
-course materials added here
+course notes for STAT-UB 103
 
