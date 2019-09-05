@@ -142,6 +142,15 @@ To learn about the arguments and default settings of a function, you should look
 knitr::include_graphics('./pics/m1c1_pic4.png')
 ```
 
+\ 
+
+## Debugging errors
+
+Sometimes code you run will return an error. Fear not. Read the error message and try to intuit what it means. 
+
+Check out this great reference on <a href="https://i.imgur.com/fhgzVEt.jpg">debugging code.</a>^[Credit: https://imgur.com/gallery/vqUQ5]
+
+
 
 
 \ 
