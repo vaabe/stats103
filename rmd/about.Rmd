@@ -1,0 +1,80 @@
+---
+title: 'about'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
+
+The notes I've posted on this website are intended as supplements to STAT-UB 103, an introductory course on modern statistical methods for analysis and model building. For demonstrations I use R, an increasingly popular choice of programming language for statistical work (but one among many). The first three chapters are a pithy introduction to the R environment.  
+
+If you have suggestions, or spot any errors, please email me or submit a pull request on <a href="https://github.com/vaabe/stats103">Github</a>.   
+
+Further textbooks/references you should check out:
+
+- <a href="https://moderndive.com/">ModernDive</a>
+- <a href="https://www.openintro.org/index.php">OpenIntro Statistics</a>
+- <a href="https://rafalab.github.io/dsbook/">Introduction to Data Science</a>
+
+For detailed guides on using the R language:
+
+- <a href="https://r4ds.had.co.nz/">R for Data Science</a>
+- <a href="http://adv-r.had.co.nz/">Advanced R</a>
+
+\ 
+
+---
+
+*Vinu Abeywick 2019*. Powered by <a href="https://pages.github.com/">Github Pages</a>, <a href="https://rmarkdown.rstudio.com/">R Markdown</a>, and <a href="https://github.com/edwardtufte/tufte-css">Tufte CSS</a>.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

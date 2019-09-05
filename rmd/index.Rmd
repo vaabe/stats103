@@ -1,5 +1,5 @@
 ---
-title: 'introstats'
+title: 'stats103'
 output:
   tufte::tufte_html:
     tufte_features: ['fonts','background']
@@ -39,6 +39,11 @@ library(rsconnect)
 \newcommand{\head}[2]{\text{#1} \hspace{0.5cm} \text{#2}}
 
 --- 
+
+\ 
+
+- <a href="./rmd/about.html">about</a> 
+- problem sets
 
 \ 
 
