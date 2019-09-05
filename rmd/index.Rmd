@@ -44,6 +44,7 @@ library(rsconnect)
 
 - <a href="./rmd/about.html">about</a> 
 - problem sets
+- ps
 
 \ 
 
