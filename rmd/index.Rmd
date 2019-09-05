@@ -50,7 +50,7 @@ library(rsconnect)
 ## PART I -- ELEMENTS
 
 - chapter 1 -- <a href="./rmd/c1-R.html">The R Environment</a>
-- chapter 2 -- <a href="./rmd/c2-getting-started.html">Getting Started with Data</a></li>
+- chapter 2 -- <a href="./rmd/c2-data-basics.html">Getting Started with Data</a></li>
 - chapter 3 -- <a href="./rmd/c3-wrangle-visualize.html">Wrangling and Visualizing Data</a></li>
 - chapter 4 -- <a href="./rmd/c4-basic-analysis.html">Basic Data Analayis</a></li>
 - chapter 5 -- <a href="./rmd/c5-basic-modeling.html">Basic Data Modeling</a></li>
