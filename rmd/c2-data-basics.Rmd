@@ -52,7 +52,7 @@ There are many functions in R for loading data of various formats:
 
 When loading data you must specify the exact file path in the argument (see below). If you don't know how to find your file path, give it a google. Remember to name your dataset (i.e. assign your dataset to an object). 
 
-The following code loads a csv file called 'nyc-airbnb.csv' ^[Download the data <a href="base64 data" download="./data/nyc-airbnb.csv">here</a>. It has information on every Airbnb listing in New York City, as of August 2019. It was sourced from <a href="http://insideairbnb.com/about.html">Inside Airbnb</a>, where you can find Airbnb data for other cities too.] and assigns it to an object called `nycbnb`:
+The following code loads a csv file called 'nyc-airbnb.csv' ^[Download the data <a href="./data/nyc-airbnb.csv" download>here</a>. It has information on every Airbnb listing in New York City, as of August 2019. It was sourced from <a href="http://insideairbnb.com/about.html">Inside Airbnb</a>, where you can find Airbnb data for other cities too.] and assigns it to an object called `nycbnb`:
 
 ```{r}
 nycbnb <- read.csv('./data/nyc-airbnb.csv', header = TRUE)
