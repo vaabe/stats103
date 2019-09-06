@@ -78,7 +78,7 @@ knitr::include_graphics('./pics/m1c1_pic2.png')
 
 The script editor will open as a new pane in the top left. Anything you write here can be run in the console, and when you are done, you can save it as a .R file.  
 
-To run code you have written in the script editor, click 'Run' (top right). The current line (or the selected lines) will be run in the console, producing an output.  
+To run code you have written in the script editor, click 'Run' (top right) ^[Or use a keyboard shortcut. Mac: cmd+enter. Windows: cntrl+enter.]. The current line (or the selected lines) will be run in the console, producing an output.  
 
 ```{r, echo=FALSE} 
 knitr::include_graphics('./pics/m1c1_pic3.png')
