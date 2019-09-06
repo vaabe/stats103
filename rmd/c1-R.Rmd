@@ -146,9 +146,9 @@ knitr::include_graphics('./pics/m1c1_pic4.png')
 
 ## Debugging errors
 
-Sometimes code you run will return an error. Fear not. Read the error message and try to intuit what it means. 
+Sometimes code you run will return an error. Fear not. Just read the error message and try to intuit what it means. 
 
-Check out this great reference on <a href="https://i.imgur.com/fhgzVEt.jpg">debugging code.</a>^[Credit: https://imgur.com/gallery/vqUQ5]
+If you are clueless, check out this great reference on <a href="https://i.imgur.com/fhgzVEt.jpg">debugging code.</a>^[Credit: https://imgur.com/gallery/vqUQ5]
 
 
 
