@@ -275,6 +275,8 @@ To make a scatterplot you must specify `+ geom_point()` after the main function 
 
 Below is a scatterplot of latitude on longitude:
 
+`r margin_note("You can change the size of the scatter points by specifying $\\texttt{size = XXX}$ in $\\texttt{geom_point()}$.")`
+
 ```{r}
 ggplot(data = nycbnb, mapping = aes(x = longitude, y = latitude)) + 
   geom_point(size = 0.1) +

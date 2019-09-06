@@ -42,7 +42,7 @@ library(tufte)
 
 # Loading Data
 
-There are many functions in R for loading data of various formats: 
+There are many functions in R for loading data: 
 
 * `read.csv()` for csv files (comma separated values) 
 * `read.tsv()` for tsv files (tab separated values) 
@@ -106,9 +106,9 @@ dim(nycbnb)
 
 \ 
 
-## Forms of data 
+## Variables and observations
 
-In statistics a **variable** usually refers to some characteristic that is measured. In tabular data the columns often correspond to variables, and the rows correspond to single observations or measurements of these variables. Data for a variable can be continuous, discrete, or categorical. 
+In statistics a **variable** usually refers to some characteristic that is measured. In tabular data the columns often correspond to variables, and the rows correspond to single **observations** or **measurements** of these variables. Data for a variable can be continuous, discrete, or categorical. 
 
 - **Continuous data** can take on infinitely many values (real numbers). E.g. the variable `latitude` in the Airbnb data. 
 - **Discrete data** can take on countable values only (integer numbers). E.g. the variable `bedrooms` in the Airbnb data. 
@@ -118,7 +118,7 @@ In statistics a **variable** usually refers to some characteristic that is measu
 
 ## Data structures in R
 
-When you load data into R, it is parsed into objects.^[In fact, everything stored in R is an object. Programming in R is known as <a href="https://cs.lmu.edu/~ray/notes/paradigms/">object-oriented programming</a>.] Every object has a **data type** or **class**, which depends on the kind of values (letters, numbers, etc.) stored in the object. An object's class determines what you can/not do with it--e.g. you cannot perform multiplication between letters and numbers.
+When you load data into R, it is parsed into objects.^[In fact, everything stored in R is an object. Programming in R is known as <a href="https://cs.lmu.edu/~ray/notes/paradigms/">object-oriented</a>.] Every object has a **data type** or **class**, which depends on the kind of values (letters, numbers, etc.) stored in the object. An object's class determines what you can/not do with it--e.g. you cannot perform multiplication between letters and numbers.
 
 Below are the five elementary data types in R: 
 
