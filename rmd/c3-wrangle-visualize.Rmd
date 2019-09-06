@@ -227,7 +227,7 @@ The package `ggplot2` is the main plotting library in R. Its main function call 
 - `data` -- the data frame whose variables you want to plot
 - `mapping` -- an aesthetic mapping for which variable(s) go on which axes  
 
-The following examples will demonstrate how to use `ggplot()`. Here is a ggplot <a href="base64 data" download="./downloads/ggplot2-cheatsheet.pdf">cheatsheet</a>.
+The following examples will demonstrate how to use `ggplot()`. Here is a ggplot <a href="./downloads/ggplot2-cheatsheet.pdf" download>cheatsheet</a>.
 
 `r margin_note("For more comprehensive notes on ggplot2 visit https://ggplot2.tidyverse.org/.")`
 
