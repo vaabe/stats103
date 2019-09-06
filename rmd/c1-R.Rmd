@@ -148,7 +148,7 @@ knitr::include_graphics('./pics/m1c1_pic4.png')
 
 Sometimes code you run will return an error. Fear not. Just read the error message and try to intuit what it means. 
 
-If you are clueless, check out this great reference on <a href="https://i.imgur.com/fhgzVEt.jpg">debugging code.</a>^[Credit: https://imgur.com/gallery/vqUQ5]
+If an error message has rendered you clueless, check out this great reference on <a href="https://i.imgur.com/fhgzVEt.jpg">debugging code.</a>^[Credit: https://imgur.com/gallery/vqUQ5]
 
 
 
@@ -217,7 +217,7 @@ Now go ahead and compile the document (i.e. create the output file) by clicking 
 knitr::include_graphics('./pics/m1c1_pic7.png')
 ```
 
-You should experiment with R Markdown and get used to its syntax. Here is a R Markdown <a href="base64 data" download="./downloads/rmd-cheatsheet.pdf">cheatsheet</a>.  
+You should experiment with R Markdown and get used to its syntax. Here is a R Markdown <a href="./downloads/rmd-cheatsheet.pdf" download>cheatsheet</a>.  
 
 
 

@@ -49,7 +49,7 @@ nycbnb <- read.csv('./data/nyc-airbnb.csv', header = TRUE) %>%
 
 # Wrangling Data
 
-Wrangling data refers to cleaning/manipulating/reorganizing raw data to make it more useful for analysis. The `dplyr` package has a host of functions specifically for this purpose. The following examples will demonstrate a few of them. Here is a dplyr <a href="base64 data" download="./downloads/dplyr-cheatsheet.pdf">cheatsheet</a>. 
+Wrangling data refers to cleaning/manipulating/reorganizing raw data to make it more useful for analysis. The `dplyr` package has a host of functions specifically for this purpose. The following examples will demonstrate a few of them. Here is a dplyr <a href="./downloads/dplyr-cheatsheet.pdf" download>cheatsheet</a>. 
 
 `r margin_note("For more comprehensive notes on dplyr visit https://dplyr.tidyverse.org/.")`
 

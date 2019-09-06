@@ -1016,31 +1016,31 @@ ocean parkway brooklyn
 <tbody>
 <tr>
 <td style="text-align:right;">
-21.2
+21.4
 </td>
 <td style="text-align:right;">
-21.6
-</td>
-<td style="text-align:right;">
-21.2
+21
 </td>
 <td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
-21.2
-</td>
-<td style="text-align:right;">
-21.6
-</td>
-<td style="text-align:right;">
-21.6
+21.3
 </td>
 <td style="text-align:right;">
 21.4
 </td>
 <td style="text-align:right;">
+21.6
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
 21.7
+</td>
+<td style="text-align:right;">
+21.2
 </td>
 <td style="text-align:right;">
 83.4
@@ -1048,7 +1048,7 @@ ocean parkway brooklyn
 </tr>
 </tbody>
 </table>
-<p>The mean of this sample is <span class="math inline">\(\bar X =\)</span> 27.68 and the median is <span class="math inline">\(m =\)</span> 21.6. In this case the median is clearly a more representative measure of central tendency than the mean.</p>
+<p>The mean of this sample is <span class="math inline">\(\bar X =\)</span> 27.59 and the median is <span class="math inline">\(m =\)</span> 21.4. In this case the median is clearly a more representative measure of central tendency than the mean.</p>
 <p>Strong outliers drag the mean in the direction of skew (in this case positive). This is why under positive skew the mean is larger than the median, and vice versa.</p>
 <p>Estimators are said to be <strong>robust</strong> if they can cope with outliers. The median is a robust measure of central tendency; the mean is not. However the mean is generally a more precise statistic.</p>
 <p> </p>
@@ -1068,7 +1068,7 @@ ocean parkway brooklyn
 <h1>Point vs Interval Estimators</h1>
 <p>A summary statistic derived from samples of data–such as the sample mean and sample standard deviation–is known as an <strong>estimator</strong>, since it uses a sample to estimate the true value of a population parameter.<label for="tufte-sn-8" class="margin-toggle sidenote-number">8</label><input type="checkbox" id="tufte-sn-8" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">8</span> E.g. the <em>true</em> mean difference in hourly wages between females and males is unknown; but the sample of pay gap data can be used to estimate it.</span></p>
 <p>The summary statistics introduced above are known as <strong>point estimators</strong> since they use a single value to estimate a population parameter.</p>
-<p>There also exist <strong>interval estimators</strong>, which use a <em>range</em> of values to estimate a population parameter. Often these are more useful than single-valued estimates, as they provide reasonable margins of error when drawing inferences from data.</p>
+<p>There also exist <strong>interval estimators</strong>, which use a <em>range</em> of values to estimate a population parameter. Often these are more useful than single-valued estimates, as they demonstrate the margin of uncertainty when drawing inferences from data.</p>
 <p>A <strong>confidence interval</strong> is one example of an interval estimator.</p>
 <p> </p>
 <div id="a-confidence-interval-for-the-mean" class="section level2">
@@ -1076,7 +1076,7 @@ ocean parkway brooklyn
 <p>A confidence interval for a mean is a range of values that might contain the true mean of the population distribution. Every confidence interval is associated with a <strong>confidence level</strong>, which describes the approximate probability the true mean lies in the range specified.<label for="tufte-sn-9" class="margin-toggle sidenote-number">9</label><input type="checkbox" id="tufte-sn-9" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">9</span> The theory behind this is explained in Part II.</span> E.g. a 95% confidence interval for the mean is a range of values where:</p>
 <p><span class="math display">\[{\text{P}}(LB \leq \mu \leq UB) \approx 0.95\]</span></p>
 <p><span class="math inline">\(LB\)</span> and <span class="math inline">\(UB\)</span> are the lower and upper bounds of the interval, which have an approximately 95% probability of containing the true mean.</p>
-<p>Below is a function<label for="tufte-sn-10" class="margin-toggle sidenote-number">10</label><input type="checkbox" id="tufte-sn-10" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">10</span> Note, this is a user-written function. Running this code will define a new function in the Environment, called <span class="math inline">\(\texttt{confidence_interval}\)</span>. Once defined, this function can be used to compute a confidence interval for the mean of a sample of data. For more on writing functions in R, click <a href="https://www.statmethods.net/management/userfunctions.html">here</a>.</span> that takes an array of data and computes a confidence interval for the mean:</p>
+<p>Below is a function<label for="tufte-sn-10" class="margin-toggle sidenote-number">10</label><input type="checkbox" id="tufte-sn-10" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">10</span> Note, this is a user-defined function. Running this code will define a new function in the Environment, called <span class="math inline">\(\texttt{confidence_interval}\)</span>. Once defined, this function can be used to compute a confidence interval for the mean of an array of data. For more on writing functions in R, click <a href="https://www.statmethods.net/management/userfunctions.html">here</a>.</span> that takes an array of data and computes a confidence interval for the mean:</p>
 <pre class="r"><code>confidence_interval = function(data, conflevel) {
   xbar = mean(data)          # sample mean 
   n = length(data)           # sample size 
@@ -1099,7 +1099,7 @@ ocean parkway brooklyn
 ##  lower bound = 13.93 
 ##  upper bound = 14.467</code></pre>
 <p>The output suggests that the true mean difference in wages is approximately 95% likely to lie somewhere between 13.93% and 14.47%.</p>
-<p>Note there is one important caveat to this claim. A confidence interval computed from sample data (such as the one above) will always be centered on the sample mean, not the true mean. This means the <em>actual</em> probability of the interval containing the true mean depends on how close the sample mean is to the true mean. Since the true mean of a distribution is often unknown, there is no way to tell from any one sample of data whether the interval contains the true mean, or the likelihood thereof. Thus the confidence level associated with an interval is only ever approximate–if at all.</p>
+<p>Note there is one important caveat to this claim. A confidence interval computed from sample data (such as the one above) will always be centered on the sample mean, not the true mean. This means the <em>actual</em> probability of the interval containing the true mean depends on how close the sample mean is to the true mean. Since the true mean of a distribution is often unknown, there is no way to tell from any one sample of data whether the interval contains the true mean, or the likelihood thereof. This is why the probability associated with a confidence interval is only ever approximate–if at all.</p>
 <p>Nonetheless confidence intervals are still useful as they demonstrate the degree of uncertainty in an estimate, whether the estimate is accurate or not. There is more theory on confidence intervals in Part II.</p>
 <p> </p>
 <hr />

@@ -344,7 +344,7 @@ A summary statistic derived from samples of data--such as the sample mean and sa
 
 The summary statistics introduced above are known as **point estimators** since they use a single value to estimate a population parameter. 
 
-There also exist **interval estimators**, which use a *range* of values to estimate a population parameter. Often these are more useful than single-valued estimates, as they provide reasonable margins of error when drawing inferences from data.
+There also exist **interval estimators**, which use a *range* of values to estimate a population parameter. Often these are more useful than single-valued estimates, as they demonstrate the margin of uncertainty when drawing inferences from data.
 
 A **confidence interval** is one example of an interval estimator.  
 
@@ -358,7 +358,7 @@ $$\P(LB \leq \mu \leq UB) \approx 0.95$$
 
 $LB$ and $UB$ are the lower and upper bounds of the interval, which have an approximately 95\% probability of containing the true mean.  
 
-Below is a function^[Note, this is a user-written function. Running this code will define a new function in the Environment, called $\texttt{confidence_interval}$. Once defined, this function can be used to compute a confidence interval for the mean of a sample of data. For more on writing functions in R, click <a href="https://www.statmethods.net/management/userfunctions.html">here</a>.] that takes an array of data and computes a confidence interval for the mean: 
+Below is a function^[Note, this is a user-defined function. Running this code will define a new function in the Environment, called $\texttt{confidence_interval}$. Once defined, this function can be used to compute a confidence interval for the mean of an array of data. For more on writing functions in R, click <a href="https://www.statmethods.net/management/userfunctions.html">here</a>.] that takes an array of data and computes a confidence interval for the mean: 
 
 ```{r}
 confidence_interval = function(data, conflevel) {
@@ -387,7 +387,7 @@ confidence_interval(data = paygap$DiffMeanHourlyPercent, conflevel = 0.95)
 
 The output suggests that the true mean difference in wages is approximately 95\% likely to lie somewhere between 13.93\% and 14.47\%. 
 
-Note there is one important caveat to this claim. A confidence interval computed from sample data (such as the one above) will always be centered on the sample mean, not the true mean. This means the *actual* probability of the interval containing the true mean depends on how close the sample mean is to the true mean. Since the true mean of a distribution is often unknown, there is no way to tell from any one sample of data whether the interval contains the true mean, or the likelihood thereof. Thus the confidence level associated with an interval is only ever approximate--if at all.  
+Note there is one important caveat to this claim. A confidence interval computed from sample data (such as the one above) will always be centered on the sample mean, not the true mean. This means the *actual* probability of the interval containing the true mean depends on how close the sample mean is to the true mean. Since the true mean of a distribution is often unknown, there is no way to tell from any one sample of data whether the interval contains the true mean, or the likelihood thereof. This is why the probability associated with a confidence interval is only ever approximate--if at all.  
 
 Nonetheless confidence intervals are still useful as they demonstrate the degree of uncertainty in an estimate, whether the estimate is accurate or not. There is more theory on confidence intervals in Part II. 
 
