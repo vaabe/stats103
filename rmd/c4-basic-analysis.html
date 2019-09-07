@@ -468,6 +468,11 @@ University of Birmingham
 <div id="concerning-heatwaves-in-new-york" class="section level2">
 <h2>Concerning heatwaves in New York</h2>
 <p>The following dataset has variables characterising the temperature and urban features of over 1000 locations in the city during a heatwave.<label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label><input type="checkbox" id="tufte-sn-2" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">2</span> Download the data <a href="./data/nyc-heatwave.csv" download>here</a>. This data was simulated from the findings of this <a href="base64 data" download="./downloads/nyc-heat-island-mitigation.pdf">study</a>, investigating the extreme heating effect in NYC. Additional sources: <a href="https://www.ncdc.noaa.gov/cdo-web/search">NOAA</a>, <a href="https://landsat.visibleearth.nasa.gov/view.php?id=6800">Landsat</a>, <a href="https://data.cityofnewyork.us/Environment/Landcover-Raster-Data-2010-3ft-Resolution/9auy-76zt">NYC OpenData</a>.</span> Each recorded location was in one of six geographical areas. Below is a preview of the dataset:</p>
+<p><label for="tufte-mn-1" class="margin-toggle">⊕</label><input type="checkbox" id="tufte-mn-1" class="margin-toggle"><span class="marginnote">A brief addendum on the variables in this dataset:</span></p>
+<p><label for="tufte-mn-2" class="margin-toggle">⊕</label><input type="checkbox" id="tufte-mn-2" class="margin-toggle"><span class="marginnote"><strong>Temperature</strong> is measured in <span class="math inline">\(^oF\)</span>.</span></p>
+<p><label for="tufte-mn-3" class="margin-toggle">⊕</label><input type="checkbox" id="tufte-mn-3" class="margin-toggle"><span class="marginnote"><strong>Vegetation</strong> is a measure of the relative concentration of vegetation (i.e. greenery) in the recorded area. It is measured in NDVI (normalized difference vegetation index), a number between -1 and 1. 0 indicates no vegetation, 1 indicates maximum vegetation, and negative values indicate water.</span></p>
+<p><label for="tufte-mn-4" class="margin-toggle">⊕</label><input type="checkbox" id="tufte-mn-4" class="margin-toggle"><span class="marginnote"><strong>Albedo</strong> is a measure of the percentage solar reflectivity of buildings in recorded area. E.g. an albedo of 25% means buildings reflect on average 25% of solar radiation.</span></p>
+<p><label for="tufte-mn-5" class="margin-toggle">⊕</label><input type="checkbox" id="tufte-mn-5" class="margin-toggle"><span class="marginnote"><strong>Building height</strong> is the average height of buildings in the recorded area. It is measured in storeys.</span></p>
 <table>
 <thead>
 <tr>
@@ -1016,31 +1021,31 @@ ocean parkway brooklyn
 <tbody>
 <tr>
 <td style="text-align:right;">
-21.4
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-21.9
-</td>
-<td style="text-align:right;">
-21.3
+21.5
 </td>
 <td style="text-align:right;">
 21.4
 </td>
 <td style="text-align:right;">
-21.6
+21.2
 </td>
 <td style="text-align:right;">
-21
+21.5
 </td>
 <td style="text-align:right;">
 21.7
 </td>
 <td style="text-align:right;">
-21.2
+21.7
+</td>
+<td style="text-align:right;">
+21.7
+</td>
+<td style="text-align:right;">
+21.7
+</td>
+<td style="text-align:right;">
+21.1
 </td>
 <td style="text-align:right;">
 83.4
@@ -1048,7 +1053,7 @@ ocean parkway brooklyn
 </tr>
 </tbody>
 </table>
-<p>The mean of this sample is <span class="math inline">\(\bar X =\)</span> 27.59 and the median is <span class="math inline">\(m =\)</span> 21.4. In this case the median is clearly a more representative measure of central tendency than the mean.</p>
+<p>The mean of this sample is <span class="math inline">\(\bar X =\)</span> 27.69 and the median is <span class="math inline">\(m =\)</span> 21.6. In this case the median is clearly a more representative measure of central tendency than the mean.</p>
 <p>Strong outliers drag the mean in the direction of skew (in this case positive). This is why under positive skew the mean is larger than the median, and vice versa.</p>
 <p>Estimators are said to be <strong>robust</strong> if they can cope with outliers. The median is a robust measure of central tendency; the mean is not. However the mean is generally a more precise statistic.</p>
 <p> </p>

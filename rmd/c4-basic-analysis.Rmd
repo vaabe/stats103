@@ -89,6 +89,18 @@ kable(paygap[c(323,343,521,1387,1389,1495,3313,3889,4884,6214,7294,7299,10029), 
 
 The following dataset has variables characterising the temperature and urban features of over 1000 locations in the city during a heatwave.^[Download the data <a href="./data/nyc-heatwave.csv" download>here</a>. This data was simulated from the findings of this <a href="base64 data" download="./downloads/nyc-heat-island-mitigation.pdf">study</a>, investigating the extreme heating effect in NYC. Additional sources: <a href="https://www.ncdc.noaa.gov/cdo-web/search">NOAA</a>, <a href="https://landsat.visibleearth.nasa.gov/view.php?id=6800">Landsat</a>, <a href="https://data.cityofnewyork.us/Environment/Landcover-Raster-Data-2010-3ft-Resolution/9auy-76zt">NYC OpenData</a>.] Each recorded location was in one of six geographical areas. Below is a preview of the dataset:
 
+`r margin_note("A brief addendum on the variables in this dataset:")`
+
+`r margin_note("**Temperature** is measured in $^oF$.")`
+
+`r margin_note("**Vegetation** is a measure of the relative concentration of vegetation (i.e. greenery) in the recorded area. It is measured in NDVI (normalized difference vegetation index), a number between -1 and 1. 0 indicates no vegetation, 1 indicates maximum vegetation, and negative values indicate water.")`
+
+`r margin_note("**Albedo** is a measure of the percentage solar reflectivity of buildings in recorded area. E.g. an albedo of 25% means buildings reflect on average 25% of solar radiation.")` 
+
+`r margin_note("**Building height** is the average height of buildings in the recorded area. It is measured in storeys.")`
+
+
+
 ```{r, echo=FALSE}
 kable(nycheat[c(1:3, 196:198, 407:409, 524:526, 807:809, 898:900), ])
 ```
