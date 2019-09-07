@@ -38,9 +38,9 @@ library(rsconnect)
 
 ---
 
-The notes I've posted on this website are supplements to STAT-UB 103, an introductory course in modern statistical methods for analysis and model building. For demonstrations I've used R, a popular choice of programming language for statistical work (but one among many). The first three chapters are a pithy introduction to the R environment.  
+The notes posted on this website are supplements to STAT-UB 103, an introductory course in modern statistical methods for analysis and model building. Demonstrations are done in R, a popular choice of programming language for statistical work (but one among many). The first three chapters are a pithy introduction to the R environment.  
 
-I've tried to make the notes accessible and relevant--but in the dueness of course it may become apparent that I cannot fully be absolved of occasional mediocrity. Feedback is thus most welcome--please get in touch or submit a pull request on <a href="https://github.com/vaabe/stats103">Github</a>.   
+Feedback is most welcome--please get in touch or submit a pull request on <a href="https://github.com/vaabe/stats103">Github</a>.   
 
 Further textbooks/references you should check out:
 
