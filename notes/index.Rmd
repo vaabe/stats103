@@ -14,15 +14,12 @@ link-citations: yes
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = FALSE)
 library(tidyverse)
-library(ggplot2)
 library(knitr)
-library(kableExtra)
-library(extraDistr)
 library(gridExtra)
-library(latex2exp)
+library(extraDistr)
 library(moments)
-library(bookdown)
-library(rsconnect)
+library(latex2exp)
+library(tufte)
 ```
 
 \newcommand{\E}{\text{E}}

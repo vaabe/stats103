@@ -15,14 +15,11 @@ link-citations: yes
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = FALSE)
 library(tidyverse)
-library(ggplot2)
 library(knitr)
-library(extraDistr)
 library(gridExtra)
-library(latex2exp)
+library(extraDistr)
 library(moments)
-library(bookdown)
-library(rsconnect)
+library(latex2exp)
 library(tufte)
 ```
 
@@ -170,6 +167,20 @@ nycbnb_manh <- nycbnb %>%
   mutate(priceGBP = priceUSD*0.82)
 ```
 
+If you tried to do the above without piping, it would probably look something like this:
+
+`r margin_note("Abominable.")`  
+
+```{r}
+nycbnb_manh <- filter(nycbnb, borough == 'Manhattan')
+nycbnb_manh <- select(nycbnb_manh, -borough)
+nycbnb_manh <- mutate(nycbnb_manh, priceGBP = priceUSD*0.82)
+```
+
+This is much worse. It's slower, takes up more space, and you had to write `nycbnb_manh` a billion times instead of just once. 
+
+Use pipes. 
+
 \ 
 
 ## Aggregating data
@@ -315,7 +326,7 @@ ggplot(data = nycbnb, mapping = aes(x = borough, y = priceUSD)) +
 
 ## Tables
 
-One way (among many) to create elegant tables in your R Markdown output document is using `kable()` ^[From the `knitr` package. Note `kable()` is optimized for pdf output files--you may have issues if your output format is html.]. Below are some examples:
+One way (among many) to create elegant tables in your R Markdown output document is using `kable()`^[From the `knitr` package. Note `kable()` is optimized for pdf output files--you may have issues if your output format is html.]. Below are some examples:
 
 \ 
 

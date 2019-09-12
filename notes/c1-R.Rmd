@@ -21,7 +21,6 @@ library(gridExtra)
 library(extraDistr)
 library(moments)
 library(latex2exp)
-library(rsconnect)
 library(tufte)
 ```
 
