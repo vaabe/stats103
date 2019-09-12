@@ -38,21 +38,30 @@ library(rsconnect)
 
 ---
 
-The notes posted on this website are supplements to STAT-UB 103, an introductory course in modern statistical methods for analysis and model building. Demonstrations are done in R, a popular choice of programming language for statistical work (but one among many). The first three chapters are a pithy introduction to the R environment.  
+The notes posted on this website are supplements to STAT-UB 103, an introductory course in modern statistical methods for analysis and model building. For demonstrations we've used R, a popular choice of programming language for statistical work (but one among many). The first three chapters are a pithy introduction to the R environment.  
 
 Feedback is most welcome--please get in touch or submit a pull request on <a href="https://github.com/vaabe/stats103">Github</a>.   
 
-Further textbooks/references you should check out:
+More information on the course can be found in the <a href="./downloads/syllabus.pdf" download>syllabus</a>. 
 
-- <a href="https://moderndive.com/">ModernDive</a>
-- <a href="https://www.openintro.org/index.php">OpenIntro Statistics</a>
-- <a href="https://rafalab.github.io/dsbook/">Introduction to Data Science</a>
-- <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">Elements of Statistical Learning</a>
+Listed below are further textbooks/references we recommend--these are all free and have many examples and practice questions for your perusal. 
 
-For detailed guides on using the R language:
+Introductory texts on statistical analysis:
 
+- <a href="https://www.openintro.org/stat/textbook.php">OpenIntro Statistics</a>
+- <a href="https://openstax.org/details/books/introductory-statistics">Openstax Introductory Statistics</a>
+
+More advanced texts with more of the modern stuff, e.g. model selection, ML:
+
+- <a href="http://www.statlearning.com/">Introduction to Statistical Learning</a>
+- <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">Elements of Statistical Learning</a> (advanced)
+
+Detailed guides on using the R language:
+
+- <a href="https://rstudio.cloud/learn/primers">RStudio Primers</a> (interactive)
 - <a href="https://r4ds.had.co.nz/">R for Data Science</a>
 - <a href="http://adv-r.had.co.nz/">Advanced R</a>
+
 
 \ 
 

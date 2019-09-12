@@ -68,7 +68,7 @@ The left-hand pane is the **console**--this is where R code is evaluated and its
 
 The two right-hand panes show extra information about your R session--you will come to learn what they do as you code.    
 
-Note, commands you type in the console will not be not saved--the console only evaluates code. To save your code, you must write it in a script file.  
+Note, commands you type in the console will not be not saved, as the console only evaluates code. To save your code you must write it in a script file.  
 
 To open a new R script file click the icon in the top left and choose R Script, as follows: 
 
@@ -78,7 +78,7 @@ knitr::include_graphics('./pics/m1c1_pic2.png')
 
 The script editor will open as a new pane in the top left. Anything you write here can be run in the console, and when you are done, you can save it as a .R file.  
 
-To run code you have written in the script editor, click 'Run' (top right) ^[Or use a keyboard shortcut. Mac: cmd+enter. Windows: cntrl+enter.]. The current line (or the selected lines) will be run in the console, producing an output.  
+To run code you have written in the script editor, click 'Run'.^[Or use a keyboard shortcut. Mac: cmd+enter. Windows: cntrl+enter.] The current line (or the selected lines) will be run in the console, producing an output.  
 
 ```{r, echo=FALSE} 
 knitr::include_graphics('./pics/m1c1_pic3.png')
@@ -96,7 +96,7 @@ knitr::include_graphics('./pics/m1c1_pic3.png')
 
 ## Objects 
 
-Objects are where values are stored. You can create objects using the **assignment operator**, `<-`. This evaluates the expression on its right hand side and assigns the result to the object name on its left.^[Technically you can use either `<-` or `=` for object assignment. Both do the same thing when used for assignment, though in general there is a subtle difference between the two.]  
+Objects are where values are stored. You can create objects using the **assignment operator**, `<-`. This evaluates the expression on its right hand side and assigns the result to the object name on its left.^[Technically you can use either `<-` or `=` for object assignment. Both do the same thing when used for assignment, though in general there is a <a href="https://www.r-bloggers.com/assignment-operators-in-r-%E2%80%98%E2%80%99-vs-%E2%80%98-%E2%80%99/">subtle difference</a> between the two.]  
 
 E.g. to assign the value 12 to a new object called $x$:
 
@@ -106,16 +106,16 @@ x <- 12
 
 You can create a **vector**--a one-dimensional array of values--by using `c()`, with commas to separate the values:
 
-`r margin_note("Hashes (#) denote **comments**--anything written after a hash symbol will be skipped by the console when running code. It is a good idea to comment your code, i.e. describe what it is doing.")` 
+`r margin_note("Hashes (#) denote **comments**--anything written after a hash symbol will be skipped by the console when running code. It's good practice to comment your code, i.e. describe what it is doing.")` 
 
 `r margin_note("Note the **colon operator**, : , which generates a sequence of integer numbers between those specified.")`  
 
 ```{r}
-# create vector of integers from 0 to 9
-some_numbers <- c(0,1,2,3,4,5,6,7,8,9)
+# create vector of integers from 4 to 8
+some_numbers <- c(4,5,6,7,8)
 
 # alternatively 
-some_numbers <- c(0:9)
+some_numbers <- c(4:8)
 ```
 
 The objects you have defined in a session will appear in the Environment pane (top right). You can call an object by simply typing its name. The value(s) of the object will appear in the console: 
@@ -128,13 +128,35 @@ some_numbers
 
 ## R functions
 
-Just like mathematical functions, R functions perform operations on objects. R has many inbuilt functions--e.g. the `c()` function which takes a series of values and returns a vector array, or `mean()` function which takes a vector array of numbers and returns its average value. 
+Just like mathematical functions, R functions perform operations on objects. R has many inbuilt functions--e.g. the `c()` function which takes a series of values and returns a vector array, or the `mean()` function which takes a vector array of numbers and returns its average value. 
 
 ```{r}
 mean(some_numbers)
 ```
 
-Syntactically, functions are denoted by a name followed by brackets. What you type in the brackets is the function's **argument**--this is the input you are giving to the function. Most functions accept several arguments, some of which are mandatory while others are optional. Usually the first argument(s) are for specifying the object(s) you want the function to operate on, and additional arguments are for specifying how you want the function to operate. If you leave optional arguments blank when calling a function, it will operate according to its default settings. 
+In general you can call a function on an object (or a set of objects) by typing the function name followed by a pair of brackets. In the brackets you specify the object(s) you want the function to operate on:
+
+```
+function_name(object1, object2, ...)
+```
+
+What you type in the brackets are known as **arguments** or **inputs** to the function. Most functions accept several arguments--these are not only for specifying objects, but also for specifying **function parameters** to make the function behave in a certain way. 
+
+E.g. if you want to compute the mean of an array that has missing values, you'll find the `mean()` function in its default setting doesn't quite work:
+
+```{r}
+some_numbers <- c(4,5,6,NA,7,8)
+
+mean(some_numbers)
+```
+
+However if you specify the optional parameter `na.rm = TRUE`, this forces the function to skip all `NA` values: 
+
+```{r}
+mean(some_numbers, na.rm = TRUE)
+```
+
+If you leave optional arguments blank when calling a function, it will operate according to its default settings. 
 
 To learn about the arguments and default settings of a function, you should look up its documentation. You can do this by typing the function's name in the 'Help' tab (bottom right pane). E.g. for the `mean()` function: 
 
@@ -146,7 +168,7 @@ knitr::include_graphics('./pics/m1c1_pic4.png')
 
 ## Debugging errors
 
-Sometimes code you run will return an error. Fear not. Just read the error message and try to intuit what it means. 
+Sometimes code you run will return an error. Don't panic. Just read the error message and try to intuit what it means. 
 
 If an error message has rendered you clueless, check out this great reference on <a href="https://i.imgur.com/fhgzVEt.jpg">debugging code.</a>^[Credit: https://imgur.com/gallery/vqUQ5]
 
@@ -165,9 +187,9 @@ A package is essentially a bundle of R functions. These are functions that have 
 - `dplyr` - has functions for cleaning/manipulating data 
 - `stats` - has functions for statistical calculations and random number generation  
 
-The **tidyverse** is a set of eight common R packages used in data analysis. It includes `ggplot2` and `dplyr`. When you start out in R, loading the tidyverse packages is a good idea.  
+The **tidyverse** is a set of eight common R packages used in data analysis. It includes `ggplot2` and `dplyr`. When you start out in R, loading the tidyverse package is a good idea.  
 
-To install a package, use the command `install.packages()` in the console. E.g. to install the tidyverse packages:
+To install a package, use the command `install.packages()` in the console. E.g. to install the tidyverse package:
 
 `r margin_note("Remember to add quotation marks around the package name.")`    
 
@@ -195,7 +217,7 @@ It is common practice to load whichever packages you need at the beginning of yo
 
 R Markdown is a format for creating unified documents with R. Unlike the R script format introduced above, R Markdown allows you to combine code, its output, and text annotations in a single document.  
 
-To open a new R Markdown file, click on the top left icon and choose R Markdown. You will see the following options menu:
+To open a new R Markdown file, click on the top left icon and choose R Markdown. You'll see the following menu appear:
 
 ```{r, echo=FALSE}
 knitr::include_graphics('./pics/m1c1_pic5.png')
@@ -203,7 +225,7 @@ knitr::include_graphics('./pics/m1c1_pic5.png')
 
 Enter a name and title for your document (these can be changed later). You can choose whichever output format you wish, but note that for pdf output you will need to have some form of TeX installed on your computer.^[Get it <a href="https://www.latex-project.org/get/">here</a>.] For simplicity you should use html output.   
 
-After choosing your output format you will be greeted by some sample Markdown script, as follows: 
+After choosing your output format, the editor will open and you will see some sample Markdown script that looks like this: 
 
 ```{r, echo=FALSE}
 knitr::include_graphics('./pics/m1c1_pic6.png')
