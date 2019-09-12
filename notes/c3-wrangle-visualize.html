@@ -154,7 +154,7 @@ h(x)</code></pre>
 <pre class="r"><code>nycbnb_manh &lt;- filter(nycbnb, borough == 'Manhattan')
 nycbnb_manh &lt;- select(nycbnb_manh, -borough)
 nycbnb_manh &lt;- mutate(nycbnb_manh, priceGBP = priceUSD*0.82)</code></pre>
-<p>This is much worse. It’s slower, takes up more space, and you had to write <code>nycbnb_manh</code> a billion times instead of just once.</p>
+<p>This is much worse. It’s slower and you had to write <code>nycbnb_manh</code> a billion times instead of just once.</p>
 <p>Use pipes.</p>
 <p> </p>
 </div>

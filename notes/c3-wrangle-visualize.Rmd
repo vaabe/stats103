@@ -177,7 +177,7 @@ nycbnb_manh <- select(nycbnb_manh, -borough)
 nycbnb_manh <- mutate(nycbnb_manh, priceGBP = priceUSD*0.82)
 ```
 
-This is much worse. It's slower, takes up more space, and you had to write `nycbnb_manh` a billion times instead of just once. 
+This is much worse. It's slower and you had to write `nycbnb_manh` a billion times instead of just once. 
 
 Use pipes. 
 
