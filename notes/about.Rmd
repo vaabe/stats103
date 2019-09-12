@@ -14,27 +14,14 @@ link-citations: yes
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = FALSE)
 library(tidyverse)
-library(ggplot2)
 library(knitr)
-library(kableExtra)
-library(extraDistr)
 library(gridExtra)
-library(latex2exp)
+library(extraDistr)
 library(moments)
-library(bookdown)
+library(latex2exp)
 library(rsconnect)
+library(tufte)
 ```
-
-\newcommand{\E}{\text{E}}
-\newcommand{\Var}{\text{Var}}
-\newcommand{\SD}{\text{SD}}
-\newcommand{\SE}{\text{SE}}
-\newcommand{\Cov}{\text{Cov}}
-\newcommand{\Cor}{\text{Cor}}
-\renewcommand{\P}{\text{P}}
-\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
-\newcommand{\sumin}{\sum_i^n}
-\newcommand{\Bias}{\text{Bias}}
 
 ---
 
@@ -51,14 +38,15 @@ Introductory texts on statistical analysis:
 - <a href="https://www.openintro.org/stat/textbook.php">OpenIntro Statistics</a>
 - <a href="https://openstax.org/details/books/introductory-statistics">Openstax Introductory Statistics</a>
 
-More advanced texts with more of the modern stuff, e.g. model selection, ML:
+More advanced texts with more on the modern stuff (model selection, ML, etc):
 
 - <a href="http://www.statlearning.com/">Introduction to Statistical Learning</a>
-- <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">Elements of Statistical Learning</a> (advanced)
+- <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">Elements of Statistical Learning</a> 
 
 Detailed guides on using the R language:
 
 - <a href="https://rstudio.cloud/learn/primers">RStudio Primers</a> (interactive)
+- <a href="https://moderndive.com/">ModernDive</a>
 - <a href="https://r4ds.had.co.nz/">R for Data Science</a>
 - <a href="http://adv-r.had.co.nz/">Advanced R</a>
 

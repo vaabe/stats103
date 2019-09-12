@@ -42,18 +42,18 @@ library(rsconnect)
 
 \ 
 
-- <a href="./rmd/about.html">about</a> 
+- <a href="./notes/about.html">about</a> 
 - problem sets
 
 \ 
 
 ## PART I -- ELEMENTS
 
-- chapter 1 -- <a href="./rmd/c1-R.html">The R Environment</a>
-- chapter 2 -- <a href="./rmd/c2-data-basics.html">Getting Started with Data</a></li>
-- chapter 3 -- <a href="./rmd/c3-wrangle-visualize.html">Wrangling and Visualizing Data</a></li>
-- chapter 4 -- <a href="./rmd/c4-basic-analysis.html">Basic Data Analayis</a></li>
-- chapter 5 -- <a href="./rmd/c5-basic-modeling.html">Basic Data Modeling</a></li>
+- chapter 1 -- <a href="./notes/c1-R.html">The R Environment</a>
+- chapter 2 -- <a href="./notes/c2-data-basics.html">Getting Started with Data</a></li>
+- chapter 3 -- <a href="./notes/c3-wrangle-visualize.html">Wrangling and Visualizing Data</a></li>
+- chapter 4 -- <a href="./notes/c4-basic-analysis.html">Basic Data Analayis</a></li>
+- chapter 5 -- <a href="./notes/c5-basic-modeling.html">Basic Data Modeling</a></li>
 
 
 

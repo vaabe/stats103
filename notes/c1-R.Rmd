@@ -16,14 +16,11 @@ link-citations: yes
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = FALSE)
 library(tidyverse)
-library(ggplot2)
 library(knitr)
-library(kableExtra)
-library(extraDistr)
 library(gridExtra)
-library(latex2exp)
+library(extraDistr)
 library(moments)
-library(bookdown)
+library(latex2exp)
 library(rsconnect)
 library(tufte)
 ```
@@ -108,7 +105,7 @@ You can create a **vector**--a one-dimensional array of values--by using `c()`, 
 
 `r margin_note("Hashes (#) denote **comments**--anything written after a hash symbol will be skipped by the console when running code. It's good practice to comment your code, i.e. describe what it is doing.")` 
 
-`r margin_note("Note the **colon operator**, : , which generates a sequence of integer numbers between those specified.")`  
+`r margin_note("Note the **colon operator**, : , which generates a sequence of integer numbers between the two specified.")`  
 
 ```{r}
 # create vector of integers from 4 to 8
@@ -134,15 +131,15 @@ Just like mathematical functions, R functions perform operations on objects. R h
 mean(some_numbers)
 ```
 
-In general you can call a function on an object (or a set of objects) by typing the function name followed by a pair of brackets. In the brackets you specify the object(s) you want the function to operate on:
+In general you can call a function by typing its name followed by a pair of brackets. What you type in the brackets are known as **arguments** or **inputs** to the function:
 
 ```
-function_name(object1, object2, ...)
+function_name(arg1, arg2, ...)
 ```
 
-What you type in the brackets are known as **arguments** or **inputs** to the function. Most functions accept several arguments--these are not only for specifying objects, but also for specifying **function parameters** to make the function behave in a certain way. 
+Every function accepts a certain set of arguments. Some are mandatory (i.e. the function won't work if the argument is left unspecified) and others are optional (these will assume some default value if left unspecified). The first argument is usually for specifying the object you want the function to operate on.^[Of course, some functions accept more than one object.] Subsequent arguments are usually for specifying additional features that will make the function behave in a certain way.  
 
-E.g. if you want to compute the mean of an array that has missing values, you'll find the `mean()` function in its default setting doesn't quite work:
+E.g. if you want to compute the mean of an array, but it turns out the array contains missing values, you'll find the `mean()` function in its default setting doesn't work:
 
 ```{r}
 some_numbers <- c(4,5,6,NA,7,8)
@@ -150,13 +147,13 @@ some_numbers <- c(4,5,6,NA,7,8)
 mean(some_numbers)
 ```
 
-However if you specify the optional parameter `na.rm = TRUE`, this forces the function to skip all `NA` values: 
+However if you specify the optional argument `na.rm = TRUE`, this forces the function to skip all `NA` values: 
 
 ```{r}
 mean(some_numbers, na.rm = TRUE)
 ```
 
-If you leave optional arguments blank when calling a function, it will operate according to its default settings. 
+If you leave optional arguments blank when calling a function, it will operate according to its default settings. In the `mean()` function, `na.rm = FALSE` by default.  
 
 To learn about the arguments and default settings of a function, you should look up its documentation. You can do this by typing the function's name in the 'Help' tab (bottom right pane). E.g. for the `mean()` function: 
 
@@ -223,9 +220,9 @@ To open a new R Markdown file, click on the top left icon and choose R Markdown.
 knitr::include_graphics('./pics/m1c1_pic5.png')
 ```
 
-Enter a name and title for your document (these can be changed later). You can choose whichever output format you wish, but note that for pdf output you will need to have some form of TeX installed on your computer.^[Get it <a href="https://www.latex-project.org/get/">here</a>.] For simplicity you should use html output.   
+Enter a name and title for your document (these can be changed later). You can choose whichever output format you wish, but note that for pdf output you will need to have some form of TeX installed on your computer.^[Get it <a href="https://www.latex-project.org/get/">here</a>.] If you don't, you should use html output.   
 
-After choosing your output format, the editor will open and you will see some sample Markdown script that looks like this: 
+After choosing your output format, the editor will open and you will see some sample R Markdown script that looks something like this: 
 
 ```{r, echo=FALSE}
 knitr::include_graphics('./pics/m1c1_pic6.png')
