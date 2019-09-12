@@ -38,7 +38,7 @@ Introductory texts on statistical analysis:
 - <a href="https://www.openintro.org/stat/textbook.php">OpenIntro Statistics</a>
 - <a href="https://openstax.org/details/books/introductory-statistics">Openstax Introductory Statistics</a>
 
-More advanced texts with more on the modern stuff (model selection, ML, etc):
+Slightly advanced texts with more on the modern stuff (model selection, ML, etc):
 
 - <a href="http://www.statlearning.com/">Introduction to Statistical Learning</a>
 - <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">Elements of Statistical Learning</a> 
