@@ -1,0 +1,324 @@
+---
+title: 'chapter 11 Interval Estimators'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+--- 
+
+# Point and Interval Estimators
+
+A **point estimator** is a single plausible value for an unknown population parameter. Any point statistic derived from a sample (e.g. the sample mean, $\bar X$) is a point estimator.  
+
+An **interval estimator** is a range of plausible values for an unknown parameter. Two common interval estimators are **confidence intervals** (a frequentist method) and **credible intervals** (a Bayesian method).   
+
+
+
+
+
+\ 
+
+---
+
+# Confidence Intervals
+
+A confidence interval is a range of values, computed from a sample of data, that might contain the true parameter. They are often more useful than point estimators as they provide a reasonable margin of error when estimating an unknown parameter.  
+
+Every confidence interval has a **confidence level**, which describes the approximate probability the true parameter lies in the specified range.  
+
+E.g. a 95\% confidence interval for the mean can be expressed: 
+
+$$P(LB \leq \mu \leq UB) = 0.95$$
+
+where $LB$ and $UB$ are the lower and upper bounds of the interval.  
+
+Computing the bounds of a confidence interval requires you to know the distribution of the sample statistic in question. E.g. if you are trying to estimate the mean of a population, it easy to compute a confidence interval, since the central limit theorem says the sample mean follows a normal distribution.   
+
+N.B. since confidence intervals are computed from sample data, they are still *estimators*; the 95\% confidence level only describes the *approximate* proabibility of capturing the true  parameter.  
+
+\ 
+
+## Confidence intervals for means 
+
+Recall the CLT says that for large enough $n$, the sample mean can be approximated by a normal distribution with mean $\mu$ and variance $\frac{\sigma^2}{n}$:
+
+$$\bar X \sim \mathcal N \bigg( \mu, \frac{\sigma^2}{n} \bigg)$$
+
+```{r, echo=FALSE, fig.width = 6, fig.height=4}
+mu = 0; sigma = 1
+
+x = seq(-4, 4, length = 1000) * sigma + mu
+y = dnorm(x, mu, sigma)
+
+df = data.frame(x = x, y = y)
+
+# ggplot(data = df, mapping = aes(x = x, y = y)) +
+#   geom_line() +
+#   scale_x_discrete(name = TeX('$\\mu$'),
+#                    breaks = c(-3:3),
+#                    labels = c('-3SE','-2SE','-SE',' ','+SE','+2SE','+3SE'),
+#                    limits = c(-3:3)) +
+#   ylab('probability') +
+#   ggtitle(TeX('Distribution of $\\bar{X}$')) +
+#   theme_classic()
+```
+
+Thus you can visualize a 95\% confidence interval for the mean as follows:  
+
+```{r, echo=FALSE, fig.width = 6, fig.height=4}
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_discrete(name = TeX('$\\mu$'), 
+                   breaks = c(-3:3), 
+                   labels = c('-3SE','-2SE','-SE',' ','+SE','+2SE','+3SE'), 
+                   limits = c(-3:3)) +
+  scale_y_continuous(limits = c(0,0.45)) +
+  ylab('probability') + 
+  ggtitle(TeX('Distribution of $\\bar{X}$')) + 
+  geom_area(aes(x = ifelse(x > -1.96 & x < 1.96, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = -1.96, xend = -1.96, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = 1.96, xend = 1.96, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = 'p = 0.95', x = 0, y = 0.15, size = 6, color = 'violetred') +
+  geom_text(label = 'LB', x = -1.96, y = 0.12, size = 4, color = 'violetred') +
+  geom_text(label = 'UB', x = 1.96, y = 0.12, size = 4, color = 'violetred') +
+  theme_classic()
+```
+
+i.e. a range of values with a 95\% probability of 'capturing' the true mean.  
+
+In estimation problems, $\alpha$ is used to denote the probability the true parameter lies *outside* the confidence interval. For a 95\% confidence interval, $\alpha =$ 0.05.  
+
+Since the interval is symmetric, its lower and upper bounds lie at the $Z$-statistic corresponding to the 2.5th and 97.5th percentiles of the distribution (i.e. $Z_{\alpha/2}$ and $Z_{(1- \alpha/2)}$). These values are: 
+
+```{r}
+c(qnorm(0.025), qnorm(0.975))
+```
+
+This tells you that a 95\% confidence interval will have a lower and upper bound 1.96 standard errors from the mean (assuming, of course, that data is normally distributed).  
+
+In general, a confidence interval for the mean can be written:
+
+$$\bar X - c \cdot SE \leq \mu \leq \bar X + c \cdot SE$$
+
+where $c$ is a measure of how far away the lower and upper bounds are from the mean (in units of standard error). The specific value of $c$ depends on:
+
+- the confidence level ($1-\alpha$)
+- which distribution you are using to approximate the sample data
+
+\ 
+
+**If data follows a normal distribution:** 
+
+You should use the $Z$-statistic (as above). In this case the formula for a confidence interval can be written:
+
+$$\bar X - Z \cdot \frac{\sigma}{\sqrt n} \leq \mu \leq \bar X + Z \cdot \frac{\sigma}{\sqrt n}$$
+
+where $Z$ is the $Z_(1-\alpha/2)$-statistic of a normal distribution.  
+
+\ 
+
+**If data follows a t-distribution:**
+
+You should use the $t$-statistic (with the appropriate degrees of freedom). In this case the formula for a confidence interval can be written:
+
+$$\bar X - t \cdot \frac{s}{\sqrt n} \leq \mu \leq \bar X + t \cdot \frac{s}{\sqrt n}$$
+
+where $t$ is the $t_{(1-\alpha/2)}$-statistic of a $t$-distribution with $n-1$ degrees of freedom.  
+
+Generally for sample data you should use the $t$-distribution, since the true mean and s.d. of the population are unknown. However for large $n$ it doesn't make much difference, and you can use the normal with plug-in estimates in place of $\mu$ and $\sigma$.  
+
+\ 
+
+## Computing the bounds in practice 
+
+In the pay gap data, the variable `DiffMeanHourlyPercent` has a sample mean $\bar X =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent),3))`, a sample s.d. $s =$ `r toString(round(sd(paygap$DiffMeanHourlyPercent),3))`, and a sample size $n =$ `r toString(nrow(paygap))`: 
+
+```{r, include=FALSE}
+# cat(paste('sample mean =', round(mean(paygap$DiffMeanHourlyPercent),3), '\n', 'sample s.d. =', round(sd(paygap$DiffMeanHourlyPercent),3), '\n', 'sample size =', nrow(paygap)))
+```
+
+```{r}
+c(mean(paygap$DiffMeanHourlyPercent), sd(paygap$DiffMeanHourlyPercent), length(paygap$DiffMeanHourlyPercent))
+```
+
+Using these as plug-in estimates of $\mu$ and $\sigma$, you can write a 95\% confidence interval for the mean as:
+
+$$\bar X - c \cdot \frac{\sigma}{\sqrt n} \leq \mu \leq \bar X + c \cdot \frac{\sigma}{\sqrt n}$$
+
+In this case $c$ is the $Z_{0.975}$-value of a normal distribution. This is:
+
+```{r}
+qnorm(0.975)
+```
+
+Substituting these values gives the following confidence interval for the mean: 
+
+$$
+\begin{aligned}
+  12.36 - 1.96 \cdot \frac{16.01}{\sqrt{153}} \leq &\mu \leq 12.36 + 1.96 \cdot \frac{16.01}{\sqrt{153}}
+  \\ 
+  \\
+  \Longrightarrow \hspace{0.5cm} 9.82 \leq &\mu \leq 14.90
+\end{aligned}
+$$
+
+If you used a $t$-distribution to approximate the data (which, strictly speaking you should, since $\mu$ and $\sigma$ are unknown), your interval would be:
+
+$$\bar X - c \cdot \frac{s}{\sqrt n} \leq \mu \leq \bar X + c \cdot \frac{s}{\sqrt n}$$
+
+In this case $c$ is the $t_{0.975}$-value of a $t$-distribution with 152 degrees of freedom. This is:
+
+```{r}
+qt(0.975, df = 152)
+```
+
+Substituting these values gives a confidence interval of: 
+
+$$
+\begin{aligned}
+  12.36 - 1.976 \cdot \frac{16.01}{\sqrt{153}} \leq &\mu \leq 12.36 + 1.976 \cdot \frac{16.01}{\sqrt{153}} \\ 
+  \\ 
+  \Longrightarrow \hspace{0.5cm} 9.80 \leq &\mu \leq 14.92
+\end{aligned}
+$$
+
+The interval is only trivially different to the one computed using the normal, since $n$ in this case is large. 
+
+But if, for instance, you used a $t$-distribution with only 10 DoF, note how $c$ is more substantially different: 
+
+```{r}
+qt(0.975, df = 9)
+```
+
+Which gives a confidence interval of: 
+
+$$9.48 \leq \mu \leq 15.24$$
+
+\ 
+
+## Misconceptions about confidence intervals  
+
+It is important to remember that confidence intervals are computed from sample data. This means that different samples of data will yield different confidence intervals, as is the case for point statistics. This is why the confidence level describes only the *approximate* probability the interval contains the true parameter. For any given sample of data, the interval either contains the true parameter or it doesn't; there is no way to tell which.   
+
+In fact, the probability associated with a confidence interval refers to the tendency of the interval to capture the true parameter over many iterations of the experiment. Thus:
+
+**A a 95\% confidence interval is a range of values where, if you repeated the experiment many times, approximately 95\% of the confidence intervals generated will contain the true parameter.**  
+
+This is the 'proper' definition of a confidence interval. It is also important to understand what a confidence interval is not: 
+
+- A 95\% confidence interval does not mean that for a given interval, there is exactly a 95\% probability the true parameter lies in the interval. 
+- A confidence interval is not a definitive range of of plausible values for the true parameter. 
+- a confidence level of 95\% does not mean there is a 95\% probability the sample statistic from a subsequent experiment will fall in the interval specified.  
+
+Without knowing the true population mean, there is no way to know whether the specific confidence interval generated from a sample actually contains the true parameter or not.  
+
+E.g. in the example above, the mean difference in hourly wages between women and men was estimated to be $\bar X =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent)),3)` with a 95\% confidence interval of $9.08 \leq \mu \leq 14.92$. Both the point statistic and the interval are *estimates* derived from the specific sample of data used. A different sample will yield different values
+
+Nevertheless, confidence intervals are still useful in estimation, since they provide wider range of plausible values for the true parameter than a point estimate does.   
+
+The code below generates 20 random samples and plots a 95\% confidence interval for $\mu$ based on each sample. The pink line is the true mean of the population.  
+
+```{r}
+box <- c(1,1,1,5)
+n <- 50
+X <- sample(box, n, replace = TRUE)
+Xbar <- mean(X)
+SE <- sd(X)/sqrt(n)
+c <- qt(0.975, n-1)
+
+experiment <- function() {
+  X <- sample(box, n, replace = TRUE)
+  Xbar <- mean(X)
+  SE <- sd(X)/sqrt(n)
+  c(Xbar - c*SE, Xbar + c*SE)
+}
+
+CIs <- data.frame(t(replicate(20, experiment())))
+names(CIs) <- c("Lower", "Upper")
+CIs$SampleNumber <- 1:20
+ggplot() + 
+  geom_errorbar(data = CIs, aes(x = as.factor(SampleNumber), ymin = Lower, ymax = Upper)) +
+  geom_hline(yintercept = 2, color = 'violetred') + 
+  coord_flip() + theme_classic() + ylab('95% confidence interval') + xlab('sample number')
+```
+
+\ 
+
+## A function for calculating confidence intervals 
+
+Although there is no function in R to formally compute a confidence interval for a mean, it is easy to write one yourself. 
+
+The code below writes a function that will compute a confidence interval for the mean from a sample of data. It takes two arguments -- the vector array of data, and the desired confidence level. 
+
+```{r}
+confidence_interval <- function(data, conflevel) {
+  xbar <- mean(data)          # sample mean 
+  SE <- sd(data) / sqrt(n)    # standard error
+  n <- length(data)           # sample size 
+  alpha <- 1 - conflevel      # alpha
+  
+  lb <- xbar + qt(alpha/2, df = n-1) * SE    # lower bound
+  ub <- xbar + qt(1-alpha/2, df = n-1) * SE  # upper bound
+  
+  cat(paste(c('sample mean =', round(xbar,3), '\n', 
+              conflevel*100, '% confidence interval:', '\n', 
+              'lower bound =', round(lb,3), '\n', 
+              'upper bound =', round(ub,3))))
+}
+```
+
+A 95\% confidence interval for the mean difference in hourly wages between women and men:
+
+```{r}
+confidence_interval(paygap$DiffMeanHourlyPercent, 0.95)
+```
+
+A 99\% confidence interval for the same parameter:
+
+```{r}
+confidence_interval(paygap$DiffMeanHourlyPercent, 0.99)
+```
+
+
+

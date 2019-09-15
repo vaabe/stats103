@@ -1,0 +1,263 @@
+---
+title: 'chapter 17 Validity and Bias'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
+
+# Validity 
+
+As you know, an **estimator** is a statistic used to infer/estimate the value of an unknown parameter in a model. The **reliability** of an estimator is a measure of its consistency across repititions of the experiment. The rest of this module will discuss validity and bias.  
+
+The **validity** of an estimator is a measure of its accuracy, i.e. the extent to which it represents the *true* value of the unknown parameter being estimated. Reliability does not imply validity -- a scale can produce reliable (consistent) estimates of mass, but if incorrectly calibrated, its estimates will be systematically incorrect.  
+
+In an experimental setting, it is important to have a valid experiment design. There are two important kinds of experimental validity: internal and external.  
+
+\ 
+
+## External validity
+
+External validity concerns the generalizability of an experiment's results, i.e. whether the results of an experiment still hold in different samples/settings. For a causal relationship to have external validity, it should be *portable* across samples, i.e. not depend on in-sample conditions.  
+
+A common threat to external validity is a non-representative sample, aka sampling bias.    
+
+\ 
+
+## Internal validity  
+
+Internal validity concerns the correct identification of causal relationships in an experiment. When trying to isolate a causal relationship, it is important to control for confounding variables, and to ensure the right variables are being measured.  
+
+Common factors that interfere with internal validity:
+
+- confounding variables that are not controlled for
+- history: the events that occur between measurements that might influence their values
+- maturation: whether changes in the dependent variable were simply due to normal developmental processes
+- incorrectly identified causal relationships 
+- incorrectly identified variables
+- poorly made measurements
+
+
+
+\ 
+
+--- 
+
+# Bias
+
+Bias is when the expected value of a result differs from the true value of the parameter being estimated.  
+
+If $\hat\theta$ is an estimator for the true parameter $\theta$, the bias of the estimator can be written:
+
+$$\Bias[\hat\theta] = E[\hat\theta] - \theta$$
+
+## Unbiased estimators -- the sample mean
+
+In the previous module you saw that the expected value of the sample mean converges to the true mean with enough samples: $E[\bar X] = \mu$. The bias of the sample mean is thus:
+
+$$\Bias[\bar X] = E[\bar X] - \mu = 0$$
+
+In other words, the *sample mean is an unbiased estimator* for the true mean. If you want to estimate the mean of a population, using the sample mean should give you a valid result (provided your sample is random).  
+
+Not all estimators are unbiased, as the next section will demonstrate.  
+
+
+## Biased estimators -- a demonstration
+
+As you know, the uniform distribution $\mathcal U[a,b]$ is a probability distribution where every real number between $a$ and $b$ has an equal probability. In the previous module you saw how the sample mean of a uniform distribution converged to its theoretical value with large enough $n$, which demonstrates how the sample mean is an unbiased estimator for the true mean.  
+
+But say you want to estimate the *maximum* value of the distribution. Is the sample maximum an unbiased estimator for the true maximum? To answer this question, let $X$ be a RV following a uniform distribution with values from 0 to 10. The code below generates 100 random samples of $X$: 
+
+```{r}
+X = runif(n = 100, min = 0, max = 10)
+
+ggplot(aes(x = X), data = as.data.frame(X)) + 
+  geom_histogram(binwidth = 0.5) +
+  theme_bw()
+```
+
+Using $\theta$ to denote the true maximum, you know that $\theta = 10$. The sample maximum, $\hat\theta$, is:
+
+```{r}
+max(X)
+```
+
+If you repeat the process many times, you can construct a sampling distribution of the maximum:
+
+```{r}
+thetahat = replicate(n = 1000, max(runif(n = 100, min = 1, max = 10)))
+
+ggplot(aes(x = thetahat), data = as.data.frame(thetahat)) + 
+  geom_histogram(bins = 50) +
+  ggtitle('Sampling Distribution of the Maximum') +
+  theme_bw()
+```
+
+The sampling distribution of $\hat\theta$ is neither bell-shaped, nor centered at the true maximum $\theta$. In fact, based on this sampling distribution, the expected value of the sample maximum is:
+
+```{r}
+mean(thetahat)
+```
+
+Clearly, the sample maximum underestimates the true maximum, since $E[\hat\theta] - \theta =$ `r toString(round(mean(thetahat),3))` -10 $\neq 0$. The bias of the sample maximum is:
+
+```{r}
+mean(thetahat) - 10
+```
+
+With a bit of calculus, you could show that, in fact, 
+
+$$E[\hat\theta] = \frac{n}{n+1} \theta$$
+
+i.e. that the sample maximum consistently underestimates the true maximum. Using this, you could construct a bias-corrected estimator for the maximum:
+
+$$\frac{n+1}{n} \hat\theta$$
+where $\hat\theta$ is the sample maximum. The bias-corrected estimate of the true maximum is:
+
+```{r}
+n <- 100
+
+mean(thetahat)*((n+1)/n)
+```
+
+which is clearly a much more accurate estimate of the true maximum.  
+
+
+
+\ 
+
+--- 
+
+# Bessel's Correction
+
+You know the formula for the variance of a population:
+
+$$\sigma^2 = \frac 1n \sum_i^n (X_i - \mu)^2$$
+
+Yet when calculating the variance of a sample, you must divide by $n-1$ rather than $n$:
+
+$$s^2 = \frac{1}{n-1} \sum_i^n (X_i - \bar X)^2$$
+
+This is known as Bessel's correction. It turns out that calculating sample variance using $\frac 1n$ will consistently give underestimates of the true population variance -- see proof here. 
+
+$$E \bigg[ \frac 1n \sum_i^n (X_i - \bar X)^2 \bigg] = \frac{n-1}{n} \sigma^2$$
+
+Applying Bessel's correction remedies this bias.  
+
+Note when $n$ is large, the difference between $\frac 1n$ and $\frac{1}{n-1}$ becomes negligible. The difference between the two formulae is significant only for small samples. This is why we use the $t$-distribution for small samples, since it uses the bias-corrected formula for sample variance, which produces a normal curve with fatter tails. Hence why the $t$-distribution only has one parameter, DoF, since each $n-1$ produces a slightly different curve.  
+
+
+
+\ 
+
+--- 
+
+# Quantifying the Error of an Estimator
+
+The **variance** of an estimator gives the average squared distance of each estimate from the mean estimate:
+
+$$Var[\hat\theta] = E \big[ (\hat\theta - E[\hat\theta])^2 \big]$$
+
+The **bias** of an estimator is how far the average estimate is from the true parameter:
+
+$$Bias[\hat\theta] = E[\hat\theta] - \theta$$
+
+Note the difference between variance and bias. If an estimator has low variance, the data points are clustered close together. But if the cluster is far from the true parameter, there is bias. Conversely, an estimator can have low bias and high variance if the points surround the true parameter, but in general have high dispersion.  
+
+## The Mean Squared Error
+
+In statistics we are often concerned with the relationship between bias and variance. A good way to quantify both is using the **mean squared error**: the expected value (probability-weighted average over all samples) of the squared errors:
+
+$$MSE[\hat\theta] = E\big[ (\hat\theta - \theta)^2 \big]$$
+
+This gives a measure of how far, on average, a collection of estimates are from the true parameter being estimated. Note, if you expand the formula for MSE, you get:
+
+$$MSE[\hat\theta] = (E[\hat\theta] = \theta)^2 + E \big[ (\hat\theta - E[\hat\theta])^2 \big]$$
+
+$$MSE[\hat\theta] = Bias[\hat\theta]^2 + Var[\hat\theta]$$
+
+i.e. mean squared error is the bias squared plus the variance.  
+
+Thus an estimator that minimises bias does not necessarily minimise mean squared error, since the MSE is dependent on the variance of an estimator too.  
+
+Probability models don’t always have just one parameter, complicated situations may require more. Modern statistics often deals with high dimensional problems with many parameters. If have $p$ parameters, $\theta_1, ..., \theta_p$:
+
+$$MSE[\hat\theta] = \sum_i^p E\big[ (\hat\theta_i - \theta_i)^2 \big]$$
+
+## Normal means and Stein's paradox
+
+Suppose the parameters of interest are the mean of a multivariate normal $\theta = \mu = (\mu_1, ..., \mu_p)$.  
+
+Suppose $X$ is multivariate normal with mean $\mu$. Thus $E[X] = \mu$ is unbiased. What about MSE?
+
+If $p=1$ or $p=2$, $X$ has the lowest MSE.  
+
+If $p \geq 3$ then $X$ no longer has the lowest MSE.  
+
+This is sometimes called Stein’s paradox after Charles Stein.
+
+In high dimensions, it’s usually better to be biased. 
+
+If you find this very interesting there is a classic example about baseball you can read about. Summary: when estimating many players’ batting averages in the next season, instead of using each players’ average from this season as their own estimate it’s better to make all the estimates biased toward the overall average of the players.  
+
+```{r}
+p = 100
+JS <- function(x) max((1 - (p-2)/sum(x^2)),0) * x
+mu = sample(c(1:5), p, replace = TRUE)
+```
+
+```{r}
+SEs <- replicate(10000, sum(((rnorm(p) + mu) - mu)^2))
+JSSEs <- replicate(10000, sum(((JS(rnorm(p) + mu)) - mu)^2))
+mean(SEs)
+```
+
+```{r}
+mean(JSSEs)
+```
+
+The theme of trading off between bias and variance is something we’ll come back to later in the course.  
+
+
+

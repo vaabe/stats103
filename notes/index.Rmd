@@ -52,5 +52,39 @@ library(tufte)
 - chapter 4 -- <a href="./notes/c4-basic-analysis.html">Basic Data Analayis</a></li>
 - chapter 5 -- <a href="./notes/c5-basic-modeling.html">Basic Data Modeling</a></li>
 
+## PART I $\frac 12$ -- A PROBABILISTIC BRIDGE
+
+- chapter 7 -- <a href="./notes/c7-probability-elements.html">Elements of Probability</a>
+- chapter 8 -- <a href="./notes/c8-random-variables.html">The Algebra of Random Variables</a>
+- chapter 9 -- Distributions of Random Variables
+
+## PART II -- VARIABILITY
+
+- chapter 10 -- <a href="./notes/c10-sampling.html">Samples, Sampling, and Variability</a></li>
+- chapter 11 -- <a href="./notes/c11-clt.html">The Central Limit Theorem</a></li>
+- chapter 12 -- <a href="./notes/c12-intervals.html">Intervals</a></li>
+- chapter 13 -- <a href="./notes/c13-hyptests.html">Testing Significance</a></li>
+- chapter 14 -- Joint Variability
+- chapter 15 -- Regression Revisited
+- chapter 16 -- Basics for Model Inference
+
+## PART III -- BIAS
+
+- chapter 17 -- <a href="./notes/c17-validity-bias.html">Validity and Bias</a></li>
+- chapter 18 -- Sampling Bias 
+- chapter 19 -- Omitted Variable Bias
+- chapter 20 -- Specification Bias
+- chapter 21 -- Measurement Error Bias 
+
+## PART IV -- MODEL SELECTION 
+
+- chapter 22 -- The Bias-Variance Tradeoff
+- chapter 24 -- Model Selection Criteria 
+- chapter 25 -- Resampling Methods
+
+\ 
+
+\ 
+
 
 

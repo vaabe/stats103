@@ -1,0 +1,395 @@
+---
+title: 'chapter 10 Samples, Sampling, and Variability'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
+
+# Samples From Populations 
+
+A quick recap of the terminology around samples:
+
+A **sample** is a subset of data from a **population**. E.g. the pay gap dataset is a sample of data from 10,000 UK firms; the NYC heatwave dataset is a sample of data from 1021 locations in the city.   
+
+A **population** is the relevant set of events for conducting an experiment or answering a question. E.g. in the pay gap study, the population is the salary of every employed person in the UK.  
+
+Samples are used to represent populations, and make inferences about population characteristics which are often unknown.  
+
+An **estimator** is a sample parameter that is used to estimate some unknown parameter of the population. E.g. the sample mean is an estimator for the population mean.  
+
+A **random sample** is one where each observation is chosen randomly from the population. 
+
+Symbols used to denote sample and population parameters: 
+
+- $\mu$ -- **population mean** (the true/theoretical mean)
+- $\sigma$ -- **population standard deviation** (the true/theoretical s.d.)
+- $\rho$ -- **population correlation coefficient**
+- $\bar x$ -- **sample mean** (estimator)
+- $s$ -- **sample standard deviation** (estimator)
+- $r$ -- **sample correlation coefficient**
+- $n$ -- **sample size**
+
+
+
+\ 
+
+---
+
+# Sample Variability 
+
+Since every sample of data is unique, estimates derived therefrom will vary across different samples. A truly random sample should be representative of the population, and give accurate estimates of its characteristics. However, pure randomness is difficult to achieve. This is especially true in small samples, as will be demonstrated next.  
+
+\ 
+
+## Generating random samples in R
+
+You can generate random samples in R with the `sample()` function. You must specify the sample space (what you are sampling from), the sample size, and whether you want to sample with replacement or not. 
+
+The following code generates a random sample of 10 observations, where the sample space is integers from 1 to 6 (much like rolling a six-sided dice ten times): 
+
+```{r}
+diceroll = sample(x = c(1,2,3,4,5,6), size = 10, replace = TRUE)
+diceroll
+```
+
+If $X$ is a random variable for the outcome of a dice roll, the above output is a random sample of 10 observations of $X$. The sample mean, $\bar X$, is:
+
+```{r}
+mean(diceroll)
+```
+
+If you repeat the process with another random sample, you will likely get a different set of observations, and a (slightly) different sample mean:
+
+```{r}
+diceroll2 = sample(x = c(1,2,3,4,5,6), size = 10, replace = TRUE)
+diceroll2
+mean(diceroll2)
+```
+
+Compare these sample means to the theoretical mean of the population, $\mu = 3.5$. In this case you know the population mean, since the RV in question follows a known distribution (a discrete uniform distribution). 
+
+This is a trivial example, and often in statistical inference you do not know the true distribution of the underlying population. All you have is the sample distribution and estimates derived therefrom.  
+
+\ 
+
+## The law(s) of large numbers
+
+The law of large numbers describes how the sample mean evolves as you increase the sample size, $n$. 
+
+The diceroll experiment above was done with a sample size of $n = 10$. Below, the same experiment is rerun three times, but with sample sizes $n = \{ 30, 1000, 10000 \}$. The sample mean is computed for each.  
+
+```{r}
+for (i in c(30,100,10000)) {
+  dicetoss = sample(x = c(1,2,3,4,5,6), size = i, replace = TRUE)
+  cat(paste('sample mean when n =', i, ':', round(mean(dicetoss),3),'\n'))
+}
+```
+
+Predictably, increasing $n$ brings the sample mean closer to its theoretical value, $\mu=3.5$. This is, in essence, the **law of large numbers** -- it describes how the accuracy of an empirical statistic increases with sample size.  
+
+Formally, there are two versions of the law of large numbers.  
+
+The **strong law of large numbers** says the sample mean converges *exactly* to the true mean for large enough $n$:
+
+$$\bar X \rightarrow \mu \hspace{1cm} n \rightarrow \infty$$
+
+The **weak law of large numbers** says the sample mean converges *in probability* to the true mean for large enough $n$. Specifically, it states that the probability the absolute difference between the sample mean and the true mean is larger than some nonzero margin goes to zero as the sample size increases: 
+
+$$P( | \bar X - \mu | > c) \rightarrow 0 \hspace{1cm} n \rightarrow \infty$$
+This is a cumbersome definition -- but all it really says is the sample mean $\bar X$ is *likely* to be *near* $\mu$ when $n$ is large enough. Crucially, the weak LLN leaves open the possibility that $| \bar X - \mu | > c$ at infrequent intervals, i.e. that *occasionally* the sample mean might deviate from the true mean, even with very large $n$. 
+
+By contrast, the strong LLN describes an exact convergence to the true mean -- it implies that $| \bar X - \mu | < c$ will be true in all cases when $n$ is large. This is a stronger convergence condition than the weak LLN, and there are many distributions for which the weak law holds, but the strong law does not.  
+
+
+
+\ 
+
+---
+
+# Sampling Distributions -- a demonstration
+
+In the previous example, a random sample was drawn from a known distribution, yielding a sample mean. When the process was repeated, a different sample mean was obtained.  
+
+You could do this repeatedly. Below, the same experiment is repeated 10 times, each time with a new random sample. The 10 sample means are stored in a vector and printed below:  
+
+```{r}
+N = 10 #number of trials
+samplemeans = NULL #vector of sample means
+
+for (i in 1:N) {
+  diceroll = sample(x = c(1,2,3,4,5,6), 
+       size = 30, #sample size
+       replace = TRUE)
+
+  samplemeans[[i]] = mean(diceroll)
+}
+
+samplemeans
+```
+
+If $X$ is still the RV for the outcome of a dice roll, the above output is not 10 observations of $X$, but a collection of sample means $\bar X$ across 10 random samples, each of which has 30 observations of $X$. In other words, the above output is a **distribution of sample means**.  
+
+Each sample mean is calculated $\bar X = \frac 1n \sum_i^n X_i$, where $X_i$ denotes a single observation in one of the samples.   
+
+As it turns out, you can model the sample mean $\bar X$ as a random variable (provided you have a collection of sample means), which gives you a **sampling distribution**. Below is the distribution of the 10 sample means calculated above: 
+
+```{r}
+ggplot(data = as.data.frame(samplemeans), aes(x = samplemeans)) + 
+  geom_histogram(binwidth = 0.1) +
+  ggtitle(TeX('Sampling distribution of $\\bar{X}$ (10 trials)')) +
+  theme_bw()
+```
+
+This is known as the **sampling distribution of the mean**: it shows the distribution of the sample mean, $\bar X$, across several samples. Each sample has size $n=30$ (30 independent observations of $X$).   
+
+As you repeat the experiment with more and more random samples, it turns out the shape of the sampling distribution converges. The plots below show the sampling distributions of $\bar X$ for 100, 1000, and 10,000 random samples, each with $n=30$. Summary statistics are also shown below. 
+
+```{r, echo=FALSE, fig.width=12, fig.height=3.5}
+samplemeans=NULL
+
+for (i in 1:11100) {
+    dicetoss = sample(x = c(1,2,3,4,5,6), size = 30, replace = TRUE)
+    samplemeans[i] = mean(dicetoss)
+}
+
+xbar100 = samplemeans[1:100]; xbar1000 = samplemeans[101:1100]; xbar10000 = samplemeans[1101:11000]
+
+plot1 = ggplot(data = as.data.frame(xbar100), aes(x = xbar100)) +
+  geom_histogram(binwidth = 0.1, aes(y = ..density..)) +
+  ggtitle(TeX('Sampling dist. of $\\bar{X}$ (100 trials)')) +
+  xlab(TeX('$\\bar{X}$')) + 
+  theme_bw()
+
+plot2 = ggplot(data = as.data.frame(xbar1000), aes(x = xbar1000)) +
+  geom_histogram(binwidth = 0.1, aes(y = ..density..)) +
+  ggtitle(TeX('Sampling dist. of $\\bar{X}$ (1000 trials)')) +
+  xlab(TeX('$\\bar{X}$')) + 
+  theme_bw()
+
+plot3 = ggplot(data = as.data.frame(xbar10000), aes(x = xbar10000)) +
+  geom_histogram(binwidth = 0.1, aes(y = ..density..)) +
+  ggtitle(TeX('Sampling dist. of $\\bar{X}$ (10,000 trials)')) +
+  xlab(TeX('$\\bar{X}$')) + 
+  theme_bw()
+
+grid.arrange(plot1, plot2, plot3, ncol = 3)
+
+xbar_summary = data.frame(num_trials = c('100','1000','10,000'), 
+                          mean = c(round(mean(xbar100),3), round(mean(xbar1000),3), round(mean(xbar10000),3)), 
+                          std_dev = c(round(sd(xbar100),3), round(sd(xbar1000),3), round(sd(xbar10000),3)))
+
+kable(xbar_summary, caption = 'summary statistics')
+```
+
+
+## Takeaways
+
+There are three important things to note from this demonstration:
+
+\ 
+
+**1 -- the sampling distribution of $\bar X$ approached a normal curve with a large number of trial**
+
+The convergence of a sampling distribution to a normal curve is the premise of the **central limit theorem**. Note how this convergence occurred even though the original RV was not normally distributed (the outcomes of a dice toss follow a discrete uniform distribution).  
+
+This is an important result in statistics, as it implies the normal distribution can be used to model many random processes, even those that follow different distributions.  
+
+\ 
+
+**2 -- the means of the sampling distributions were around $\bar X \sim 3.5$, the theoretical mean**
+
+The LLN predicts the convergence of the sample mean to the true mean, so this is an expected result. 
+
+\ 
+
+**3 -- the standard deviations of the sampling distributions were around $\SD[\bar X] \sim 0.3$**
+
+Note how this is much smaller than the s.d. of the population distribution.  
+
+For reference, the s.d. of a discrete uniform distribution with values from 1 to $a$ is given by $\sigma = \sqrt{\frac{a^2-1}{12}}$. In this case, with values from 1 to 6, $\sigma = 1.708$.  
+
+It turns out the s.d. of a sample mean is scaled down from the s.d. of the population by a factor of $\sqrt n$:
+
+$$\SD[\bar X] = \frac{\sigma}{\sqrt n} = \frac{1.708}{\sqrt{30}} = 0.31$$
+
+This is another important result in statistics, and will be explained next. 
+
+
+
+\ 
+
+---
+
+# Sampling Distributions -- some theory
+
+If $X$ is a random variable for the outcome of a random process, then $X_i$ is often used to denote a single value/outcome/observation of this process. If you have a sample of $n$ observations of this random process, you have a collection of RVs $X_1, X_2, ..., X_n$.  
+
+These RVs $X_1, X_2, ..., X_n$ are said to be **independent and identically distributed (i.i.d.)** if:
+
+- each one is drawn from the same underlying population (which has some unknown but fixed distribution)
+- the value of one outcome does not influence the values of other outcomes 
+
+It is often assumed that observations in a sample are effectively i.i.d. This property leads to a useful result, as you will see.  
+
+The sample mean, $\bar X$, is the mean of the observed outcomes in a random sample:  
+
+$$\bar X = \frac 1n \sum_i^n X_i$$
+
+where $X_i$ is a single observation in a random sample of size $n$.  
+
+Different random samples will yield different values of $\bar X$. The distribution of $\bar X$ across different samples is called the **sampling distribution of the mean**.  
+
+\ 
+
+## The expected value of the sample mean, $\E[\bar X]$
+
+Recall the following properties of expected value:
+
+* the expected value of any one RV is simply the true mean of the population, i.e. $\E[X_i] = \mu$
+* the expected value of each RV is the same (since they are i.i.d.)
+* the expected value of a sum of RVs is equal to the sum of the expected values of the RVs, i.e. $\E \big[ \sum_i X_i \big] = \sum_i \E[X_i]$
+* expectation scales linearly: $\E[aX] = a \E[X]$
+
+It should follow intuitively that the expected value of a sample mean is simply the true mean of the population: $\E[\bar X] = \mu$.   
+
+To see this algebraically, apply the expectation operator to the formula for the sample mean, and do some wrangling: 
+
+$$\E[\bar X] = \E \bigg[ \frac 1n \sum_i^n X_i \bigg] = \frac 1n \E \bigg[ \sum_i^n X_i \bigg] = \frac 1n \sum_i^n \E[X_i] = \frac 1n \sum_i^n \mu = \frac 1n \cdot n\mu = \mu$$
+$$\therefore \;\; \E[\bar X] = \mu$$
+
+You saw this result in the demonstration above: all three sampling distributions were centered around 3.5, which the theoretical mean of the population distribution.    
+
+\ 
+
+## The variance of the sample mean, $\Var[\bar X]$
+
+Recall the following properties of variance:   
+
+* the variance of any one RV is simply the true variance of the population, i.e. $\Var[X_i] = \sigma^2$
+* the variance of each RV is the same (since they are i.i.d.)
+* the variance of a sum of RVs is equal to the sum of the variances of the RVs, i.e. $\Var \big[ \sum_i X_i \big] = \sum_i \Var[X_i]$
+* variance scales by a square law: $\Var[aX] = a^2 \Var[X]$
+
+The last property is what gives the variance of a sample mean its dependency on sample size: $\Var[\bar X] = \frac{\sigma^2}{n}$. 
+
+To see this algebraically:  
+
+$$\Var[\bar X] = \Var \bigg[ \frac 1n \sum_i^n X_i \bigg] = \frac{1}{n^2} \Var \bigg[ \sum_i^n X_i \bigg] = \frac{1}{n^2} \sum_i^n \Var[X_i] = \frac{1}{n^2} \sum_i^n \sigma^2 = \frac{1}{n^2} \cdot n\sigma^2 = \frac{\sigma^2}{n}$$
+$$\therefore \;\; \Var[\bar X] = \frac{\sigma^2}{n}$$
+
+The takeaway:
+
+$$\bf{\text{The variance of a sample mean decreases as n increases}}$$
+
+This is why, in the demonstration above, the sample s.d. was smaller than the s.d. of the population distribution -- it was scaled down by a factor of $\sqrt n$. Note $n$ always refers to the size of the *sample*, not the number of random samples used to create the sampling distribution.  
+
+You can understand this phenomenon intuitively through the LLN: you already know that increasing $n$ makes the sample mean converge to the true mean. This is only possible if the data points are becoming more scattered around the true mean -- which means the distribution must be getting taller and narrower as $n$ increases.    
+
+The following code plots three sampling distributions, with sample sizes $n=\{ 10,50,100 \}$. The underlying RV is the same as above -- a discrete uniform distribution with values from 1 to 6.  
+
+```{r}
+generator = function(n) {
+  mean(rdunif(n, min = 1, max = 6))
+}
+
+sampledata = data.frame(Xbar = c(replicate(10000, generator(10)), 
+                                 replicate(10000, generator(50)), 
+                                 replicate(10000, generator(100))), 
+                        n = c(rep(10,10000), rep(50,10000), rep(100,10000)) %>% as.factor())
+
+ggplot(sampledata, aes(x = Xbar, fill = n)) + 
+  geom_density(alpha = 0.3) + xlab(TeX('$\\bar{X}$')) + theme_bw()
+```
+
+Clearly, the dispersion of the sampling distribution decreases as $n$ increases.  
+
+\ 
+
+## The standard deviation of the sample mean, $\SD[\bar X]$
+
+The standard deviation of the sample means is known as the **standard error:**
+
+$$\SE = \SD[\bar X] = \sqrt{\Var[\bar X]} = \frac{\sigma}{\sqrt n}$$
+
+\ 
+
+## Some important caveats
+
+\ 
+
+**When the LLN might fail**
+
+It is possible the LLN may not hold if the random variables themselves are so dispersed that they don’t have an expected value. These are sometimes called “heavy-tailed” distributions. e.g. the Cauchy distribution.  
+
+\ 
+
+**Square-root convergence**
+
+At first, increasing the sample size makes a significant change to the distribution, rapidly bringing the sample mean closer to the true mean, and rapidly reducing the variance. But as $n$ gets larger, it takes longer for the sample mean to get closer to the true value by the same amount -- the **law of diminishing information**. 
+
+You can see this in the formula for the standard error: $\SD[\bar X] = \frac{\sigma}{\sqrt n}$. The dispersion of the sampling distribution does not decrease linearly, but over the *square root* of sample size. 
+
+The above plot also demonstrates this: the distributions's dispersion reduces substantially when $n$ is increased from 10 to 50, but change is more marginal as $n$ is increased from 50 to 100. 
+
+\ 
+
+## The linearity of expectation and variance 
+
+`put in previous chapter`
+
+You should be familiar with how expectation and variance deal with linear combinations of random variables.  
+
+Expectation is a **linear operator** -- addition and scalar multiplication of RVs are preserved:
+
+$$E[X_1 + X_2] = E[X_1] + E[X_2]$$
+$$E[aX] = aE[X]$$
+$$E[aX_1 + bX_2] = aE[X_1] + bE[X_2]$$
+
+Unlike expectation, **variance is not linear**:
+
+$$Var[X_1 + X_2] = Var[X_1] + Var[X_2]$$
+$$Var[aX] = a^2Var[X]$$
+$$Var[aX_1 - X_2] = a^2Var[X_1] + Var[X_2]$$
+

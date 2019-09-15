@@ -1,0 +1,342 @@
+---
+title: 'chapter 13 Significance Tests'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
+
+# Hypothesis Tests
+
+A statistical hypothesis is an assumption about one or more population parameters. The assumption may or may not be valid, and part of statistical inference is determining whether a hypothesis should be accepted or rejected.  
+
+Hypothesis testing is a framework for accepting or rejecting a statistical hypothesis, by comparing two samples or models of a population. In order to conduct a hypothesis test, you must have a proposed/pre-existing model for the population parameter(s). This is called the **null hypothesis**. It can be based on a previous experiment, or it can even be a hunch you have about the population.  
+
+You then compare the null hypothesis to a new sample of data, or some new information you have about the population, to determine whether the null is valid or not. If the new sample of data yields vastly different results to those predicted by the null (i.e. if the new data is an unlikely realization of the null), there are grounds to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
+
+- **the null hypothesis**, $H_0$: a proposed/pre-existing model for a population 
+- **the alternative hypothesis**, $H_1$: the scenario under which the null is not true 
+
+\ 
+
+## A simple example
+
+In the pay gap data, the variable `DiffMeanHourlyPercent` has a sample mean of $\bar X =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent),3))`. Using this sample of data, you can state the null hypothesis, that the true mean difference in hourly wages between women and men is $\mu =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent)), 3)`: 
+
+$$H_0: \mu = 12.356$$
+
+The hypothesis that $\mu = 12.356$ may or may not be valid, since it is an estimate from a sample. You can thus state the alternative hypothesis as:  
+
+$$H_1: \mu \neq 12.356$$
+
+To test the null hypothesis, you need a new sample of data. Since the population parameter under scrutiny in this test is the mean, you will use the sample mean of new data for the comparison. Let's imagine that you collected a new sample of data on the difference in hourly wages between women and men, and your new data had a sample mean of $\bar X = 9.42$.  
+
+Some terminology: 
+
+- the **observed value** of a test is the sample parameter of the new data 
+    + in this case the observed value is $\bar X = 9.42$  
+- the **significance level** ($\alpha$) of a test is the probability threshold below which you reject the null  
+
+You must define the significance level *before* conducting the test. Conventionally a significance level of $\alpha = 0.05$ is used -- i.e. you reject the null if the observed value is in the most extreme 5\% of values under the null distribution. Sometimes a significance level of $\alpha = 0.01$ is also used.  
+
+The **rejection region** of a test is the range of values for the observed value for which you reject the null. The size of the rejection region is determined by the significance level you decide on. Below are two plots of the distribution of $\bar X$ under the null hypothesis, and rejection regions for $\alpha = 0.05$ and $\alpha = 0.01$ are shown: 
+
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 10, fig.height=4}
+Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
+s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
+n = nrow(paygap)   #sample size
+SE = s / sqrt(n)   #standard error
+
+x = seq(-4, 4, length = 1000) * SE + Xbar
+y = dnorm(x, Xbar, SE)
+
+df = data.frame(x = x, y = y)
+
+breaks = round(seq(Xbar-4*SE, Xbar+4*SE, SE),3)
+
+alpha5 = 0.05
+alpha1 = 0.01
+
+Z_5 = qnorm(1-alpha5/2)
+Z_1 = qnorm(1-alpha1/2)
+
+plot1 = ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('Rejection region for $\\alpha = 0.05$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = 'p = 0.025', x = 8.8, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'p = 0.025', x = 15.7, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'violetred') +
+  theme_bw()
+
+plot2 = ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('Rejection region for $\\alpha = 0.01$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_1*SE, xend = Xbar - Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_1*SE, xend = Xbar + Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = 'p = 0.005', x = 8.4, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'p = 0.005', x = 16.1, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  theme_bw()
+
+grid.arrange(plot1, plot2, ncol = 2)
+  
+  
+  
+  # geom_text(label = TeX('$-3 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-3*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = TeX('$-2 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-2*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = TeX('$-1 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-1*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = TeX('$\\bar{X}$'), x = Xbar, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = TeX('$+1 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+1*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = TeX('$+2 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+2*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = TeX('$+3 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+3*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # theme_bw()
+```
+
+The **critical values** are the bounds of the rejection region. If $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles of the distribution. You can calculate these using `qt()`, or you can simply compute a 95\% confidence interval for the mean:
+
+```{r, echo=FALSE}
+confidence_interval <- function(data, conflevel) {
+  xbar <- mean(data)          # sample mean 
+  SE <- sd(data) / sqrt(n)    # standard error
+  n <- length(data)           # sample size 
+  alpha <- 1 - conflevel      # alpha
+  
+  lb <- xbar + qt(alpha/2, df = n-1) * SE    # lower bound
+  ub <- xbar + qt(1-alpha/2, df = n-1) * SE  # upper bound
+  
+  cat(paste(c('sample mean =', round(xbar,3), '\n', 
+              conflevel*100, '% confidence interval:', '\n', 
+              'lower bound =', round(lb,3), '\n', 
+              'upper bound =', round(ub,3))))
+}
+```
+
+```{r}
+confidence_interval(paygap$DiffMeanHourlyPercent, 0.95)
+```
+
+The rejection region is thus $\bar X < 9.799$ \& $\bar X > 14.913$.  
+
+A test is **statistically significant** if the observed value falls in the rejection region. In this example, where the observed value is $\bar X = 9.42$ and $\alpha = 0.05$:
+
+```{r, echo=FALSE, warning=FALSE}
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('Significance test with $\\alpha = 0.05$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_segment(x = 9.42, xend = 9.42, y = 0, yend = 0.25, color = 'black', linetype = 'dotted') + 
+  geom_text(label = 'observed \n value \n = 9.42', x = 9.42, y = 0.27, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value \n = 9.80', x = Xbar - Z_5*SE, y = 0.13, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value \n = 14.91', x = Xbar + Z_5*SE, y = 0.13, size = 3, color = 'violetred') +
+  theme_bw()
+```
+
+Since in this test, the observed value is in the rejection region, there are grounds to reject the null hypothesis, and you can conclude that the true population mean $\mu \neq 12.356$.  
+
+Note, if you had used a significance level of $\alpha = 0.01$ to conduct the test, you would not have reached this conclusion: 
+
+```{r, echo=FALSE, warning=FALSE}
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('Significance test with $\\alpha = 0.01$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_1*SE, xend = Xbar - Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_1*SE, xend = Xbar + Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_segment(x = 9.42, xend = 9.42, y = 0, yend = 0.25, color = 'black', linetype = 'dotted') + 
+  geom_text(label = 'observed \n value \n = 9.42', x = 9.42, y = 0.27, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  theme_bw()
+```
+
+I.e. with a significance level of $\alpha = 0.01$, you would **fail to reject** the null.  
+
+\ 
+
+## The p-value of a test
+
+Another way to conduct a hypothesis test is by looking at $p$-values.  
+
+The **p-value** of a test is the probability of getting a result at least as extreme as the observed value, under the null hypothesis.  
+
+This is a cumbersone definition, but it is easy to visualize. In the above example, the observed value is $\bar X = 9.42$. The probability of getting a value *at least as extreme* as $\bar X = 9.42$ is the following region:
+
+```{r, echo=FALSE, warning=FALSE}
+p = pnorm(9.42, mean = Xbar, sd = SE)
+Z = -qnorm(p)
+
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('The p-value')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = 9.42, xend = 9.42, y = 0, yend = 0.25, color = 'black', linetype = 'dotted') + 
+  geom_text(label = 'observed \n value \n = 9.42', x = 9.42, y = 0.27, size = 3, color = 'black') +
+  geom_text(label = 'p = 0.0116', x = 8.8, y = -0.005, size = 3, color = 'violetred') + 
+  geom_text(label = 'p = 0.0116', x = 15.7, y = -0.005, size = 3, color = 'violetred') + 
+  theme_bw()
+```
+
+Each region has a probability of 0.0116, which means the total probability of getting a value at least as extreme as the observed value is 
+0.0233. The $p$-value of this test is thus 0.0233. The $p$-value is statistically significant if it is smaller than the significance level of the test. If $\alpha = 0.05$, then the result is statistically significant, and you can reject the null hypothesis. But if you used a significance level of $\alpha = 0.01$, the converse is true.  
+
+\ 
+
+## A workflow 
+
+When conducting a hypothesis test, you should follow these steps:
+
+- state the null and alternative hypotheses. The null is based on the data (or hunch) you already have; it is a proposed model for one or more population parameters(s). The alternative hypothesis describes the scenario where the null is not true.   
+- choose a significance level, $\alpha$, for the test -- a probability threshold below which you will reject the null. Common levels are $\alpha = 0.05$ and $\alpha = 0.01$.  
+
+Either: 
+
+- determine the rejection region or critical region -- a range for the observed value that would cause you to reject the null. The bounds of the rejection region are determined by the significance level.  
+- state the observed value -- the sample statistic in question from the new data 
+- determine whether to reject the null hypothesis based on whether the observed value is in the rejection region or not
+
+Or: 
+
+- calculate the $p$-value -- the probability of getting a value at least as extreme as the observed value
+- reject the null if the $p$-value is smaller than the significance level
+
+
+
+
+\ 
+
+--- 
+
+# Errors and Power
+
+Of course, the result of a hypothesis test does not necessarily lead you to the correct result. If a hypothesis test yields a rejection, this is only *evidence* to suggest the null *might* be false, but not definitively so. There is always a chance the observed value is aberrant and the null is actually correct. Thus it is useful to quantify the error of a test.  
+
+A **Type I Error** is the probability of rejecting the null, when the null is true. The Type I Error is simply the significance level of a test.  
+
+A **Type II Error** is the probability of failing to reject the null, when the null is false.  
+
+The **Power** of a test is the probability of correctly rejecting a false null (the complement of Type II Error, i.e. Power = 1 - T2E).  
+
+Usually the foremost goal of a significance test is to ensure the probability of Type I Error is low.  
+
+The second goal is to choose the test with the lowest probability of Type II Error (i.e. choose the most powerful test). 
+
+
+
+\ 
+
+--- 
+
+# Examples of Hypothesis Tests
+
+## one-tailed example
+
+## example using the t-distribution 
+
+## example for discrete data 
+
+
+
+\ 
+
+--- 
+
+# More Significance Tests
+
+## Difference of sample means
+
+A score ages ago was 290. The score now is 285. Is this a statistically significant change, or is it just chance variation? 
+
+You can use the z-test. Recall the z-statistic is calculated as follows:
+
+$$Z = \frac{\bar X - \mu}{SE}$$
+
+where $SE = \frac{s}{\sqrt n}$, where $s$ is the sample standard deviation. Once you compute a test statistic, you can calculate its probability, which will give you a result.  
+
+The easiest way to answer this problem is to think of the two samples as two independent RVs. You can then create a new RV that is a linear combination of both. E.g. let X be the RV for the difference between the two samples, i.e. X = W - V. 
+
+The expected value of X is: $E[X] = 0$ since the null is that there is no difference. The observed value is W-V=5. 
+
+Recall the formula for linear combinations of Variance: $Var[W-V] = Var[W] + Var[V] = \frac{s_v^2}{n} + \frac{s_w^2}{n}$. Thus the standard error is:
+
+$$SE = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$$
+
+## The Chi-squared test, $\chi^2$
+
+Can be used to test for the independence of two variables.  
+
+
+
+## Comparing many means with ANOVA
+
+
+

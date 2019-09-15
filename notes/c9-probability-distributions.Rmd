@@ -1,0 +1,190 @@
+---
+title: 'chapter 9 Distributions of Random Variables'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+library(tufte)
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
+
+Probability distributions are supposed to model real life random processes. Below are some common distributions you will encounter.  
+
+\ 
+
+# Bernoulli 
+
+Models random processes with the following features:
+
+* one trial
+* two outcomes (success/failure)
+* fixed probability of each outcome 
+
+Parameters:
+
+* $p$, the probability of a success
+
+Expected value:
+
+$$E[X] = P(X=1) + P(X=0) = p \cdot 1 + (1-p) \cdot 0 = p$$
+
+Variance: 
+
+Example:
+
+You toss a coin. If you get heads, you get 100, if you get tails, you lose 40. Let $X$ be the RV for the outcomes of this experiment. Below is the probability mass function. 
+
+$$E[X] = \sum_i P_i X_i = P(X = heads) + P(X = tails) = 0.5 \cdot 100 + 0.5 \cdot -40 = 30$$
+
+\ 
+
+# Binomial
+
+Models random processes with the following features:
+
+* $n$ trials
+* two outcomes
+* fixed probability of each outcome
+* independent events
+
+Parameters:
+
+* $n$, the number of trials
+* $p$, the probability of a success
+
+Usage:
+
+To find the probability of getting $k$ successes out of $n$ trials. Let $X$ be the RV for the number of successes. Use the binomial formula:
+
+$$P(X = k) = \begin{pmatrix} n \\ k\end{pmatrix} p^k (1-p)^{n-k}$$
+
+Mean and Variance:
+
+$$E[X] = np$$
+$$Var[X] = np(1-p)$$
+
+Example:
+
+e.g. (in R)
+
+the pmf. 
+
+note if n = 1 is just a bernoulli distribution. bernoulli is special case of binomial with only one trial.  
+
+\ 
+
+# Poisson
+
+Models random processes with the following features:
+
+* an event occurs in a fixed interval $k$ times
+* the rate at which events occur is fixed
+* events cannot occur simultaneously
+* events must occur independently
+
+Parameters:
+
+* $\lambda$, the average event rate (in the interval)
+
+Usage:
+
+Modelling the number of times an event occurs in an interval of time or space. 
+
+Probability of events:
+
+$$P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!}$$
+
+Example:
+
+the pmf.  
+
+\ 
+
+# Uniform distribution
+
+Has a rectangular distribution. Defined over a fixed interval, every value in the interval has the same probability.  
+
+Notation: $\mathcal U[a,b]$, where $a$ and $b$ define the interval.  
+
+Can be continuous or discrete. 
+
+Pdf for continuous uniform distribution:
+
+Pmf for discrete uniform distribution: 
+
+every possible value in interval has same probability.  
+
+Expected value: $\frac 12 (a+b)$. 
+
+Variance: $\frac{1}{12} (b-a)^2$. 
+
+Skewness: 0. 
+
+Kurtosis: 
+
+generate random numbers with uniform distribution. 
+
+expected val. variance. skewness. kurtosis. R. 
+
+\ 
+
+# Normal distribution
+
+The bell shaped curve. Defined by mathematical function
+
+$$f(x|\mu, \sigma^2) = \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac 12 (x-\mu)^2/\sigma^2}$$
+
+Shape of bell curve defined by two parameters, $\mu$ and $\sigma^2$. 
+
+Notation: $\mathcal N[\mu, \sigma^2]$
+
+Expected value: $\mu$. 
+
+Variance: $\sigma^2$. 
+
+Skewness: 0. 
+
+Kurtosis: 0. 
+
+two parameters: mean and variance. describe exact functional form. symmetric around mean. 
+
+generating random numbers in a normal distribution. 
+
+expected val. variance. skewness. kurtosis. R. 
+
+
+
+

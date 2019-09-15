@@ -1021,10 +1021,19 @@ ocean parkway brooklyn
 <tbody>
 <tr>
 <td style="text-align:right;">
+21.2
+</td>
+<td style="text-align:right;">
+21.6
+</td>
+<td style="text-align:right;">
 21.5
 </td>
 <td style="text-align:right;">
-21.4
+21.7
+</td>
+<td style="text-align:right;">
+21.5
 </td>
 <td style="text-align:right;">
 21.2
@@ -1036,16 +1045,7 @@ ocean parkway brooklyn
 21.7
 </td>
 <td style="text-align:right;">
-21.7
-</td>
-<td style="text-align:right;">
-21.7
-</td>
-<td style="text-align:right;">
-21.7
-</td>
-<td style="text-align:right;">
-21.1
+21.5
 </td>
 <td style="text-align:right;">
 83.4
@@ -1053,7 +1053,7 @@ ocean parkway brooklyn
 </tr>
 </tbody>
 </table>
-<p>The mean of this sample is <span class="math inline">\(\bar X =\)</span> 27.69 and the median is <span class="math inline">\(m =\)</span> 21.6. In this case the median is clearly a more representative measure of central tendency than the mean.</p>
+<p>The mean of this sample is <span class="math inline">\(\bar X =\)</span> 27.68 and the median is <span class="math inline">\(m =\)</span> 21.5. In this case the median is clearly a more representative measure of central tendency than the mean.</p>
 <p>Strong outliers drag the mean in the direction of skew (in this case positive). This is why under positive skew the mean is larger than the median, and vice versa.</p>
 <p>Estimators are said to be <strong>robust</strong> if they can cope with outliers. The median is a robust measure of central tendency; the mean is not. However the mean is generally a more precise statistic.</p>
 <p> </p>
@@ -1112,32 +1112,32 @@ ocean parkway brooklyn
 </div>
 <div id="simple-hypothesis-tests" class="section level1">
 <h1>Simple Hypothesis Tests</h1>
-<p>A <strong>hypothesis</strong> is essentially a preconceived notion or model of what the population looks like. A hypothesis can be based on anything–the results of a previous experiment or even just a hunch.</p>
-<p>Hypothesis testing involves comparing this hypothesis to a (new) sample of data from the population, to determine whether the hypothesis should be accepted or rejected.</p>
-<p>In a study there are two hypotheses:</p>
+<p>A <strong>statistical hypothesis</strong> is essentially an assumption about the <em>true</em> value of a population parameter. Many studies start with a hypothesis of some sort, then collect relevant sample data to assess the validity of the hypothesis.</p>
+<p>Hypothesis testing involves comparing two competing models that attempt to describe the true value of a population parameter. Usually one of the models is preconceived (devised by the experimenter) and the other model is empirical (based on sample of data that has been collected). In this framework the sample of data is used to either validate or reject the preconceived model.</p>
+<p>Formally, a hypothesis test is devised in terms of two hypotheses:</p>
 <ul>
 <li><strong>the null hypothesis</strong>, <span class="math inline">\(H_0\)</span>, a proposed model for a population</li>
 <li><strong>the alternative hypothesis</strong>, <span class="math inline">\(H_1\)</span>, that the proposed model is not true</li>
 </ul>
-<p>The test is deemed <strong>statistically significant</strong> if the sample under scrutiny gives strong evidence to support the alternative hypothesis–i.e. if the data is an unlikely realization of the null. This usually leads to rejecting the null hypothesis.</p>
+<p>The test is deemed <strong>statistically significant</strong> if the sample data gives strong evidence <em>against</em> the null hypothesis–i.e. if it’s an unlikely realization of the null. This usually leads to rejecting the null hypothesis.</p>
 <p>Some simple tests are introduced below. There is more theory on hypothesis tests in Part II.</p>
 <p> </p>
 <div id="one-sample-t-test-for-a-mean" class="section level2">
 <h2>One-sample t-test for a mean</h2>
-<p>A one-sample <span class="math inline">\(t\)</span>-test compares the mean of a sample of data to some hypothesized value for the population mean. The null and alternative hypotheses are:</p>
+<p>A one-sample <span class="math inline">\(t\)</span>-test compares the mean of a sample of data to some hypothesized value for the true mean. The null and alternative hypotheses are:</p>
 <ul>
-<li><span class="math inline">\(H_0\)</span>: the mean is equal to some specified value <span class="math inline">\(k\)</span></li>
-<li><span class="math inline">\(H_1\)</span>: the mean is not equal to <span class="math inline">\(k\)</span></li>
+<li><span class="math inline">\(H_0\)</span>: the true mean is equal to some specified value <span class="math inline">\(k\)</span></li>
+<li><span class="math inline">\(H_1\)</span>: the true mean is not equal to <span class="math inline">\(k\)</span></li>
 </ul>
 <p>E.g. say you hypothesize that the true mean difference in hourly wages between females and males is zero–as perhaps it ought to be. Using the pay gap data, you could test this hypothesis by calculating the mean of <code>DiffMeanHourlyPercent</code> and comparing it to the null. In this test the null and alternative hypotheses are:</p>
 <p><span class="math display">\[
 \begin{aligned}
-  H_0: \texttt{mean(DiffMeanHourlyPercent)} = 0 \\ 
-  H_1: \texttt{mean(DiffMeanHourlyPercent)} \neq 0
+  H_0: \texttt{true mean difference in wages} = 0 \\ 
+  H_1: \texttt{true mean difference in wages} \neq 0
 \end{aligned}
 \]</span></p>
-<p>In R, you can use <code>t.test()</code> to carry out the test. The first argument should be the sample of data you are using, and the second, <code>mu</code>, is the proposed value for the mean under the null hypothesis:</p>
-<pre class="r"><code>t.test(paygap$DiffMeanHourlyPercent, mu = 0)</code></pre>
+<p>In R, you can use <code>t.test()</code> to carry out the test. The function will need two inputs: the proposed value for the true mean (this argument is denoted <code>mu</code>), and the sample of data you’re using to test it:</p>
+<pre class="r"><code>t.test(mu = 0, paygap$DiffMeanHourlyPercent)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
@@ -1164,19 +1164,19 @@ ocean parkway brooklyn
 </div>
 <div id="two-sample-t-test-for-a-difference-in-means" class="section level2">
 <h2>Two-sample t-test for a difference in means</h2>
-<p>A two-sample <span class="math inline">\(t\)</span>-test compares the means of two samples of data to see if they are different. The null and alternative hypotheses are as follows:</p>
+<p>A two-sample <span class="math inline">\(t\)</span>-test compares the means of two samples of data to see if they are really different. The null and alternative hypotheses are as follows:</p>
 <ul>
-<li><span class="math inline">\(H_0\)</span>: the difference in the means of both samples is equal to zero (i.e. the samples have the same mean)</li>
-<li><span class="math inline">\(H_1\)</span>: the difference in the means of both samples is not equal to zero (the samples have different means)</li>
+<li><span class="math inline">\(H_0\)</span>: the true difference in the means is zero (i.e. both variables have the same true mean)</li>
+<li><span class="math inline">\(H_1\)</span>: the true difference in the means is zero not zero (the variables have different means)</li>
 </ul>
-<p>E.g. in the pay gap data, the variables <code>FemaleBonusPercent</code> and <code>MaleBonusPercent</code> record the average percentage bonus at each firm, for females and males respectively. You could construct a two-sample <span class="math inline">\(t\)</span>-test on these variables, where the null hypothesis is that the samples have the same mean:</p>
+<p>E.g. in the pay gap data, the variables <code>FemaleBonusPercent</code> and <code>MaleBonusPercent</code> record the average percentage bonus at each firm, for females and males respectively. You could construct a two-sample <span class="math inline">\(t\)</span>-test on these variables, where the null hypothesis is that the true mean bonus percent is the same for both females and males:</p>
 <p><span class="math display">\[
 \begin{aligned}
-  H_0: \big| \;\;  \texttt{mean(FemaleBonusPercent) - mean(MaleBonusPercent)} \;\; \big| = 0 \\ 
-  H_1: \big| \;\; \texttt{mean(FemaleBonusPercent) - mean(MaleBonusPercent)} \;\; \big| \neq 0
+  H_0: \big| \;\;  \texttt{true female bonus percent - true male bonus percent} \;\; \big| = 0 \\ 
+  H_1: \big| \;\; \texttt{true female bonus percent - true male bonus percent} \;\; \big| \neq 0
 \end{aligned}
 \]</span></p>
-<p>In R you can use the <code>t.test()</code> function, entering both samples as arguments:</p>
+<p>In R you can use the <code>t.test()</code> function, giving the function both samples:</p>
 <pre class="r"><code>t.test(paygap$FemaleBonusPercent, paygap$MaleBonusPercent)</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
