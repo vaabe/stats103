@@ -134,7 +134,7 @@ summary(paygap$PropFemaleTopQuartile)
 
 \ 
 
-## Measures of central tendency
+## Central tendency
 
 Measures of central tendency indicate the central or typical value of a distribution. The most common is the mean, though others are useful in certain situations.   
 
@@ -188,7 +188,7 @@ The mode is the most commonly occurring value in a distribution. Although there 
 
 \ 
 
-## Measures of dispersion 
+## Dispersion 
 
 Measures of dispersion indicate the spread or variation of a distribution. The most common is the standard deviation. 
 
@@ -346,7 +346,7 @@ mad(paygap$PropFemaleTopQuartile)
 
 --- 
 
-# Point vs Interval Estimators 
+# Point Statistics vs Intervals
 
 ```{r, include=FALSE}
 
@@ -433,12 +433,12 @@ A one-sample $t$-test compares the mean of a sample of data to some hypothesized
 - $H_0$: the true mean is equal to some specified value $k$
 - $H_1$: the true mean is not equal to $k$
 
-E.g. say you hypothesize that the true mean difference in hourly wages between females and males is zero--as perhaps it ought to be. Using the pay gap data, you could test this hypothesis by calculating the mean of `DiffMeanHourlyPercent` and comparing it to the null. In this test the null and alternative hypotheses are:
+E.g. say you hypothesize that the true mean difference in hourly wages between females and males is zero--as perhaps it ought to be. Using the pay gap data, you could test this hypothesis by calculating the mean of `DiffMeanHourlyPercent` and comparing it to your proposed value. In this test the null and alternative hypotheses are:
 
 $$
 \begin{aligned}
-  H_0: \texttt{true mean difference in wages} = 0 \\ 
-  H_1: \texttt{true mean difference in wages} \neq 0
+  H_0: \texttt{true mean wage gap} = 0 \\ 
+  H_1: \texttt{true mean wage gap} \neq 0
 \end{aligned}
 $$
 
@@ -552,7 +552,7 @@ knitr::include_graphics('./pics/m1c4_pic1.png')
 
 \ 
 
-## The Pearson correlation coefficient, $r$
+## The Pearson correlation coefficient
 
 There are many different measures of correlation. The most common for linear relationships is the Pearson correlation coefficient, denoted $r$, which takes a value between -1 and 1. A coefficient of $r=1$ or $r=-1$ implies perfect correlation, i.e. every data point is on the diagonal line. $r=0$ implies no correlation.  
 
