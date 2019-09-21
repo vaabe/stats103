@@ -1,0 +1,37 @@
+---
+title: 'problem sets'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(knitr)
+library(gridExtra)
+library(extraDistr)
+library(moments)
+library(latex2exp)
+library(rsconnect)
+library(tufte)
+```
+
+---
+
+Problem Set 1 -- due **Tuesday 3rd October**. The pdf file has detailed instructions, and the Rmd file has a template for you to complete the exercises in R Markdown.  
+
+<a href="./ps/ps1.pdf" download>ps1.pdf</a>  
+<a href="./ps/ps1.Rmd" download>ps1.Rmd</a>  
+
+Relevant data -- Economic Freedom of the World dataset, sourced from the <a href="https://www.fraserinstitute.org/economic-freedom/">Fraser Institute</a>. Download here:  
+
+<a href="../data/efw.csv" download>efw.csv</a>  
+
+Most of the economic variables are recorded as scores out of 10. More information on how data was collected and how countries were scored can be found <a href="https://www.fraserinstitute.org/economic-freedom/approach">here</a>. 

@@ -37,14 +37,14 @@ library(tufte)
 
 --- 
 
+<a href="./about.html">about</a>  
+<a href="./problemsets.html">problem sets</a>  
+<a href="./datasets.html">data</a>  
+<a href="./addenda.html">addenda</a>
+
 \ 
 
-- <a href="./notes/about.html">about</a> 
-- problem sets
-
-\ 
-
-## PART I -- ELEMENTS
+### PART I -- ELEMENTS
 
 - chapter 1 -- <a href="./notes/c1-R.html">The R Environment</a>
 - chapter 2 -- <a href="./notes/c2-data-basics.html">Getting Started with Data</a></li>
@@ -52,13 +52,13 @@ library(tufte)
 - chapter 4 -- <a href="./notes/c4-basic-analysis.html">Basic Data Analayis</a></li>
 - chapter 5 -- <a href="./notes/c5-basic-modeling.html">Basic Data Modeling</a></li>
 
-## PART I $\frac 12$ -- A PROBABILISTIC BRIDGE
+### PART I $\frac 12$ -- A PROBABILISTIC BRIDGE
 
 - chapter 7 -- <a href="./notes/c7-probability-elements.html">Elements of Probability</a>
 - chapter 8 -- <a href="./notes/c8-random-variables.html">The Algebra of Random Variables</a>
 - chapter 9 -- Distributions of Random Variables
 
-## PART II -- VARIABILITY
+### PART II -- VARIABILITY
 
 - chapter 10 -- <a href="./notes/c10-sampling.html">Samples, Sampling, and Variability</a></li>
 - chapter 11 -- <a href="./notes/c11-clt.html">The Central Limit Theorem</a></li>
@@ -68,7 +68,7 @@ library(tufte)
 - chapter 15 -- Regression Revisited
 - chapter 16 -- Basics for Model Inference
 
-## PART III -- BIAS
+### PART III -- BIAS
 
 - chapter 17 -- <a href="./notes/c17-validity-bias.html">Validity and Bias</a></li>
 - chapter 18 -- Sampling Bias 
@@ -76,7 +76,7 @@ library(tufte)
 - chapter 20 -- Specification Bias
 - chapter 21 -- Measurement Error Bias 
 
-## PART IV -- MODEL SELECTION 
+### PART IV -- MODEL SELECTION 
 
 - chapter 22 -- The Bias-Variance Tradeoff
 - chapter 24 -- Model Selection Criteria 
