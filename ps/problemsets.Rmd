@@ -25,7 +25,7 @@ library(tufte)
 
 ---
 
-Problem Set 1 -- due **Tuesday 3rd October**. The pdf file has detailed instructions, and the Rmd file has a template for you to complete the exercises in R Markdown.  
+Problem Set 1 -- due **Thursday 3rd October**. The pdf file has detailed instructions, and the Rmd file has a template for you to complete the exercises in R Markdown.  
 
 <a href="./ps/ps1.pdf" download>ps1.pdf</a>  
 <a href="./ps/ps1.Rmd" download>ps1.Rmd</a>  
