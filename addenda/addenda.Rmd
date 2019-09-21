@@ -25,11 +25,11 @@ library(tufte)
 
 ---
 
-<a href="dplyr-cheatsheet.pdf" download>dplyr cheatsheet</a>  
+<a href="./addenda/dplyr-cheatsheet.pdf" download>dplyr cheatsheet</a>  
 
-<a href="ggplot2-cheatsheet.pdf" download>ggplot2 cheatsheet</a>   
+<a href="./addenda/ggplot2-cheatsheet.pdf" download>ggplot2 cheatsheet</a>   
 
-<a href="rmd-cheatsheet.pdf" download>R Markdown cheatsheet</a>  
+<a href="./addenda/rmd-cheatsheet.pdf" download>R Markdown cheatsheet</a>  
 
 
 
