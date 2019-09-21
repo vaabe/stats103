@@ -3,7 +3,6 @@ title: "Problem Set 1"
 author: "whomsoever"
 output: html_document
 ---
-
 ---
 title: "Problem Set 1"
 author: "whomsoever"
