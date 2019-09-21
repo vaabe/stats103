@@ -4,6 +4,12 @@ author: "whomsoever"
 output: html_document
 ---
 
+---
+title: "Problem Set 1"
+author: "whomsoever"
+output: html_document
+---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
