@@ -29,7 +29,7 @@ These notes are supplements to STAT-UB 103, an introductory course in statistica
 
 Feedback is most welcome--please get in touch or submit a pull request on <a href="https://github.com/vaabe/stats103">Github</a>.   
 
-More information on the course can be found in the <a href="./downloads/syllabus.pdf" download>syllabus</a>. 
+More information on the course can be found in the <a href="./addenda/syllabus.pdf" download>syllabus</a>. 
 
 Listed below are further texts we recommend--these are available free online and contain many examples and practice questions for your perusal. 
 
