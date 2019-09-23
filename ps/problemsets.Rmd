@@ -32,6 +32,6 @@ Problem Set 1 -- due **Thursday 3rd October**. The pdf file has detailed instruc
 
 Relevant data -- Economic Freedom of the World dataset, sourced from the <a href="https://www.fraserinstitute.org/economic-freedom/">Fraser Institute</a>. Download here:  
 
-<a href="../data/efw.csv" download>efw.csv</a>  
+<a href="./data/efw.csv" download>efw.csv</a>  
 
 Most of the economic variables are recorded as scores out of 10. More information on how data was collected and how countries were scored can be found <a href="https://www.fraserinstitute.org/economic-freedom/approach">here</a>. 
