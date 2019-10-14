@@ -329,14 +329,14 @@ where $\mu$ is the mean and $\sigma^2$ is the variance of the distribution. Thes
 
 	\item[7.] The standard normal distribution has $\mu = 0$ and $\sigma^2 = 1$. Roughly sketch this distribution in the range $\pm 4\sigma$. Remember that $\sim$67\% of values fall within $1\sigma$ of the mean, $\sim$95\% of values fall within $2\sigma$ of the mean, and $\sim$99.5\% of values fall within $3\sigma$ of the mean. \\ 
 
-	\item[8.] Say $X$ is a normally distributed RV with $\mu = 1000$ and $\sigma^2 = 120$. Suppose that on a particular day you observe $X$ and get a value of 1100. The $Z$-score of an observation describes how far away it is from the mean, in units of standard deviation. It is given $Z = \frac{X - \mu}{\sigma}$. What is the $Z$-score of your observed value? \\  
+	\item[8.] Say $X$ is a normally distributed RV with $\mu = 1000$ and $\sigma = 120$. Suppose that on a particular day you observe $X$ and get a value of 1100. The $Z$-score of an observation describes how far away it is from the mean, in units of standard deviation. It is given $Z = \frac{X - \mu}{\sigma}$. What is the $Z$-score of your observed value? \\  
 
 	\item[9.] Suppose you want to determine the probability that on a particular day $X$ is between 800 and 1100, i.e. $\P(800 \leq X \leq 1100)$. To do this: (a) First find the $Z$-score associated with each of the values (b) Next, find the cumulative probability associated with each $Z$-score---you can do this using $Z$-tables, or by using the $\texttt{qnorm()}$ function in R \\ 
 (c) Noting that $\P(800 \leq X \leq 1100)$ can also be written $\P(X \leq 1100) - \P(X \leq 800)$, you can simply subtract the two probabilities you found in part (b) to get your answer. \\  
 
 	\item[10.] What is $\P(X \geq 1350)$? What about $\P(X = 1350)$? \\ 
 
-	\item[11.] Suppose you are designing a commercial airplane for 300 passengers. Suppose the weight of every passenger and their belongings is normally distributed with $\mu = 100$ kg and $\sigma^2 = 25$ kg. The airline intends that each plane should fly 100 times per year, and only 15\% of flights should be overweight. Given this information, what total weight should you plan for when designing the plane? \\  
+	\item[11.] Suppose you are designing a commercial airplane for 300 passengers. Suppose the weight of every passenger and their belongings is normally distributed with $\mu = 100$ kg and $\sigma = 5$ kg. The airline intends that each plane should fly 100 times per year, and only 15\% of flights should be overweight. Given this information, what total weight should you plan for when designing the plane? \\  
 
 	\item[12$i$.] There are in fact four functions in R that perform probability calculations for normal distributions, $\texttt{qnorm()}$, $\texttt{pnorm()}$, $\texttt{dnorm()}$ and $\texttt{rnorm()}$. There are an equivalent set of functions for the binomial distribution, e.g. $\texttt{qbinom()}$, $\texttt{pbinom()}$, etc. What do each of these functions do? 
 
