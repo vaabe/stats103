@@ -111,7 +111,7 @@ if (window.hljs) {
 <p>In R you can simulate a random process using the <code>sample()</code> function. You must specify the sample space, the sample size, and whether you want to sample with replacement or not.</p>
 <p>E.g. to simulate tossing a coin twice:</p>
 <pre class="r"><code>sample(x = c('H','T'), size = 2, replace = TRUE)</code></pre>
-<pre><code>## [1] &quot;H&quot; &quot;T&quot;</code></pre>
+<pre><code>## [1] &quot;H&quot; &quot;H&quot;</code></pre>
 <p>Naturally this is one of four possible outcomes for this process.</p>
 <p> </p>
 <hr />
@@ -211,7 +211,7 @@ if (window.hljs) {
 prop.table(table(cointoss))</code></pre>
 <pre><code>## cointoss
 ##       H       T 
-## 0.49973 0.50027</code></pre>
+## 0.49983 0.50017</code></pre>
 <p>The output shows that of the 100,000 tosses, almost exactly half were heads and half were tails. If you conclude from this that the probability of landing heads is a half, you have used the frequentist interpretation of probability.</p>
 <p>The frequentist approach doesn’t conflict with the mathematical axioms of probability introduced above–it only provides a “way” to interpret probability and apply these axioms to real-world processes.</p>
 <p> </p>

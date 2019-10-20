@@ -56,7 +56,7 @@ library(tufte)
 
 - chapter 7 -- <a href="./notes/c7-probability-elements.html">Elements of Probability</a>
 - chapter 8 -- <a href="./notes/c8-random-variables.html">The Algebra of Random Variables</a>
-- chapter 9 -- Distributions of Random Variables
+- chapter 9 -- <a href="./notes/c9-probability-distributions.html">Distributions of Random Variables</a>   
 
 ### PART II -- VARIABILITY
 
