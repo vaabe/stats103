@@ -1,8 +1,9 @@
 ---
-title: 'chapter 13 Significance Tests'
+title: 'chapter 13 Testing Significance'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
     toc_depth: 2
   tufte::tufte_handout:
@@ -49,38 +50,31 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 # Hypothesis Tests
 
-A statistical hypothesis is an assumption about one or more population parameters. The assumption may or may not be valid, and part of statistical inference is determining whether a hypothesis should be accepted or rejected.  
+A statistical hypothesis is an assumption about one or more population parameters. The assumption may or may not be true, and one of our goals in statistical inference is using data to determine whether we should accept or reject a given hypothesis.  
 
-Hypothesis testing is a framework for accepting or rejecting a statistical hypothesis, by comparing two samples or models of a population. In order to conduct a hypothesis test, you must have a proposed/pre-existing model for the population parameter(s). This is called the **null hypothesis**. It can be based on a previous experiment, or it can even be a hunch you have about the population.  
+**Hypothesis testing** provides a framework for accepting or rejecting a hypothesis, by comparing two competing models for what a population really looks like. To conduct a hypothesis test, we first define a proposed/pre-existing model for the population parameter(s)---this is called the **null hypothesis**. Generally it can be based anything---the results of a previous experiment, or even just a hunch we might have about the population.  
 
-You then compare the null hypothesis to a new sample of data, or some new information you have about the population, to determine whether the null is valid or not. If the new sample of data yields vastly different results to those predicted by the null (i.e. if the new data is an unlikely realization of the null), there are grounds to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
+We then compare the null hypothesis to a competing model for the population parameters, usually in the form of a (new) sample of data. If the competing model yields vastly different results results to those predicted by the null model (i.e. if the new data is an *unlikely realization* of the null), we have grounds to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
 
-- **the null hypothesis**, $H_0$: a proposed/pre-existing model for a population 
-- **the alternative hypothesis**, $H_1$: the scenario under which the null is not true 
+- **the null hypothesis**, $H_0$: a proposed/pre-existing model for the true population parameter(s)
+- **the alternative hypothesis**, $H_1$: the scenario under which the null is not true  
+
+Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give us a framework for *disproving* a given model, but not for uniquely specifying one.  
 
 \ 
 
 ## A simple example
 
-In the pay gap data, the variable `DiffMeanHourlyPercent` has a sample mean of $\bar X =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent),3))`. Using this sample of data, you can state the null hypothesis, that the true mean difference in hourly wages between women and men is $\mu =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent)), 3)`: 
+In the pay gap data, the variable `DiffMeanHourlyPercent`^[i.e. the difference in mean hourly wages between females and males.] has a sample mean of $\bar X =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent),3))`. If we assumed this sample is representative, we could use it to define a null hypothesis, that the true mean hourly wage gap is 12.356\%. Naturally, we're now interested in determining whether this hypothesis is really true or not. Let's imagine that the following year we collect a new sample of data, which for the same variable yielded a sample mean $\bar X = 9.42$. We can now test whether our initial hypothesis should be accepted or rejected on the basis of this new evidence. The null and alternative hypotheses for this test are:
 
 $$H_0: \mu = 12.356$$
-
-The hypothesis that $\mu = 12.356$ may or may not be valid, since it is an estimate from a sample. You can thus state the alternative hypothesis as:  
-
 $$H_1: \mu \neq 12.356$$
 
-To test the null hypothesis, you need a new sample of data. Since the population parameter under scrutiny in this test is the mean, you will use the sample mean of new data for the comparison. Let's imagine that you collected a new sample of data on the difference in hourly wages between women and men, and your new data had a sample mean of $\bar X = 9.42$.  
+The most common method used for determining whether to accept/reject a null is by quantifying the *likelihood* of getting the observed value, if the null hypothesis were true. If the likelihood is sufficiently low, this implies there's a good chance the null hypothesis may not be true.  
 
-Some terminology: 
+The **significance level** ($\alpha$) of a test is the probability threshold below which we decide to reject the null. Conventionally a significance level of $\alpha = 0.05$ is used---i.e. we reject the null if the observed value lies in the most extreme 5\% of values under the null distribution. Sometimes a significance level of $\alpha = 0.01$ is also used.    
 
-- the **observed value** of a test is the sample parameter of the new data 
-    + in this case the observed value is $\bar X = 9.42$  
-- the **significance level** ($\alpha$) of a test is the probability threshold below which you reject the null  
-
-You must define the significance level *before* conducting the test. Conventionally a significance level of $\alpha = 0.05$ is used -- i.e. you reject the null if the observed value is in the most extreme 5\% of values under the null distribution. Sometimes a significance level of $\alpha = 0.01$ is also used.  
-
-The **rejection region** of a test is the range of values for the observed value for which you reject the null. The size of the rejection region is determined by the significance level you decide on. Below are two plots of the distribution of $\bar X$ under the null hypothesis, and rejection regions for $\alpha = 0.05$ and $\alpha = 0.01$ are shown: 
+The **rejection region** of a test is the range of values for which which we reject the null. The size of the rejection region is determined by the significance level you decide on. Below are two plots of the distribution of $\bar X$ under the null hypothesis, with rejection regions for $\alpha = 0.05$ and $\alpha = 0.01$ shown: 
 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width = 10, fig.height=4}
@@ -298,19 +292,7 @@ The second goal is to choose the test with the lowest probability of Type II Err
 
 # Examples of Hypothesis Tests
 
-## one-tailed example
-
-## example using the t-distribution 
-
-## example for discrete data 
-
-
-
 \ 
-
---- 
-
-# More Significance Tests
 
 ## Difference of sample means
 
@@ -330,13 +312,7 @@ Recall the formula for linear combinations of Variance: $Var[W-V] = Var[W] + Var
 
 $$SE = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$$
 
-## The Chi-squared test, $\chi^2$
 
-Can be used to test for the independence of two variables.  
-
-
-
-## Comparing many means with ANOVA
 
 
 

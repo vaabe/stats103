@@ -1,0 +1,157 @@
+---
+title: 'chapter 15 Regression Revisited'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+\newcommand{\SSR}{\text{SSR}}
+
+# Regression Coefficients as Estimates
+
+In part I we introduced linear regression as a technique for modeling linearly related variables. We now have the tools to consider linear regression models with a little more rigour.     
+
+Recall we introduced the symbol $\beta$ to denote the coefficient on each predictor variable, describing the effect of that variable on the response while controlling for the other predictors. It turns out $\beta$ refers to the true regression coefficient; we typically use the symbol $b$ to denote the estimated coefficients from a sample of data. The estimated regression equation is:
+
+$$y = b_0 + b_1x_1 + b_2 x_2 + ... + b_k x_k + e$$
+
+where $x_1, ..., x_k$ are a set of $k$ predictor variables, $b_1, ..., b_k$ are their *estimated* coefficients, and $e$ is the *estimated* error term.  
+
+The regression equation is another way of saying $\E[y|x]$, i.e. the expected value of $y$ given $x$. For multiple regression, this can be written $\E[y|x_1, ..., x_k]$.  
+
+\ 
+
+# The Method of Least Squares 
+
+Although we described the regression coefficients as representing the effect of a predictor on a response variable. We did not show how they are derived. Here we do.   
+
+Regression coefficients are typically computed using the method of least squares, i.e. the coefficients that produce an equation that minimizes the sum of squared errors.  
+
+It turns out, for a simple (bivariate) regression, the coefficient on the predictor is given:
+
+$$b_1 = r_{xy}\frac{s_y}{s_x}$$
+
+
+
+\ 
+
+## Bivariate Derivation  
+
+For a given set of sample data on two variables, the regression equation predicting $y$ given $x$ is:
+
+$$y_i = b_0 + b_1 x_i + e_i$$
+
+Our goal is to find $b_0$ and $b_1$ such that the sum of squared residuals (SSR) is minimized. First, we can rearrange the equation above to get the error as a function of $b_0$ and $b_1$:
+
+$$e_i = e_i(b_0,b_1) = y_i - b_0 - b_1 x_i$$
+
+The squared residuals are simply $(e_i)^2 = (y_i - b_0 - b_1 x_i)^2$, and the *sum of squared residuals* is:
+
+$$\SSR(b_0,b_1) = \sum_i^n (y_i - b_0 - b_1 x_i)^2$$
+
+To find $b_0$ for which $\SSR$ is minimum, we set the partial derivative of $\SSR$ with respect to $b_0$ equal to zero:
+
+$$\frac{\partial{\SSR}}{\partial b_0} = -2 \sum_i^n(y_i - b_0 - b_1 x_i) = 0$$
+
+Rearranging:
+
+$$
+\begin{aligned}
+  \sum_i^n b_0 &= \sum_i^n y_i - \sum_i^n b_1 x_i \\ 
+  \therefore \;\; b_0 &= \frac 1n \sum_i^n y_i - \frac 1n \sum_i^n b_1 x_i \\ 
+  \therefore \;\; b_0 &= \bar y - b_1 \bar x
+\end{aligned}  
+$$
+
+where we have used the fact that $\frac 1n \sum_i^n y_i = \bar y$.  
+
+Next, to find $b_1$ for which $\SSR$ is minimum, set the partial derivative of $\SSR$ with respect to $b_1$ equal to zero:
+
+$$\frac{\partial{\SSR}}{\partial b_1} = -2 \sum_i^n x_i (y_i - b_0 - b_1 x_i) = 0$$
+
+Rearranging:
+
+$$
+\begin{aligned}
+  \sum_i^n b_1 x_i^2 &= \sum_i^n x_i y_i - \sum_i^n x_i b_0 \\ 
+  &= \sum_i^n x_i y_i - \sum_i^n x_i (\bar y - b_1 \bar x) \\ 
+  &= \sum_i^n x_i y_i - \sum_i^n x_i \bar y - \sum_i^n x_i b_1 \bar x \\ 
+\end{aligned}  
+$$
+
+Using the fact that $\sum_i^n y_i = N\bar y$ and $\sum_i^n x_i = N \bar x$, and pulling constants out of the sum:
+
+$$
+\begin{aligned}
+  b_1 \sum_i^n x_i^2 &= \sum_i^n x_i y_i - N \bar x \bar y - b_1 N \bar x^2 \\ 
+  \therefore \;\; b_1 &= \frac{\sum_i^n x_i y_i - N \bar x \bar y}{\sum_i^n x_i^2 - N \bar x^2} \\ 
+  \therefore \;\; b_1 &= \frac{\sum_i^n (x_i - \bar x)(y_i - \bar y)}{\sum_i^n (x_i - \bar x)^2} = \frac{s_{x,y}}{s_x^2} = r_{xy} \frac{s_y}{s_x}
+\end{aligned}
+$$
+
+where we have used the fact that $\sum_i^n x_i y_i - N \bar x \bar y = \sum_i^n (x_i - \bar x)(y_i - \bar y)$. Note $s_{x,y}$ here denotes the sample covariance between $x$ and $y$. 
+
+
+
+\ 
+
+## Multivariate derivation 
+
+
+
+
+\ 
+
+# The Gauss-Markov Theorem 
+
+Note the variance of the regression coefficient is:
+
+$$\Var[b_1] = \frac{\sigma^2}{\sum_i^n (x_i - \bar x)^2}$$
+
+The Gauss-Markov theorem states the best linear unbiased estimator is given by the OLS estimator. Here best means lowest variance.  
+
+
+
+
+
+
