@@ -366,11 +366,11 @@ Since statistics is all about gathering large amounts of data and making inferen
 
 Below are two important caveats you ought to be aware of:
 
-_**When the LLN might fail**_
+_**When the LLN might fail:**_
 
 It's possible the LLN may not hold if the random variables are themselves so dispersed that they don’t have an expected value. These are sometimes called “heavy-tailed” distributions. e.g. the Cauchy distribution.  
 
-_**Square-root convergence**_
+_**Square-root convergence:**_
 
 You may have noticed that at first, increasing the sample size makes a significant change to the distribution, rapidly bringing the sample mean closer to the true mean, and rapidly reducing the variance. But as $n$ gets larger, it takes longer for the sample mean to get closer to the true value by the same amount---this is known as the **law of diminishing information**. 
 
