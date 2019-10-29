@@ -2,7 +2,8 @@
 title: 'stats103'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: 'mytufte.css'
   tufte::tufte_handout:
     citation_package: natbib
     latex_engine: xelatex
@@ -42,9 +43,7 @@ library(tufte)
 <a href="./datasets.html">data</a>  
 <a href="./addenda.html">addenda</a>
 
-\ 
-
-### PART I -- ELEMENTS
+### PART I --- ELEMENTS
 
 - chapter 1 -- <a href="./notes/c1-R.html">The R Environment</a>
 - chapter 2 -- <a href="./notes/c2-data-basics.html">Getting Started with Data</a></li>
@@ -52,13 +51,13 @@ library(tufte)
 - chapter 4 -- <a href="./notes/c4-basic-analysis.html">Basic Data Analayis</a></li>
 - chapter 5 -- <a href="./notes/c5-basic-modeling.html">Basic Data Modeling</a></li>
 
-### PART I $\frac 12$ -- A PROBABILISTIC BRIDGE
+### PART I $\frac 12$ --- A PROBABILISTIC BRIDGE
 
 - chapter 7 -- <a href="./notes/c7-probability-elements.html">Elements of Probability</a>
 - chapter 8 -- <a href="./notes/c8-random-variables.html">The Algebra of Random Variables</a>
 - chapter 9 -- <a href="./notes/c9-probability-distributions.html">Distributions of Random Variables</a>   
 
-### PART II -- VARIABILITY
+### PART II --- VARIABILITY
 
 - chapter 10 -- <a href="./notes/c10-sampling.html">Samples, Sampling, and Variability</a></li>
 - chapter 11 -- <a href="./notes/c11-clt.html">The Central Limit Theorem</a></li>

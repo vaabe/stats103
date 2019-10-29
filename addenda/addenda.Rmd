@@ -2,7 +2,8 @@
 title: 'various addenda'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
   tufte::tufte_handout:
     citation_package: natbib
     latex_engine: xelatex

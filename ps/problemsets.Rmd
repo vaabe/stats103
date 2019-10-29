@@ -2,7 +2,8 @@
 title: 'problem sets'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
   tufte::tufte_handout:
     citation_package: natbib
     latex_engine: xelatex
@@ -25,13 +26,13 @@ library(tufte)
 
 ---
 
-Problem Set 2 -- due **Thursday 24th October**. Responses will be graded both for correctness and clarity of reasoning.   
+Problem Set 2---due **Thursday 24th October**. Responses will be graded both for correctness and clarity of reasoning.   
 
 <a href="./ps/ps2.pdf" download>ps2.pdf</a>
 
 \ 
 
-Problem Set 1 -- due **Thursday 3rd October**. The pdf file has detailed instructions, and the Rmd file has a template for you to complete the exercises in R Markdown.  
+Problem Set 1---due **Thursday 3rd October**. The pdf file has detailed instructions, and the Rmd file has a template for you to complete the exercises in R Markdown.  
 
 <a href="./ps/ps1.pdf" download>ps1.pdf</a>  
 <a href="./ps/ps1.Rmd" download>ps1.Rmd</a>  
