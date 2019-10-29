@@ -50,32 +50,32 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 # 13--1 The Hypothesis Testing Framework
 
-A statistical hypothesis is an assumption about one or more population parameters. The assumption may or may not be true, and one of our goals in statistical inference is using data to determine whether we should accept or reject a given hypothesis.  
+A statistical hypothesis is an *assumption* about one or more population parameters. The assumption may or may not be true, and one of our goals in statistical inference is using data to determine whether a given hypothesis is valid or whether it should be rejected.  
 
-**Hypothesis testing** provides a framework for accepting or rejecting a hypothesis, by comparing two competing models for what a population really looks like. To conduct a hypothesis test, we first define a proposed/pre-existing model for the population parameter(s)---this is called the **null hypothesis**. Generally it can be based anything---the results of a previous experiment, or even just a hunch we might have about the population.  
+**Hypothesis testing** is a framework for deciding the fate of a hypothesis, by comparing two competing models for what a population really looks like. In a hypothesis test we first *propose* a model for the population parameter(s)---this is called the **null hypothesis**. Generally it can be based anything---the results of a previous experiment, a scientific status quo, or even just a hunch^[Although in general, statistically unfounded hunches are not advisable.] we might have about the population.  
 
-We then compare the null hypothesis to a competing model for the population parameters, usually in the form of a (new) sample of data. If the competing model yields vastly different results results to those predicted by the null model (i.e. if the new data is an *unlikely realization* of the null), we have grounds to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
+The null hypothesis is the assumption we are testing---it is assumed to be true unless demonstrated otherwise. To test the null we compare it to a *competing* model for the population parameter(s), usually in the form of a (new) sample of data. If the competing model yields vastly different results results to those predicted by the null model (i.e. if the new data is an *unlikely realization* of the null), we have grounds to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
 
-- **the null hypothesis**, $H_0$: a proposed/pre-existing model for the true population parameter(s)
+- **the null hypothesis**, $H_0$: a proposed/pre-existing model for the population parameter(s)
 - **the alternative hypothesis**, $H_1$: the scenario under which the null is not true  
 
-Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give us a framework for *disproving* a given model, but not for uniquely specifying one.  
+Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give a framework for *rejecting* a given model, but not for uniquely specifying one.  
 
 ## A simple example
 
-In the pay gap data, the variable `DiffMeanHourlyPercent`^[i.e. the difference in mean hourly wages between females and males.] has a sample mean of $\bar X =$ `r toString(round(mean(paygap$DiffMeanHourlyPercent),3))`. If we assumed this sample is representative, we could use it to define a null hypothesis, that the true mean hourly wage gap is 12.356\%. Naturally, we're now interested in determining whether this hypothesis is really true or not. Let's imagine that the following year we collect a new sample of data, which for the same variable yielded a sample mean $\bar X = 9.42$. We can now test whether our initial hypothesis should be accepted or rejected on the basis of this new evidence. The null and alternative hypotheses for this test are:
+In the pay gap data, the variable `DiffMeanHourlyPercent`^[i.e. the difference in mean hourly wages between females and males.] has a sample mean $\bar X =$ 12.356\%. Suppose we're interested in determining whether this is really valid or not. We first define the null hypothesis, that the *true* mean hourly wage gap is 12.356\%. Suppose that the following year we collect a new sample of data, which for the same variable yields a sample mean $\bar X = 9.42$. We can now use this new evidence to test our initial hypothesis and determine whether it should be rejected. The null and alternative hypotheses for this test are:
 
 $$H_0: \mu = 12.356$$
 $$H_1: \mu \neq 12.356$$
 
-The most common method used for determining whether to accept/reject a null is by quantifying the *likelihood* of getting the observed value, if the null hypothesis were true. If the likelihood is sufficiently low, this implies there's a good chance the null hypothesis may not be true.  
+One way to determine whether to reject a null is by quantifying the *likelihood* of getting the observed value^[The observed value is the value proposed by the *competing* model.], if the null hypothesis were true. If the likelihood is sufficiently low, this implies there's a good chance the null hypothesis may not be true.  
 
 The **significance level** ($\alpha$) of a test is the probability threshold below which we decide to reject the null. Conventionally a significance level of $\alpha = 0.05$ is used---i.e. we reject the null if the observed value lies in the most extreme 5\% of values under the null distribution. Sometimes a significance level of $\alpha = 0.01$ is also used.    
 
-The **rejection region** of a test is the range of values for which which we reject the null. The size of the rejection region is determined by the significance level you decide on. Below are two plots of the distribution of $\bar X$ under the null hypothesis, with rejection regions for $\alpha = 0.05$ and $\alpha = 0.01$ shown: 
+The **rejection region** of a test is the range of values for which which we reject the null. The size of the rejection region is determined by the significance level we decide on. Below are two plots of the distribution of $\bar X$ under the null hypothesis, with rejection regions for $\alpha = 0.05$ and $\alpha = 0.01$ shown: 
 
 
-```{r, echo=FALSE, warning=FALSE, fig.width = 10, fig.height=4}
+```{r, echo=FALSE, warning=FALSE, fig.width = 8, fig.height=3}
 Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
 s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
 n = nrow(paygap)   #sample size
@@ -99,7 +99,7 @@ plot1 = ggplot(data = df, mapping = aes(x = x, y = y)) +
   scale_x_continuous(breaks = breaks,
                      limits = c(Xbar-4*SE, Xbar+4*SE)) +
   ylab('probability') + xlab(TeX('$\\bar{X}$')) +
-  ggtitle(TeX('Rejection region for $\\alpha = 0.05$')) +
+  ggtitle(TeX('rejection region for $\\alpha = 0.05$')) +
   geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
@@ -115,7 +115,7 @@ plot2 = ggplot(data = df, mapping = aes(x = x, y = y)) +
   scale_x_continuous(breaks = breaks,
                      limits = c(Xbar-4*SE, Xbar+4*SE)) +
   ylab('probability') + xlab(TeX('$\\bar{X}$')) +
-  ggtitle(TeX('Rejection region for $\\alpha = 0.01$')) +
+  ggtitle(TeX('rejection region for $\\alpha = 0.01$')) +
   geom_area(aes(x = ifelse(x < Xbar - Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = Xbar - Z_1*SE, xend = Xbar - Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
@@ -140,7 +140,7 @@ grid.arrange(plot1, plot2, ncol = 2)
   # theme_bw()
 ```
 
-The **critical values** are the bounds of the rejection region. If $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles of the distribution. You can calculate these using `qt()`, or you can simply compute a 95\% confidence interval for the mean:
+The **critical values** are the bounds of the rejection region. If $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles of the distribution (just like the bounds of a 95\% confidence interval). You can calculate these using `qnorm()` or `qt()`, as demonstrated last chapter, or you can simply compute a 95\% confidence interval for the mean:
 
 ```{r, echo=FALSE}
 confidence_interval <- function(data, conflevel) {
@@ -163,17 +163,17 @@ confidence_interval <- function(data, conflevel) {
 confidence_interval(paygap$DiffMeanHourlyPercent, 0.95)
 ```
 
-The rejection region is thus $\bar X < 9.799$ \& $\bar X > 14.913$.  
+Thus the rejection region in this test is $\bar X < 9.799$ \& $\bar X > 14.913$.  
 
 A test is **statistically significant** if the observed value falls in the rejection region. In this example, where the observed value is $\bar X = 9.42$ and $\alpha = 0.05$:
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
 ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_line() +
   scale_x_continuous(breaks = breaks,
                      limits = c(Xbar-4*SE, Xbar+4*SE)) +
   ylab('probability') + xlab(TeX('$\\bar{X}$')) +
-  ggtitle(TeX('Significance test with $\\alpha = 0.05$')) +
+  ggtitle(TeX('significance test with $\\alpha = 0.05$')) +
   geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
@@ -185,17 +185,17 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   theme_bw()
 ```
 
-Since in this test, the observed value is in the rejection region, there are grounds to reject the null hypothesis, and you can conclude that the true population mean $\mu \neq 12.356$.  
+In this example the observed value is clearly in the rejection region. You can thus reject the null at the $\alpha = 0.05$ level, and conclude that true mean hourly wage gap is $\mu \neq 12.356$.  
 
-Note, if you had used a significance level of $\alpha = 0.01$ to conduct the test, you would not have reached this conclusion: 
+Note, if you had used a significance level of $\alpha = 0.01$ to conduct the test, you would have reached a different conclusion: 
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
 ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_line() +
   scale_x_continuous(breaks = breaks,
                      limits = c(Xbar-4*SE, Xbar+4*SE)) +
   ylab('probability') + xlab(TeX('$\\bar{X}$')) +
-  ggtitle(TeX('Significance test with $\\alpha = 0.01$')) +
+  ggtitle(TeX('significance test with $\\alpha = 0.01$')) +
   geom_area(aes(x = ifelse(x < Xbar - Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = Xbar - Z_1*SE, xend = Xbar - Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
@@ -207,17 +207,17 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   theme_bw()
 ```
 
-I.e. with a significance level of $\alpha = 0.01$, you would **fail to reject** the null.  
+Clearly, with a significance level of $\alpha = 0.01$, the observed value does *not* fall in the rejection, and you cannot thus reject the null. The choice of significance level can make or break the fate of a hypothesis.  
 
 ## The p-value of a test
 
 Another way to conduct a hypothesis test is by looking at $p$-values.  
 
-The **p-value** of a test is the probability of getting a result at least as extreme as the observed value, under the null hypothesis.  
+The **p-value** of a test is the probability of getting a result *at least as extreme* as the observed value, under the null hypothesis.  
 
-This is a cumbersone definition, but it is easy to visualize. In the above example, the observed value is $\bar X = 9.42$. The probability of getting a value *at least as extreme* as $\bar X = 9.42$ is the following region:
+This may sound like a cumbersone definition, but it is easy to visualize. Recall in this example the observed value is $\bar X = 9.42$. The probability of getting a value at least as extreme as $\bar X = 9.42$ is the following region:
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
 p = pnorm(9.42, mean = Xbar, sd = SE)
 Z = -qnorm(p)
 
@@ -226,7 +226,7 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   scale_x_continuous(breaks = breaks,
                      limits = c(Xbar-4*SE, Xbar+4*SE)) +
   ylab('probability') + xlab(TeX('$\\bar{X}$')) +
-  ggtitle(TeX('The p-value')) +
+  ggtitle(TeX('the p-value')) +
   geom_area(aes(x = ifelse(x < Xbar - Z*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_area(aes(x = ifelse(x > Xbar + Z*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = 9.42, xend = 9.42, y = 0, yend = 0.25, color = 'black', linetype = 'dotted') + 
@@ -236,27 +236,25 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   theme_bw()
 ```
 
-Each region has a probability of 0.0116, which means the total probability of getting a value at least as extreme as the observed value is 
-0.0233. The $p$-value of this test is thus 0.0233. The $p$-value is statistically significant if it is smaller than the significance level of the test. If $\alpha = 0.05$, then the result is statistically significant, and you can reject the null hypothesis. But if you used a significance level of $\alpha = 0.01$, the converse is true.  
+Each region has a probability of 0.0116, which means the total probability of getting a value at least as extreme as the observed value is 0.0233. Thus the $p$-value of this test is 0.0233. The test is statistically significant if the $p$-value is smaller than the significance level of the test. If you used $\alpha = 0.05$, then the result is statistically significant, and you can reject the null hypothesisl; but if you used $\alpha = 0.01$, the result is not significant, and you cannot reject the null. Using a $p$-value to conduct a hypothesis test is equivalent to computing a rejection region.  
 
 ## A workflow 
 
-When conducting a hypothesis test, you should follow these steps:
+To summarize: below are the basic steps to follow when conducting a hypothesis test: 
 
-- state the null and alternative hypotheses. The null is based on the data (or hunch) you already have; it is a proposed model for one or more population parameters(s). The alternative hypothesis describes the scenario where the null is not true.   
-- choose a significance level, $\alpha$, for the test -- a probability threshold below which you will reject the null. Common levels are $\alpha = 0.05$ and $\alpha = 0.01$.  
+- state the null and alternative hypotheses. The null is based on pre-existing data or information; it is a *proposed* model for one or more population parameters. The alternative hypothesis describes the scenario where the null is not true.   
+- choose a significance level, $\alpha$, for the test---a probability threshold below which you will *definitively* reject the null. Common levels are $\alpha = 0.05$ and $\alpha = 0.01$.  
 
-Either: 
+Then, either: 
 
-- determine the rejection region or critical region -- a range for the observed value that would cause you to reject the null. The bounds of the rejection region are determined by the significance level.  
-- state the observed value -- the sample statistic in question from the new data 
+- determine the *rejection region* of the test---a range for the observed value that would cause you to reject the null. The bounds of the rejection region are determined by the significance level.  
+- state the observed value---the sample statistic from the new (competing) data 
 - determine whether to reject the null hypothesis based on whether the observed value is in the rejection region or not
 
-Or: 
+or: 
 
-- calculate the $p$-value -- the probability of getting a value at least as extreme as the observed value
+- calculate the $p$-value of the test---the probability of getting a value at least as extreme as the observed value
 - reject the null if the $p$-value is smaller than the significance level
-
 
 
 
@@ -264,23 +262,23 @@ Or:
 
 # 13--2  Errors and Power
 
-Of course, the result of a hypothesis test does not necessarily lead you to the correct result. If a hypothesis test yields a rejection, this is only *evidence* to suggest the null *might* be false, but not definitively so. There is always a chance the observed value is aberrant and the null is actually correct. Thus it is useful to quantify the error of a test.  
+Note that hypothesis tests lead to one of two outcomes: either *rejecting* or *failing to reject* the null. Of course, the outcome of a single hypothesis test does not necessarily lead you to the correct result. If a hypothesis test yields a rejection, this is only *evidence* to suggest the null *might* be false, but not definitively so. There is always a chance the observed value was in some way aberrant and that the null is *actually* true. It is thus useful to quantify the error of a test:  
 
-A **Type I Error** is the probability of rejecting the null, when the null is true. The Type I Error is simply the significance level of a test.  
+A **Type I Error** is the probability of rejecting the null, when the null is *actually* true. The Type I Error is simply the significance level of a test.  
 
-A **Type II Error** is the probability of failing to reject the null, when the null is false.  
+A **Type II Error** is the probability of failing to reject the null, when the null *actually* is false.  
 
 The **Power** of a test is the probability of correctly rejecting a false null (the complement of Type II Error, i.e. Power = 1 - T2E).  
 
-Usually the foremost goal of a significance test is to ensure the probability of Type I Error is low.  
+Usually the foremost goal of a significance test is to ensure the probability of Type I Error is low (since most hypothesis tests are out to disprove something).  
 
-The second goal is to choose the test with the lowest probability of Type II Error (i.e. choose the most powerful test). 
+The secondary goal is to choose the test with the lowest probability of Type II Error (i.e. to choose the most powerful test).  
 
 
 
 \ 
 
-# 13--3 Examples of Hypothesis Tests
+# 13--3 Further Examples of Hypothesis Tests
 
 ## Difference of sample means
 
