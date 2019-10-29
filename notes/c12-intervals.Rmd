@@ -166,7 +166,7 @@ Suppose we want to compute a 95\% confidence interval for the true mean differen
 
 $$\bar X \sim \mathcal N \bigg( \bar X, \frac{s}{\sqrt n} \bigg) \;\;\; \Longrightarrow \;\;\; \bar X \sim \mathcal N \bigg( 12.356, \frac{16.009}{\sqrt{153}} \bigg)$$
 
-where we have used the CLT with sample values as plug-in estimates. The general form of the confidence interval as follows:
+where we have used the CLT with sample values as plug-in estimates. The general form of the confidence interval is:
 
 $$\bar X - c \cdot \frac{s}{\sqrt n} \leq \mu \leq \bar X + c \cdot \frac{s}{\sqrt n}$$
 
@@ -205,17 +205,17 @@ $$
 
 This interval is only trivially different to the one computed using the normal, since $n$ in this case is large. 
 
-But if, for instance, we had used a $t$-distribution with only 10 DoF, note how $c$ is more substantially different: 
+But if, for instance, we had only 11 observations in our data, and we had used a $t$-distribution with 10 DoF, note how $c$ is more substantially different: 
 
 ```{r}
 qt(0.975, df = 9)
 ```
 
-Which gives a confidence interval of: 
+This gives a confidence interval: 
 
 $$9.48 \leq \mu \leq 15.24$$
 
-i.e. when $n$ is large enough, it's sufficient to use the normal distribution to compute confidence intervals (with the appropriate plug-in estimates). But when dealing with small samples, you must use the $t$-distribution. 
+Thus when $n$ is large, it's sufficient to use the normal distribution to compute confidence intervals (with the appropriate plug-in estimates), since the difference between the $t$ and normal distributions is trivial for large $n$. But when dealing with small samples, you must use the $t$-distribution. 
 
 ## A function for calculating confidence intervals 
 
