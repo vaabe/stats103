@@ -189,7 +189,7 @@ As it turns out, we can model the sample mean $\bar X$ as a random variable (pro
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
 ggplot(data = as.data.frame(samplemeans), aes(x = samplemeans)) + 
   geom_histogram(binwidth = 0.1) +
-  ggtitle(TeX('Sampling distribution of $\\bar{X}$ (10 trials)')) +
+  ggtitle(TeX('sampling distribution of $\\bar{X}$ (10 trials)')) +
   theme_bw()
 ```
 
@@ -209,19 +209,19 @@ xbar100 = samplemeans[1:100]; xbar1000 = samplemeans[101:1100]; xbar10000 = samp
 
 plot1 = ggplot(data = as.data.frame(xbar100), aes(x = xbar100)) +
   geom_histogram(binwidth = 0.1, aes(y = ..density..)) +
-  ggtitle(TeX('Sampling dist. of $\\bar{X}$ (100 trials)')) +
+  ggtitle(TeX('sampling dist. of $\\bar{X}$ (100 trials)')) +
   xlab(TeX('$\\bar{X}$')) + 
   theme_bw()
 
 plot2 = ggplot(data = as.data.frame(xbar1000), aes(x = xbar1000)) +
   geom_histogram(binwidth = 0.1, aes(y = ..density..)) +
-  ggtitle(TeX('Sampling dist. of $\\bar{X}$ (1000 trials)')) +
+  ggtitle(TeX('sampling dist. of $\\bar{X}$ (1000 trials)')) +
   xlab(TeX('$\\bar{X}$')) + 
   theme_bw()
 
 plot3 = ggplot(data = as.data.frame(xbar10000), aes(x = xbar10000)) +
   geom_histogram(binwidth = 0.1, aes(y = ..density..)) +
-  ggtitle(TeX('Sampling dist. of $\\bar{X}$ (10,000 trials)')) +
+  ggtitle(TeX('sampling dist. of $\\bar{X}$ (10,000 trials)')) +
   xlab(TeX('$\\bar{X}$')) + 
   theme_bw()
 

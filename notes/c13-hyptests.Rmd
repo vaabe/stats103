@@ -48,7 +48,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# Hypothesis Tests
+# 13--1 The Hypothesis Testing Framework
 
 A statistical hypothesis is an assumption about one or more population parameters. The assumption may or may not be true, and one of our goals in statistical inference is using data to determine whether we should accept or reject a given hypothesis.  
 
@@ -60,8 +60,6 @@ We then compare the null hypothesis to a competing model for the population para
 - **the alternative hypothesis**, $H_1$: the scenario under which the null is not true  
 
 Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give us a framework for *disproving* a given model, but not for uniquely specifying one.  
-
-\ 
 
 ## A simple example
 
@@ -211,8 +209,6 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
 
 I.e. with a significance level of $\alpha = 0.01$, you would **fail to reject** the null.  
 
-\ 
-
 ## The p-value of a test
 
 Another way to conduct a hypothesis test is by looking at $p$-values.  
@@ -243,8 +239,6 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
 Each region has a probability of 0.0116, which means the total probability of getting a value at least as extreme as the observed value is 
 0.0233. The $p$-value of this test is thus 0.0233. The $p$-value is statistically significant if it is smaller than the significance level of the test. If $\alpha = 0.05$, then the result is statistically significant, and you can reject the null hypothesis. But if you used a significance level of $\alpha = 0.01$, the converse is true.  
 
-\ 
-
 ## A workflow 
 
 When conducting a hypothesis test, you should follow these steps:
@@ -268,9 +262,7 @@ Or:
 
 \ 
 
---- 
-
-# Errors and Power
+# 13--2  Errors and Power
 
 Of course, the result of a hypothesis test does not necessarily lead you to the correct result. If a hypothesis test yields a rejection, this is only *evidence* to suggest the null *might* be false, but not definitively so. There is always a chance the observed value is aberrant and the null is actually correct. Thus it is useful to quantify the error of a test.  
 
@@ -288,11 +280,7 @@ The second goal is to choose the test with the lowest probability of Type II Err
 
 \ 
 
---- 
-
-# Examples of Hypothesis Tests
-
-\ 
+# 13--3 Examples of Hypothesis Tests
 
 ## Difference of sample means
 
