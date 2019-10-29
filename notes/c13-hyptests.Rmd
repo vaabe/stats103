@@ -56,7 +56,7 @@ A statistical hypothesis is an *assumption* about one or more population paramet
 
 The null hypothesis is the assumption we are testing---it is assumed to be true unless demonstrated otherwise. To test the null we compare it to a *competing* model for the population parameter(s), usually in the form of a (new) sample of data. If the competing model yields vastly different results results to those predicted by the null model (i.e. if the new data is an *unlikely realization* of the null), we have grounds to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
 
-- **the null hypothesis**, $H_0$: a proposed/pre-existing model for the population parameter(s)
+- **the null hypothesis**, $H_0$: a proposed model for the population parameter(s)
 - **the alternative hypothesis**, $H_1$: the scenario under which the null is not true  
 
 Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give a framework for *rejecting* a given model, but not for uniquely specifying one.  
@@ -68,7 +68,7 @@ In the pay gap data, the variable `DiffMeanHourlyPercent`^[i.e. the difference i
 $$H_0: \mu = 12.356$$
 $$H_1: \mu \neq 12.356$$
 
-One way to determine whether to reject a null is by quantifying the *likelihood* of getting the observed value^[The observed value is the value proposed by the *competing* model.], if the null hypothesis were true. If the likelihood is sufficiently low, this implies there's a good chance the null hypothesis may not be true.  
+One way to determine whether to reject a null is by quantifying the *likelihood* of getting the observed value^[The observed value is the value proposed by the *competing* model.], if the null hypothesis were true. If the likelihood is sufficiently low, this implies there's a good chance the null hypothesis is not true.  
 
 The **significance level** ($\alpha$) of a test is the probability threshold below which we decide to reject the null. Conventionally a significance level of $\alpha = 0.05$ is used---i.e. we reject the null if the observed value lies in the most extreme 5\% of values under the null distribution. Sometimes a significance level of $\alpha = 0.01$ is also used.    
 
@@ -185,9 +185,9 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   theme_bw()
 ```
 
-In this example the observed value is clearly in the rejection region. You can thus reject the null at the $\alpha = 0.05$ level, and conclude that true mean hourly wage gap is $\mu \neq 12.356$.  
+i.e. clearly the observed value is clearly in the rejection region. You can thus reject the null at the $\alpha = 0.05$ level, and conclude that true mean hourly wage gap is not $12.356$.  
 
-Note, if you had used a significance level of $\alpha = 0.01$ to conduct the test, you would have reached a different conclusion: 
+Note if you had used a significance level of $\alpha = 0.01$, you would have reached a different conclusion: 
 
 ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
 ggplot(data = df, mapping = aes(x = x, y = y)) +
@@ -207,7 +207,7 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   theme_bw()
 ```
 
-Clearly, with a significance level of $\alpha = 0.01$, the observed value does *not* fall in the rejection, and you cannot thus reject the null. The choice of significance level can make or break the fate of a hypothesis.  
+i.e. with $\alpha = 0.01$, the observed value does *not* fall in the rejection region, and thus you cannot reject the null. The choice of significance level can make or break the fate of a hypothesis.  
 
 ## The p-value of a test
 
