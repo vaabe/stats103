@@ -2,7 +2,8 @@
 title: 'chapter 8 The Algebra of Random Variables'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
     toc_depth: 2
   tufte::tufte_handout:
@@ -41,7 +42,7 @@ library(tufte)
 
 ---
 
-# Random Variables
+# 8--1 Random Variables
 
 To recap: a random process is anything that will produce an outcome. When collecting data for an experiment, you often need some way to measure or quantify the outcome(s) you observe. This is where random variables come useful.  
 
@@ -59,9 +60,7 @@ E.g. if you are measuring monthly rainfall, you can define $X$ as the random var
 
 \ 
 
----
-
-# Probability Distributions
+# 8--2 Probability Distributions
 
 Once you've defined a random variable for the outcomes of some process, the next thing you'll want to quantify is the *probability* associated with each possible value of the RV (i.e. the probability of each outcome in the experiment).  
 
@@ -78,8 +77,6 @@ kable(table1, col.names = c(' ','X=1','X=2','X=3','X=4','X=5','X=6'))
 In this case each outcome has an equal probability (assuming a fair die).  
 
 A probability distribution is defined in terms of an underlying sample space. The sample space in this case is $X = \{ 1,2,3,4,5,6 \}$--these are the possible values the RV can take.  
-
-\ 
 
 ## Frequency distribution
 
@@ -104,10 +101,6 @@ grid.arrange(plot1, plot2, ncol = 2)
 ```
 
 A frequentist would use the observed relative frequency distribution to determine the probability associated with each outcome. If you ran the above experiment infinitely many times, you would see the relative frequency of each outcome converge to $\frac 16$. Using the frequentist approach you could thus define the probability of each outcome as $\frac 16$.  
-
-
-
-\ 
 
 ## Probability distribution function
 
@@ -142,9 +135,7 @@ Note for continuous RVs, the *absolute* probability that it equals a particular 
 
 \ 
 
----
-
-# Expectated Value of a Random Variable
+# 8--3 Expectated Value of a Random Variable
 
 The expected value of a random variable is the weighted average of all possible outcomes/values, using probabilities as weights. This is also the known as the mean of the random variable's distribution:
 
@@ -168,9 +159,7 @@ $$\E[2X] = 2 \E[X] = 2 \cdot 3.5 = 7$$
 
 \ 
 
----
-
-# Moments of a Random Variable
+# 8--4 Moments of a Random Variable
 
 You can further generalize the concept of expectation to include higher powers.  
 
@@ -229,13 +218,10 @@ The moments of a random variable provide useful information about the shape of t
 
 \ 
 
----
-
-# Describing the Distribution of a RV
+# 8--5 Describing the Distribution of a RV
 
 The reason to study expectation and moments is they provide measurees to quantify the form and shape of a distribution. Below are some common ones.  
 
-\ 
 
 ## Mean, $\mu$
 
@@ -244,8 +230,6 @@ The weighted average of all possible values of the RV, using probabilities as we
 Calculated by taking the first moment (i.e. expectation) of the RV:
 
 $$\mu = \E[X] = \sum_i P_i X_i$$
-
-\ 
 
 ## Variance, $\sigma^2$
 
@@ -263,15 +247,11 @@ Shifting the distribution left or right leaves the variance unchanged (since var
 
 $$\Var[X+a] = \Var[X]$$
 
-\ 
-
 ## Standard Deviation, $\sigma$
 
 Square root of the variance.  
 
 $$\sigma = \sqrt{\E[(X-\mu)^2]}$$
-
-\ 
 
 ## Skewness, $\gamma_1$
 
@@ -282,8 +262,6 @@ Defined as the third standardized moment:
 $$\gamma_1 = \E \bigg[ \bigg( \frac{X - \mu}{\sigma} \bigg)^3 \bigg] = \frac{\E[(X-\mu)^3]}{\sigma^3}$$
 
 or the third central moment over the standard deviation cubed.  
-
-\ 
 
 ## Kurtosis, $\gamma_2$
 
@@ -300,6 +278,8 @@ or the fourth central moment over the 4th power of the standard deviation.
 \ 
 
 ---
+
+\ 
 
 \ 
 

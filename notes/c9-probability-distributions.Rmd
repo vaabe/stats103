@@ -2,7 +2,8 @@
 title: 'chapter 9 Distributions of Random Variables'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
     toc_depth: 2
   tufte::tufte_handout:
@@ -46,7 +47,7 @@ In this chapter we introduce a few *known* probability distributions that are of
 
 \ 
 
-# The Normal Distribution 
+# 9--1 The Normal Distribution 
 
 The normal distribution (or Gaussian distribution) describes a symmetric, bell-shaped curve, as follows:
 
@@ -171,7 +172,7 @@ pnorm(7, mean = 10, sd = 2)
 
 \ 
 
-# The Uniform Distribution
+# 9--2 The Uniform Distribution
 
 The uniform distribution (or rectangular distribution) can model a random variable which has an equal probability to take any value in a specified interval.  
 
@@ -214,7 +215,7 @@ $$\Var[X] = \frac{(b-a)^2}{12} \hspace{0.5cm} \text{(continuous)}$$
 \ 
 
 
-# The Bernoulli Distribution 
+# 9--3 The Bernoulli Distribution 
 
 The Bernoulli distribution can model a discrete random variable with a binary outcome (e.g. a single coin toss). Bernoulli random variables have the following features:
 
@@ -239,7 +240,7 @@ $$\Var[X] = p(1-p)$$
 
 \ 
 
-# The Binomial Distribution
+# 9--4 The Binomial Distribution
 
 The binomial distribution can model multiple occurrences of a Bernoulli process (e.g. several coin tosses). Binomial random variables have the following features:  
 
@@ -269,7 +270,7 @@ Note the Bernoulli distribution is a special case of the binomial with $n = 1$.
 
 \ 
 
-# The Poisson Distribution
+# 9--5 The Poisson Distribution
 
 The Poisson distribution can model a discrete random variable where events that occur a fixed number of times during a given interval. Poisson random variables have the following features: 
 

@@ -2,7 +2,8 @@
 title: 'chapter 7 Elements of Probability'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
     toc_depth: 2
   tufte::tufte_handout:
@@ -37,7 +38,7 @@ library(tufte)
 
 ---
 
-# Wherefore Probability? 
+# 7--1 Wherefore Probability? 
 
 Statistical inference is based on ideas from probability theory. Discussion of probability was mostly avoided in Part I--this was in a bid to visually demonstrate the power and relevance of statistical methods, while unencumbered by (arduous) theory. Of course, in order to actually understand these methods you'll need some of the formalism--thus these three chapters are intended to introduce some of the basic ideas of probability behind statistical inference. 
 
@@ -45,9 +46,7 @@ Statistical inference is based on ideas from probability theory. Discussion of p
 
 \ 
 
----
-
-# Random Processes
+# 7--2 Random Processes
 
 You can think of a random process as anything that gives rise to an **outcome**. Tossing a coin or rolling a die are two classic examples.  
 
@@ -59,9 +58,7 @@ Broadly speaking, **probability** is a measure that quantifies the likelihood th
 
 \ 
 
----
-
-# Probability Spaces 
+# 7--3 Probability Spaces 
 
 Probability spaces are used to model random processes. They have three components:  
 
@@ -73,10 +70,6 @@ Probability spaces are used to model random processes. They have three component
     + e.g. the probability of getting 2 heads: $\P(\text{ 2 heads }) = \frac 14$ 
     
 A coin toss is an example of a process with a **discrete** sample space, since its outcomes are countable and finite. Of course, many processes have uncountably infinite sample spaces: e.g. say you are measuring the high temperature on a certain day--the sample space in this case would be the set of all real numbers.   
-
-\ 
-
-## Sampling from a sample space 
 
 In R you can simulate a random process using the `sample()` function. You must specify the sample space, the sample size, and whether you want to sample with replacement or not.  
 
@@ -90,13 +83,9 @@ Naturally this is one of four possible outcomes for this process.
 
 \ 
 
----
-
-# Some Probability Axioms 
+# 7--4 Some Probability Axioms 
 
 When you define the outcomes of a random process in terms of a probability space, there are a convenient set of axioms for probability that naturally follow. 
-
-\ 
 
 ## The complement rule 
 
@@ -105,8 +94,6 @@ Naturally, the probabilities of all possible events must sum to 1. E.g. if $\P(A
 $$\boxed{ \P(A^c) = 1 - \P(A) }$$
 
 where $A^c$ is the complement of event $A$.  
-
-\ 
 
 ## Conditional probability
 
@@ -122,8 +109,6 @@ $$\boxed{ \P(A \; | \; B) = \frac{\P(A \cap B)}{\P(B)} }$$
 
 The RHS of this equation essentially restricts the sample space of $A$ and $B$ to only those outcomes where $B$ occurs.   
 
-\ 
-
 ## The multiplication rule 
 
 Rearranging the law of conditional probability gives the **multiplication rule:**
@@ -131,8 +116,6 @@ Rearranging the law of conditional probability gives the **multiplication rule:*
 $$\boxed { \P(A \cap B) = \P(A \; | \; B) \; \P(B) }$$
 
 i.e. the probability that two events both happen equals the probability the first will happen, multiplied by the probability the second will happen given the first has happened.  
-
-\ 
 
 ## Independence
 
@@ -148,9 +131,7 @@ This gives the **multiplication rule for independent events**:
 
 $$\boxed{ \P(A \cap B) = \P(A) \; \P(B) } \hspace{0.5cm} \text{(if independent)}$$
 
-i.e. if two events are independent, the probability they both happen is simply the product of their individual probabilities.  
-
-\ 
+i.e. if two events are independent, the probability they both happen is simply the product of their individual probabilities. 
 
 ## Mutual exclusivity
 
@@ -160,7 +141,6 @@ If $A$ and $B$ are mutually exclusive, then if $A$ happens, $B$ cannot also happ
 
 $$\boxed{ \P(A \cap B) = 0} \hspace{0.5cm} \text{(if mutually exclusive)}$$
 
-\ 
 
 ## The addition rule
 
@@ -174,7 +154,6 @@ It should also follow that if $A$ and $B$ are *not* mutually exclusive (i.e. $\P
 
 $$\boxed{ \P(A \cup B) = \P(A) + \P(B) - \P(A \cap B) }$$
 
-\ 
 
 ## The law of total probability
 
@@ -196,13 +175,9 @@ where $B_i = \{B_1, B_2, ... \}$ is a general partition of the sample space.
 
 \ 
 
----
-
-# Interpreting Probability 
+# 7--5 Two Interpretations of Probability 
 
 The probability rules introduced above are part of the mathematical axiomatisation of probability introduced last century. Though they are useful for calculating probabilities in well-defined sample spaces, the concept of probability itself--and how exactly to define it--is a philosophical one that has seen many interpratations over the past centuries. Right now there are two interpretations of probability that preside--the frequentist approach and the Bayesian approach. Each treats the concept of probability differently.  
-
-\ 
 
 ## The frequentist approach 
 
@@ -233,9 +208,6 @@ The output shows that of the 100,000 tosses, almost exactly half were heads and 
 
 The frequentist approach doesn't conflict with the mathematical axioms of probability introduced above--it only provides a "way" to interpret probability and apply these axioms to real-world processes.  
 
-
-\ 
-
 ## The Bayesian approach 
 
 `to be added`
@@ -243,6 +215,8 @@ The frequentist approach doesn't conflict with the mathematical axioms of probab
 \ 
 
 ---
+
+\ 
 
 \ 
 
