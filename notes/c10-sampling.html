@@ -149,29 +149,28 @@ diceroll2</code></pre>
 <pre><code>##  [1] 1 5 6 2 2 1 2 4 1 1</code></pre>
 <pre class="r"><code>mean(diceroll2)</code></pre>
 <pre><code>## [1] 2.5</code></pre>
-<p>Compare these sample means to the theoretical mean of the population, in this case <span class="math inline">\(\mu = 3.5\)</span>. Each sample mean has an error that varies substantially across the two observed samples.<label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label><input type="checkbox" id="tufte-sn-2" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">2</span> Here error refers to the difference between the true and sample values of a parameter.</span></p>
-<p>Of course, this a trivial example, since the RV in question follows a known distribution (a discrete uniform distribution), and we <em>know</em> the population mean exactly. In most experimental contexts the population distribution is unknown—all we have is a sample distribution, and whatever estimates it produces.</p>
+<p>Compare these sample means to the theoretical mean of the population, in this case <span class="math inline">\(\mu = 3.5\)</span>. Clearly, the error varies substantially across the two observed samples.<label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label><input type="checkbox" id="tufte-sn-2" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">2</span> Here error refers to the difference between the true and sample values of a parameter.</span></p>
+<p>This a trivial example, since the RV in question follows a known distribution (discrete uniform), and we thus know the population mean exactly. In most experimental contexts the population distribution is unknown—all we have is a sample distribution, and whatever estimates it produces.</p>
 <div id="two-sources-of-error-in-an-estimator" class="section level2">
 <h2>Two sources of error in an estimator</h2>
 <p>There are two main sources of error in sample-derived estimates:</p>
 <ul>
-<li><strong>sampling error</strong>—the random the tendency of an estimate to vary across different samples<br />
+<li><strong>sampling error</strong>—the <em>random</em> tendency of an estimate to vary across different samples<br />
 </li>
-<li><strong>bias</strong>—the systematic tendency of an estimate to over/underestimate the true population parameter</li>
+<li><strong>bias</strong>—the <em>systematic</em> tendency of an estimate to over/underestimate the true population parameter</li>
 </ul>
-<p>The random sampling error is a result of <strong>variability</strong>—the tendency of data to vary randomly across different samples, thereby producing different results. In sections 10–3 to 10–5, we introduce two convergence theorems—both crowning achivements in statistics—that describe how the variability of an estimate depends on sample size.</p>
+<p>The random sampling error is a result of <strong>variability</strong>—the tendency of data to vary randomly across different samples, thereby producing different results. In the ensuing sections we introduce two convergence theorems—both crowning achivements in statistics—that describe how the variability of an estimate depends on sample size.</p>
 <p>In this module (II) we will focus on concepts related to variability. In module III we will look at sources of bias.</p>
 </div>
 <div id="the-reliability-of-an-estimator" class="section level2">
 <h2>The reliability of an estimator</h2>
-<p>Reliability describes the tendency of an estimator to deliver <em>consistent</em> results across samples. An estimator with high variability—e.g. the sample mean in the “diceroll” simulation above—is said to be <em>unreliable</em>, as its value will tend to change significantly across samples.</p>
+<p>Reliability refers to the <em>consistency</em> of an estimator across different samples. An estimator with high variability—e.g. the sample mean in the “diceroll” simulation above—is said to be <em>unreliable</em>, as its value tends to change significantly across samples.</p>
 <p> </p>
 </div>
 </div>
 <div id="the-laws-of-large-numbers" class="section level1">
 <h1>10–3 The Law(s) of Large Numbers</h1>
-<p>The law of large numbers describes how the sample mean evolves as sample size increases.</p>
-<p>The “diceroll” simulation above used a sample size of <span class="math inline">\(n = 10\)</span>. Below we rerun the same simulation three times, but with sample sizes <span class="math inline">\(n = \{ 30, 1000, 10000 \}\)</span>. The sample mean is computed for each value of <span class="math inline">\(n\)</span>.</p>
+<p>In the “diceroll” simulation above we used a sample size <span class="math inline">\(n = 10\)</span>. Below we rerun the same simulation three times, but with sample sizes <span class="math inline">\(n = \{ 30, 1000, 10000 \}\)</span>. The sample mean is computed for each value of <span class="math inline">\(n\)</span>.</p>
 <pre class="r"><code>for (i in c(30,100,10000)) {
   dicetoss = sample(x = c(1,2,3,4,5,6), size = i, replace = TRUE)
   cat(paste('sample mean when n =', i, ':', round(mean(dicetoss),3),'\n'))
@@ -183,9 +182,9 @@ diceroll2</code></pre>
 <p>Formally, there are two versions of the law of large numbers:</p>
 <p>The <strong>strong law of large numbers</strong> says the sample mean converges <em>exactly</em> to the true mean for large <span class="math inline">\(n\)</span>:</p>
 <p><span class="math display">\[\bar X \rightarrow \mu \hspace{1cm} n \rightarrow \infty\]</span></p>
-<p>The <strong>weak law of large numbers</strong> says the sample mean converges <em>in probability</em> to the true mean for large <span class="math inline">\(n\)</span>. Specifically, it say the probability the absolute difference between the sample mean and the true mean is larger than some nonzero margin goes to zero as the sample size increases:</p>
-<p><span class="math display">\[{\text{P}}( | \bar X - \mu | &gt; c) \rightarrow 0 \hspace{1cm} n \rightarrow \infty\]</span> This may be a cumbersome definition—but all it really says is the sample mean <span class="math inline">\(\bar X\)</span> is <em>likely</em> to be near <span class="math inline">\(\mu\)</span> when <span class="math inline">\(n\)</span> is large. Crucially, the weak LLN leaves open the possibility that <span class="math inline">\(| \bar X - \mu | &gt; c\)</span> at infrequent intervals, i.e. that <em>occasionally</em> the sample mean might deviate from the true mean, even with very large <span class="math inline">\(n\)</span>.</p>
-<p>By contrast, the strong LLN describes an exact convergence to the true mean—it implies that <span class="math inline">\(| \bar X - \mu | &lt; c\)</span> will be true in <em>all</em> cases when <span class="math inline">\(n\)</span> is large. This is a stronger convergence condition than the weak LLN, and there are many distributions for which the weak law holds, but the strong law does not.</p>
+<p>The <strong>weak law of large numbers</strong> says the sample mean converges <em>in probability</em> to the true mean for large <span class="math inline">\(n\)</span>. Specifically, it says the probability that the sampling error is larger than some nonzero margin goes to zero for large <span class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[{\text{P}}\big( \big| \bar X - \mu \big| &gt; c \big) \rightarrow 0 \hspace{1cm} n \rightarrow \infty\]</span> This may be a cumbersome definition—but all it really says is the sample mean <span class="math inline">\(\bar X\)</span> is <em>likely</em> to be near <span class="math inline">\(\mu\)</span> when <span class="math inline">\(n\)</span> is large. Crucially, the weak LLN leaves open the possibility that <span class="math inline">\(\big| \bar X - \mu \big| &gt; c\)</span> at infrequent intervals, i.e. that <em>occasionally</em> the sample mean might deviate from the true mean, even with very large <span class="math inline">\(n\)</span>.</p>
+<p>By contrast, the strong LLN describes an exact convergence to the true mean—it implies that <span class="math inline">\(\big| \bar X - \mu \big| &lt; c\)</span> will be true in <em>all</em> cases when <span class="math inline">\(n\)</span> is large. This is a stronger convergence condition than the weak LLN, and there are many distributions for which the weak law holds, but the strong law does not.</p>
 <p> </p>
 </div>
 <div id="sampling-distributions-a-demonstration" class="section level1">
@@ -351,10 +350,10 @@ ggplot(sampledata, aes(x = Xbar, fill = n)) +
 </div>
 <div id="summary-two-convergence-theorems-in-statistics" class="section level1">
 <h1>10–6 Summary: Two Convergence Theorems in Statistics</h1>
-<p>In this chapter we’ve introduced two important results in statistics. Both concern the convergence in the behavior of random variables under large sample sizes. This part of probability is known as <strong>large sample theory</strong> or <strong>asymptotic theory</strong>.</p>
+<p>The two convergence theorems can be summarized as follows:</p>
 <p>The <strong>law of large numbers</strong> describes how the sample mean converges in <em>value</em> to its theoretical value for large <span class="math inline">\(n\)</span>.</p>
 <p>The <strong>central limit theorem</strong> describes how the sample mean converges in <em>distribution</em> to a normal distribution for large <span class="math inline">\(n\)</span>.</p>
-<p>Since statistics is all about gathering large amounts of data and making inferences, these theorems are immensely useful for characterizing sample variability, and they have many applications in the statistical methods we introduced in module I.</p>
+<p>These theorems are immensely useful for characterizing sample variability, and they have many applications in the statistical methods introduced in module I.</p>
 <p>Below are two important caveats you ought to be aware of:</p>
 <p><em><strong>When the LLN might fail:</strong></em></p>
 <p>It’s possible the LLN may not hold if the random variables are themselves so dispersed that they don’t have an expected value. These are sometimes called “heavy-tailed” distributions. e.g. the Cauchy distribution.</p>

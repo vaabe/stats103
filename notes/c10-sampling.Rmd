@@ -104,24 +104,24 @@ diceroll2
 mean(diceroll2)
 ```
 
-Compare these sample means to the theoretical mean of the population, in this case $\mu = 3.5$. Each sample mean has an error that varies substantially across the two observed samples.^[Here error refers to the difference between the true and sample values of a parameter.]
+Compare these sample means to the theoretical mean of the population, in this case $\mu = 3.5$. Clearly, the error varies substantially across the two observed samples.^[Here error refers to the difference between the true and sample values of a parameter.]
 
-Of course, this a trivial example, since the RV in question follows a known distribution (a discrete uniform distribution), and we *know* the population mean exactly. In most experimental contexts the population distribution is unknown---all we have is a sample distribution, and whatever estimates it produces.   
+This a trivial example, since the RV in question follows a known distribution (discrete uniform), and we thus know the population mean exactly. In most experimental contexts the population distribution is unknown---all we have is a sample distribution, and whatever estimates it produces.   
 
 ## Two sources of error in an estimator
 
 There are two main sources of error in sample-derived estimates:
 
-- **sampling error**---the random the tendency of an estimate to vary across different samples  
-- **bias**---the systematic tendency of an estimate to over/underestimate the true population parameter  
+- **sampling error**---the *random* tendency of an estimate to vary across different samples  
+- **bias**---the *systematic* tendency of an estimate to over/underestimate the true population parameter  
 
-The random sampling error is a result of **variability**---the tendency of data to vary randomly across different samples, thereby producing different results. In sections 10--3 to 10--5, we introduce two convergence theorems---both crowning achivements in statistics---that describe how the variability of an estimate depends on sample size.  
+The random sampling error is a result of **variability**---the tendency of data to vary randomly across different samples, thereby producing different results. In the ensuing sections we introduce two convergence theorems---both crowning achivements in statistics---that describe how the variability of an estimate depends on sample size.  
 
 In this module (II) we will focus on concepts related to variability. In module III we will look at sources of bias.  
 
 ## The reliability of an estimator 
 
-Reliability describes the tendency of an estimator to deliver _consistent_ results across samples. An estimator with high variability---e.g. the sample mean in the "diceroll" simulation above---is said to be *unreliable*, as its value will tend to change significantly across samples.  
+Reliability refers to the _consistency_ of an estimator across different samples. An estimator with high variability---e.g. the sample mean in the "diceroll" simulation above---is said to be *unreliable*, as its value tends to change significantly across samples.  
 
 
 
@@ -129,9 +129,7 @@ Reliability describes the tendency of an estimator to deliver _consistent_ resul
 
 # 10--3 The Law(s) of Large Numbers
 
-The law of large numbers describes how the sample mean evolves as sample size increases.  
-
-The "diceroll" simulation above used a sample size of $n = 10$. Below we rerun the same simulation three times, but with sample sizes $n = \{ 30, 1000, 10000 \}$. The sample mean is computed for each value of $n$.  
+In the "diceroll" simulation above we used a sample size $n = 10$. Below we rerun the same simulation three times, but with sample sizes $n = \{ 30, 1000, 10000 \}$. The sample mean is computed for each value of $n$.  
 
 ```{r, echo=FALSE}
 set.seed(19)
@@ -152,12 +150,12 @@ The **strong law of large numbers** says the sample mean converges *exactly* to 
 
 $$\bar X \rightarrow \mu \hspace{1cm} n \rightarrow \infty$$
 
-The **weak law of large numbers** says the sample mean converges *in probability* to the true mean for large $n$. Specifically, it say the probability the absolute difference between the sample mean and the true mean is larger than some nonzero margin goes to zero as the sample size increases: 
+The **weak law of large numbers** says the sample mean converges *in probability* to the true mean for large $n$. Specifically, it says the probability that the sampling error is larger than some nonzero margin goes to zero for large $n$:
 
-$$\P( | \bar X - \mu | > c) \rightarrow 0 \hspace{1cm} n \rightarrow \infty$$
-This may be a cumbersome definition---but all it really says is the sample mean $\bar X$ is *likely* to be near $\mu$ when $n$ is large. Crucially, the weak LLN leaves open the possibility that $| \bar X - \mu | > c$ at infrequent intervals, i.e. that *occasionally* the sample mean might deviate from the true mean, even with very large $n$. 
+$$\P \big( \big| \bar X - \mu \big| > c \big) \rightarrow 0 \hspace{1cm} n \rightarrow \infty$$
+This may be a cumbersome definition---but all it really says is the sample mean $\bar X$ is *likely* to be near $\mu$ when $n$ is large. Crucially, the weak LLN leaves open the possibility that $\big| \bar X - \mu \big| > c$ at infrequent intervals, i.e. that *occasionally* the sample mean might deviate from the true mean, even with very large $n$. 
 
-By contrast, the strong LLN describes an exact convergence to the true mean---it implies that $| \bar X - \mu | < c$ will be true in *all* cases when $n$ is large. This is a stronger convergence condition than the weak LLN, and there are many distributions for which the weak law holds, but the strong law does not.  
+By contrast, the strong LLN describes an exact convergence to the true mean---it implies that $\big| \bar X - \mu \big| < c$ will be true in *all* cases when $n$ is large. This is a stronger convergence condition than the weak LLN, and there are many distributions for which the weak law holds, but the strong law does not.  
 
 
 
@@ -356,13 +354,13 @@ $$\SE = \SD[\bar X] = \sqrt{\Var[\bar X]} = \frac{\sigma}{\sqrt n}$$
 
 # 10--6 Summary: Two Convergence Theorems in Statistics
 
-In this chapter we've introduced two important results in statistics. Both concern the convergence in the behavior of random variables under large sample sizes. This part of probability is known as **large sample theory** or **asymptotic theory**. 
+The two convergence theorems can be summarized as follows:
 
 The **law of large numbers** describes how the sample mean converges in *value* to its theoretical value for large $n$.  
 
 The **central limit theorem** describes how the sample mean converges in *distribution* to a normal distribution for large $n$.   
 
-Since statistics is all about gathering large amounts of data and making inferences, these theorems are immensely useful for characterizing sample variability, and they have many applications in the statistical methods we introduced in module I.  
+These theorems are immensely useful for characterizing sample variability, and they have many applications in the statistical methods introduced in module I.  
 
 Below are two important caveats you ought to be aware of:
 

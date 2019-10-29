@@ -126,7 +126,7 @@ You can see the s.d. of the sampling distribution is smaller the population s.d.
 
 In essence, the CLT describes a *convolution* of the densities of the individual RVs. Whatever the shape of the population distribution, when $n$ is large enough the joint density of many RVs will converge to a normal:
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.height=2, fig.width=5}
 knitr::include_graphics('./pics/m2c2_pic1.png')
 ```
 
