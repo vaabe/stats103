@@ -270,37 +270,45 @@ This is the "proper" definition of a confidence interval. It's important to unde
 
 - a 95\% confidence interval does not mean that for a given interval, there is exactly a 95\% probability the true parameter lies in the interval. 
 - a confidence interval is not a definitive range of of plausible values for the true parameter. 
-- a 95\& confidence interval does not guarantee there is a 95\% probability the sample statistic from a subsequent experiment will fall in the interval specified.  
+- a 95\% confidence interval does not guarantee there is a 95\% probability the sample statistic from a subsequent experiment will fall in the interval specified.  
 
-Without knowing the true population mean, there is no way to know whether the specific confidence interval generated from a sample actually contains the true parameter or not.  
+Confidence intervals exhibit variability across different samples, in the same way that point estimates do. The following code demonstrates this by generating 20 random samples and plotting a 95\% confidence interval for the mean based on each sample. The pink line is the true mean of the population.  
 
-Nontheless, confidence intervals are still useful in estimation, since they provide wider range of plausible values for the true parameter than a point estimate does.   
+```{r, fig.width=5, fig.height=3.5, fig.align='center'}
+set.seed(12)
 
-The code below generates 20 random samples and plots a 95\% confidence interval for the mean based on each sample. The pink line is the true mean of the population.  
+box = c(1,1,1,5)
+n = 50
+X = sample(box, n, replace = TRUE)
+Xbar = mean(X)
+SE = sd(X)/sqrt(n)
+c = qt(0.975, n-1)
 
-```{r}
-box <- c(1,1,1,5)
-n <- 50
-X <- sample(box, n, replace = TRUE)
-Xbar <- mean(X)
-SE <- sd(X)/sqrt(n)
-c <- qt(0.975, n-1)
-
-experiment <- function() {
-  X <- sample(box, n, replace = TRUE)
-  Xbar <- mean(X)
-  SE <- sd(X)/sqrt(n)
+experiment = function() {
+  X = sample(box, n, replace = TRUE)
+  Xbar = mean(X)
+  SE = sd(X)/sqrt(n)
   c(Xbar - c*SE, Xbar + c*SE)
 }
 
-CIs <- data.frame(t(replicate(20, experiment())))
-names(CIs) <- c("Lower", "Upper")
-CIs$SampleNumber <- 1:20
+CIs = data.frame(t(replicate(20, experiment())))
+names(CIs) = c("lower", "upper")
+CIs$SampleNumber = 1:20
+
 ggplot() + 
-  geom_errorbar(data = CIs, aes(x = as.factor(SampleNumber), ymin = Lower, ymax = Upper)) +
+  geom_errorbar(data = CIs, aes(x = as.factor(SampleNumber), ymin = lower, ymax = upper)) +
   geom_hline(yintercept = 2, color = 'violetred') + 
   coord_flip() + theme_classic() + ylab('95% confidence interval') + xlab('sample number')
 ```
+
+i.e. there is clear variability in the confidence intervals across the samples. Note that one of the 20 intervals does not contain the true mean (sample #10). This is a clear illustration of the 95\% probability associated with the interval: across 20 different samples we expect that only 95\% of the intervals *actually* contain the true mean.  
+
+In general, without knowing the true parameter, there is no way to know whether a confidence interval generated from a *particular* sample actually contains the true parameter or not.  
+
+Nontheless, confidence intervals are still useful in estimation, since they provide a wider range of plausible values for the true parameter than a point estimate does, and they can characterize the uncertainty in an estimate.  
+
+
+
 
 \ 
 
