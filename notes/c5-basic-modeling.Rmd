@@ -2,7 +2,8 @@
 title: 'chapter 5 Basic Data Modeling'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
     toc_depth: 2
   tufte::tufte_handout:
@@ -76,8 +77,6 @@ There are many approaches to building models to learn from data. Linear regressi
 
 \ 
 
----
-
 # Simple Linear Regression 
 
 Linear regression is a technique for modeling *linear* relationships between variables^[Recall the observed linear association between temperature and vegetation from the NYC heatwave data:].  
@@ -102,8 +101,6 @@ ggplot(aes(x = vegetation, y = temperature), data = nycheat) +
   xlab('vegetation(NDVI)') + ylab('temperature (farenheit)') +
   theme_bw()
 ```
-
-\ 
 
 ## Functional form 
 
@@ -175,8 +172,6 @@ $$
 \end{alignat*}
 $$
 
-\ 
-
 ## The regression coefficients
 
 The intercept and slope, $\beta_0$ and $\beta_1$, are known as the **coefficients** or **parameters** of a linear model. 
@@ -206,8 +201,6 @@ Substituting these values into the regression formula gives the following equati
 $$\Longrightarrow \hspace{0.5cm} y_i = 102.13 -19.46 \; x_i + \varepsilon_i$$
 
 This equation suggests that as the vegetation index increases by 1, temperature decreases by 19.46$^o F$.^[Although variation of this magnitude is not actually observed in the data.]
-
-\ 
 
 ## Prediction from linear models 
 
@@ -248,8 +241,6 @@ ggplot(data = nycheat, mapping = aes(x = vegetation, y = temperature_prediction)
   theme_minimal()
 ```
 
-\ 
-
 ## Extrapolation and its risks
 
 Extrapolation refers to using models for prediction *outside* the range of data used to build the model. 
@@ -276,8 +267,6 @@ If indeed the relationship is nonlinear outside the range of observed data, the 
 
 
 \ 
-
----
 
 # Multiple Regression 
 
@@ -338,8 +327,6 @@ $$
 
 \ 
 
----
-
 # Categorical Predictors in Linear Models
 
 The examples thus far have demonstrated models with continuous predictor variables. You can also include categorical variables as predictors in linear models. 
@@ -379,6 +366,8 @@ $$\text{temp}_{crownheights} = 106.11 - 15.93\text{*veg} - 0.34\text{*albedo}$$
 \ 
 
 ---
+
+\ 
 
 \ 
 
