@@ -63,9 +63,9 @@ library(tufte)
 - chapter 11 -- <a href="./notes/c11-clt.html">The Central Limit Theorem</a></li>
 - chapter 12 -- <a href="./notes/c12-intervals.html">Intervals</a></li>
 - chapter 13 -- <a href="./notes/c13-hyptests.html">Testing Significance</a></li>
-- chapter 14 -- Joint Variability
-- chapter 15 -- Regression Revisited
-- chapter 16 -- Basics for Model Inference
+- chapter 14 -- <a href="./notes/c14-joint-variability.html">Joint Variability</a></li>
+- chapter 15 -- <a href="./notes/c15-regression-II.html">Regression Revisited</a></li>
+- chapter 16 -- Inference from Regression Models, Part I
 
 ### PART III -- BIAS
 
