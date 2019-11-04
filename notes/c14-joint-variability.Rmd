@@ -179,21 +179,6 @@ The bottom row shows examples of *nonlinear* associations. Though these variable
 
 \ 
 
-# 14--3 Multivariate Normal 
-
-We introduced the normal distribution in chapter 9, as the continuous probability distribution with the density function:
-
-
-A single distribution of data can be modeled using the univariate normal distribution, as given in the equation above.  
-
-When we consider the joint variability of two variables, we can think of them as giving rise to a multivariate normal, i.e. a 3d gaussian:
-
-
-
-The multivariate Gaussian has mean vector mu and correlation matrix Sigma.   
-
-\ 
-
 ---
 
 \ 

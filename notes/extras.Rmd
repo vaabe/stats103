@@ -1,0 +1,33 @@
+---
+title: "Untitled"
+author: "Vinu Abeywick"
+date: "04/11/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## extras
+
+# 14--3 Multivariate Normal 
+
+We introduced the normal distribution in chapter 9, as the continuous probability distribution with the density function:
+
+
+A single distribution of data can be modeled using the univariate normal distribution, as given in the equation above.  
+
+When we consider the joint variability of two variables, we can think of them as giving rise to a multivariate normal, i.e. a 3d gaussian:
+
+
+
+The multivariate Gaussian has mean vector mu and correlation matrix Sigma.   
+
+\ 
+
+
+# 13--3 Effect Size and Practical Significance 
+
+"When the sample size becomes larger, point estimates become more precise and any real differ- ences in the mean and null value become easier to detect and recognize. Even a very small difference would likely be detected if we took a large enough sample. Sometimes researchers will take such large samples that even the slightest difference is detected, even differences where there is no practical value. In such cases, we still say the difference is statistically significant, but it is not practi- cally significant. For example, an online experiment might identify that placing additional ads on a movie review website statistically significantly increases viewership of a TV show by 0.001%, but this increase might not have any practical value.
+One role of a data scientist in conducting a study often includes planning the size of the study. The data scientist might first consult experts or scientific literature to learn what would be the smallest meaningful difference from the null value. She also would obtain other information, such as a very rough estimate of the true proportion p, so that she could roughly estimate the standard error. From here, she can suggest a sample size that is sufficiently large that, if there is a real difference that is meaningful, we could detect it. While larger sample sizes may still be used, these calculations are especially helpful when considering costs or potential risks, such as possible health impacts to volunteers in a medical study."

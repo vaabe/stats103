@@ -1,0 +1,291 @@
+\documentclass[10pt]{extarticle}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage[UKenglish]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{graphicx}
+\graphicspath{{./pics/}}
+\usepackage{physics}
+
+
+%% vectors and matrices
+\renewcommand{\v}[1]{{\bm #1}}
+\renewcommand{\dv}[1]{\dot{\bm{#1}}}
+\newcommand{\ddv}[1]{\ddot{\bm{#1}}}
+\newcommand{\hv}[1]{\hat{\bm{#1}}}
+\newcommand{\m}[1]{[ #1 ]}
+\renewcommand{\t}[1]{\widetilde{\bm{#1}}}
+\newcommand{\bfit}[1]{\textbf{\textit{#1}}}
+
+%% differential and integral operators
+\renewcommand{\d}{\text{d}}
+\renewcommand{\dd}[2]{\frac{\d #1}{\d #2}}
+\newcommand{\ddd}[2]{\frac{\d^2 #1}{\d #2^2}}
+\newcommand{\ddt}[1]{\frac{\d #1}{\d t}}
+\newcommand{\dddt}[1]{\frac{\d^2 #1}{\d t^2}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\renewcommand{\grad}{\boldsymbol \nabla}
+\renewcommand{\div}{\boldsymbol \nabla \cdot}
+\renewcommand{\curl}{\boldsymbol \nabla \times}
+\newcommand{\lap}{\nabla^2}
+
+%% constants
+\newcommand{\eo}{\epsilon_0}
+\newcommand{\muo}{\mu_0}
+
+%% statistics
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\Bias}{\text{Bias}}
+
+%% others
+\newcommand{\La}{\mathcal L}
+
+
+
+\begin{document}
+
+\setlength{\parindent}{0pt}
+
+
+
+
+
+{\bf \huge ps3 --- variability}
+
+\hrulefill \\
+
+{\it questions appended with ``i" are optional} \\
+
+\hfill
+
+
+
+
+
+{\Large \bf I --- convergence of random variables}  \\
+
+By now you should be familiar with the concept of {\bf variance} as a measure of spread of a distribution
+
+$$\Var[X] = \E \big[ (X - \E[X] )^2 \big]$$  
+
+or, writtten as a sum:
+
+$$\sigma^2 = \frac 1n \sum_i^n (X_i - \bar X)^2 \hspace{2cm} s^2 = \frac{1}{n-1} \sum_i^n (X_i - \bar X)^2$$ \ 
+
+i.e. variance is the expected value (average) of the squared deviations from the mean. Note $\sigma^2$ denotes the population variance and $s^2$ denotes the sample variance. 
+
+\hfill 
+
+\begin{itemize}
+
+	\item[1.] Show that $\E \big[ (X - \E[X] )^2 \big]$ can also be expressed $\E[X^2] - \E[X]^2$. {\it Hint:} expand the brackets and recognize that $\E[X] = \mu$.  
+
+\end{itemize} 
+
+\hfill 
+
+Consider now the following scenario: let $X$ be a random variable that follows some distribution. Suppose we observe $n$ instances of $X$, i.e. we have a collection of $n$ RVs, $X_1, ..., X_n$, each of which is independent and has same distribution as $X$ (i.e. the RVs are i.i.d.). Suppose we define another random variable $S$, where $S = \sum_i^n X$, such that $\bar X = \frac 1n S$.  
+
+\hfill 
+
+\begin{itemize}
+		
+	\item[2.] What do we need to assume about $\E[X]$ to conclude that $\bar X \rightarrow \mu$ as $n \rightarrow \infty$? \\ 
+
+	\item[3.] Suppose $X$ can only take on two values, -1 and 1. What are the lowest and highest possible values of $S$? \\ 
+
+	\item[4.] Suppose we've made ten measurements of $X$, i.e. $n=10$, and we have a sample mean $\bar X_{10} = 0.2$. We then add a new measurement $X_{11}$ to the sample, where $X_{11}$ is i.i.d. with $X$. What are the lowest and highest possible values for $\bar X_{11}$? \\ 
+
+	\item[5.] Now suppose we've made a {\hundred} measurements of $X$, i.e. $n=100$, and we have a sample mean $\bar X_{100} = 0.02$. We then add a new measurement $X_{101}$ to the sample, where $X_{101}$ is i.i.d. with $X$. What are the lowest possible values for $\bar X_{101}$? Compare how the variability in $\bar X$ changes between q4 and q5.  
+
+\end{itemize}
+
+\hfill 
+
+The question(s) above should have demonstrated to you an example of {\it convergence}. This is an important idea in statistics---below we'll introduce two convergence theorems that will come up a lot in this course (and everywhere). \\  
+
+The {\bf law of large numbers} (specifically, the {\it strong} law of large numbers) says the sample mean converges to the true mean when $n$ is large enough:
+
+$$\bar X \longrightarrow \mu \hspace{1cm} n \longrightarrow \infty$$ 
+
+\hfill 
+
+\begin{itemize}
+
+	\item[6.] Zenith and Quasar are beset by the problem of having to decide who does the dishes on a particular day. Quasar proposes they roll a six-sided die, and that if the die returns a value higher than 3, Quasar does the dishes, and if it returns a value smaller than 3, Zenith does the dishes. Let $X$ be the RV for the outcome of the die on a particular day ($X \in \{1,...,6\}$). Let $Q$ be the RV for whether Quasar does the dishes on a particular day ($Q \in \{0,1 \}$). What is $\E[X]$? What is $\E[Q]$? The proportion of times Quasar does the dishes in $n$ days is $\bar Q_n$. What is the long run value of $\E[\bar Q_n]$? Is this system fair? \\ 
+
+	\item[7.] Zenith then proposes a new system: that they should keep track of the {\it average} of the die scores, $\bar X_n$, where $\bar X_n = \sum_i^n  X_i$, and that Quasar should only do the dishes if the {\it average} is greater than 3. Now what is the long run value of $\E[\bar Q_n]$? \\ 
+
+	\item[8.] Suppose you find yourself playing a decadent game at a casino, where you bet some money $X$ then spin a wheel. If you win, you get $X$ dollars, and if not, you lose $X$ dollars. You decide the best strateegy is to bet $X_1$ on the first round, and if you lose, to go double or nothing and bet $X_2 = 2X_1$ on the second round. Suppose you are somewhat worse for the drink, and keep repeating this strategy, doubling your bet each round, until you win (or go bankrupt). If you win on the first round, your payoff is $X_1$. If you win on the $n$th  round, your payoff is $2^n X_1$. Note this sequence of payoffs/losses doesn't satisfy the assumptions of the LLN. Which assumption(s) does it violate? \\ 
+
+	\item[9.] Historically, a basketball player has tended to make one basket for every two shots taken. During a particular game there is a period when she makes five baskets in a row. The team then starts to send her the ball more often, in order to reap the rewards of this ``lucky streak". Is this a good strategy? Why or why not?  
+
+\end{itemize}
+
+\hfill 
+
+The {\bf central limit theorem} says that if $X_1, ..., X_n$ are i.i.d random variables, and $n$ is large enough, the distribution of the sampl
+e mean becomes approximately normal, with mean $\mu$ and variance $\frac{\sigma^2}{n}$:
+
+$$\bar X \sim \mathcal N \bigg( \mu, \frac{\sigma^2}{n} \bigg)$$ 
+
+\hfill 
+
+\begin{itemize}
+
+	\item[10.] This question is to help you understand the idea of a {\bf sampling distribution}. Let $X$ be a uniformly distributed RV betweeen 0 and 1, i.e. $X \sim \mathcal U(0,1)$. Plot the distribution of $X$ below. What is $\E[X]$ and $\Var[X]$? Suppose now we observe $n$ instances of $X$, i.e. let $X_1, ..., X_n \sim \mathcal U(0,1)$. Let $\bar X_n = \sum_i^n X_i$. Since we are treating $\bar X_n$ as a random variable, it has a distribution---it's known as the {\it sampling distribution of the mean}. Using the CLT, can you think of a statement describing the distribution of $\bar X$? In R, simulate the distribution of $\bar X_n$ by drawing random samples for $n = 1, 5, 15, 30, 100...$ For each sampling distribution, compute $\E[X]$ and $\Var[X]$, and check that the values agree with your theoretical calculations. What do you notice about the sampling distribution of $\bar X_n$ as $n$ increases?  
+
+\end{itemize}
+
+\hfill 
+
+For q10, you don't need to present your code---just state and interpret your results, where applicable. If you dare, repeat the simulation with a different underlying distribution (e.g. try the binomial or Poisson).  Convince yourself that the sampling distribution of the mean will converge to a normal distribution for large enough $n$. This is a very important result, and you should make sure you understand, at least at a high level, what's going on.  
+
+\hfill 
+
+\begin{itemize}
+
+	\item[11.] Suppose that the height of giraffes in Cyprus has a mean of 12 meters with standard deviation 1.2 meters. You draw 100 giraffes at random. Use the CLT to find the approximate probability that the average height of giraffes in your sample is at least 11.8 meetres. \\ 
+
+	\item[12.] Recall that if $Z \sim \mathcal N(\mu, \sigma^2$ then $\P(| Z - \mu| < 3\sigma) = 0.99$. How large does $n$ have to be so that $\bar W$ has 0.5\% probability of being greater than $\mu + \frac{1}{10}$? Simplify as much as you can. \\ 
+
+	\item[13.] Suppose we have a computer program with $n=100$ pages of code. Let $X_i$ be the number of errors on the $i$th page of code. Suppose that the $X_i$'s are Poisson RVs with mean 1 and that they are independent. Let $Y = \sum_i^n X_i$ be the total number of errors. Use the CLT to approximate $\P(Y < 90)$. \\ 
+
+	\item[14$i$.] A particle starts at the origin and moves along a line in jumps of one unit. For each jump, the probability is $p$ that the particle will jump 1 unit left, and $(1-p)$ that  the particle will jump 1 unit right. Let $X_n$ be the position of thee particle after $n$ jumps. Find $\E[X_n]$ and $\Var[X_n]$. Note this is known as a {\bf random walk}. \\ 
+
+	\item[15$i$.] Let $P$ be a RV for how much a stock price changes relative to the previous day. Suppose $Y$ can only take two values:  $Y=1$ if the stock price increased by one dollar, and $Y=-1$ if the stock price decreased by dollar. Let $\P (Y=1) = \P (Y=-1) = \frac 12$. Let $X_n$ be the value of the stock on day $n$, i.e. $X_n = \sum_i^n P_i$. Find $\E[X_n]$ and $\Var[X_n]$. Simulate $X_n$ and plot $X_n$ versus $n$ for $n = 1,2,...,10000$. Repeat the whole simulation several times. You'll notice that your runs look different, even though they were generated the same way. How do your theorized values for $\E[X_n]$ and $\Var[X_n]$ explain your observations?  
+
+\end{itemize}
+
+\hfill 
+
+
+
+
+{\Large \bf II --- intervals and tests} \\ 
+
+Nagy and others (2007) conducted an experiment to determine if there was a difference between female infants and male infants in social behavior, specifically how often they imitated finger movements made by the experimenter. Gestures in response to the experimenter were coded as 1, 2, or 3 with higher scores for more finger movement. \\ 
+
+The mean score for 19 females was 1.47 with an SD of 0.24, and the mean score for 23 males was 1.34 with an SD of 0.15. 
+
+\hfill
+
+\begin{itemize}
+
+	\item[1.] Compute a 95\% confidence interval for each group.  \\ 
+
+	\item[2.] Suppose you define a new random variable $D$, for the difference between female and male scores. Assuming the RVs are independent, what is $\E[D]$ and $\Var[D]$? \\ 
+
+	\item[3.] Compute a 95\% confidence interval for the mean difference. \\ 
+
+	\item[4.] Compute a 99\% confidence interval for the mean difference. \\ 
+
+	\item[5.] Continuing part b, suppose that the experiment was repeated with a new sample of data from different infants and computed a new 95\% confidence interval for the difference between female and male imitation scores. Which of the following numbers might be different in this new experiment: (1) population means, (2) population variances, (3) sample means, (4) sample variances, (5) the center of the CI, (6) the length of the CI, (7) whether or not the CI contains zero, (8) whether or not the CI contains the difference in population means. \\ 
+
+	\item[6.] Suppose we wanted to construct a hypothesis test whether there was any difference. State the null and alternativee hypotheses. Use a significance level of 5\%. Do this two ways: calculate the rejection region, and see if the observed value lies in this region. Look at the $p$-value. 
+
+\end{itemize}
+
+\hfill  
+
+In a hypothesis test, the null is always assumed to be true until there is strong evidence to suggest we should reject it. Of course, the outcome of a single hypothesis test does not necessarily lead to the correct result---the $p$-value (or whatever rubric you use) only represents a {\it likelihood}, and there's always a chance our conclusion is the wrong conclusion, even if the likelihood is very low.  \\  
+
+There are two kinds of error we can make in a hypothesis test:  
+
+\begin{itemize}	
+	\item {\bf Type 1 Error:} the probability of rejecting the null, when the null is *actually* true. The type I error is simply the significance level of a test.  
+	\item {\bf Type 2 Error:} the probability of failing to reject the null, when the null {\it actually} true. 
+\end{itemize} 
+
+\hfill 
+
+\begin{itemize}
+
+	\item[7.] Suppose we conduct a test with a significance level of 5\%. This means that the probability we make a type 1 error  is 5\%. Suppose we do  the same  test again on a new independent sample of data. What is the probability that both tests correctly fail to reject the null? \\ 
+
+	\item[8.] Each time we collect a new sample of data, there is a 5\% probability of making a type 1 error. If we do the test n times, what is the probability that we make no type 1 errors in any of the n independent tests? \\ 
+
+	\item[9.] What type of random variable could we use to model the number of type 1 errors out of n independent tests? \\ 
+
+	\item[10.] Suppose we keep collecting new independent samples and computing the test, and each time our sample size is large enough to give the test 60\% power, meaning that the probability of a type 2 error is 40\%. In the long run, the proportion of tests that correctly reject the null hypothesis converges to some number, what is this number? \\ 
+
+	\item[11.] Now, instead of the long run, suppose we stop after collecting 10 samples. What is the probability that strictly less than half of these tests reject the null? \\ 
+
+\end{itemize}
+
+\hfill 
+
+The {\bf power} of a test is the probability of {\it correctly} rejecting a false null.  Note this is the complement of Type II Error, i.e. Power = 1 - T2E.  
+
+\hfill 
+
+\begin{itemize}
+
+	\item[12.] In this problem we will consider testing a single mean with the null hypothesis mu = 1. To do this we use t.test(data, mu = 1) . The code below creates a function to generate a sample of n observations from an exponential distribution and see if we reject the null hypothesis: \\ 
+
+	\item[13.] For example, we can do the experiment once with n = 30 and the true mu = 2, and see if the null hypothesis is rejected or not. If it is rejected, the function will return TRUE , and otherwise FALSE . \\ 
+
+	\item[14.] Why can we use the t-distribution to test for this mean, even though the data is exponentially distributed? \\ 
+
+	\item[15.] The following code repeats the experiment 5 times and then shows the output from each. Modify this code by changing 5 to a larger number, like 1000, and then instead of showing all the outcomes use the mean() function on repeats to show the portion of experiments where the null hypothesis is rejected. THe number that is printed---what is this a measure of? \\ 
+
+	\item[16.] Now copy the above code and paste it below, change n from 30 to something larger like 40, and keep mu the same. How does the answer compare to the previous one with sample size 30? Explain your result. \\ 
+
+	\item[17.] Paste the first code again below, and this time keep n as 30 but change mu to something smaller, betwween 1 and 2, like 1.5. Explain your results. \\ 
+
+	\item[18.] Finally, without running any additional code, what do you expect the result will be if we changed mu to be 1 in the experiment? I.e., if the mean of the data really is 1, what percent of the time would we reject the null hypothesis? \\ 
+
+\end{itemize}
+
+\hfill 
+
+
+
+
+
+
+{\Large \bf III --- joint variability} \\ 
+
+Lastly, we will introduce joint variability---the tendency for two variables to vary together. \\  
+
+Covariance is a measure of  the extent to which two variables vary together in the same direction. Formally, the covariance of two variables $X$ and $Y$ is defined:
+
+$$\Cov[X,Y] = \E \big[ (X - \E[X]) (Y - \E[Y] )\big]$$ \ 
+
+Or, written as a sum:
+
+$$\sigma_{XY} = \frac 1n \sum_i^n (X_i - \bar X)(Y_i - \bar Y) \hspace{1cm} s_{XY} = \frac{1}{n-1} \sum_i^n (X_i - \bar X)(Y_i - \bar Y)$$ \ 
+
+where $\sigma_{XY}$ denotes the population covariance and $s_{XY}$ denotes the sample covariance.  
+
+\hfill 
+
+\begin{itemize}
+
+	\item[1.] Prove the variance of a sum is  equal to covariance \\  
+
+	\item[2.] Show that the covariance of a variable with  itself is simply the variance. \\ 
+
+	\item[3.] Suppose $U \sim Bin(n,p)$ and $V \sim \Bin(m,p)$ are independent binomial RVs. What are $\E[U+V]$ and $\Var[U+V]$? \\
+
+	\item[4.] SUppose we generate a RV $X$ the following way. First we flip a fair coin. If the coin is heads, take $X$ to have be $U \sim (0,1)$, and if the coin is tails, take $X \sim U(3,4)$. Find the mean and s.d. of $X$. \\ 
+
+	\item[5.] 
+
+\end{itemize} 
+
+
+
+
+
+
+
+\end{document}

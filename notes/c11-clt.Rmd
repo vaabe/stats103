@@ -75,6 +75,8 @@ A **sampling distribution** is the distribution of a sample statistic (e.g. the 
 The plots below illustrate the difference between the three distributions when the RV is a dice roll:
 
 ```{r, echo=FALSE, fig.width=12, fig.height=3.5}
+set.seed(5)
+
 pop_dist = data.frame(X = c(replicate(1,n=6), 
                             replicate(2,n=6), 
                             replicate(3,n=6), 
@@ -113,7 +115,7 @@ grid.arrange(plot1, plot2, plot3, ncol=3)
 Below are summary statistics for each distribution: 
 
 ```{r, echo=FALSE}
-results = data.frame(distribution = c('population', 'one random sample', 'sampling distribution of mean the'), 
+results = data.frame(distribution = c('population', 'one random sample', 'sampling distribution of the mean'), 
                      mean = c(3.5, round(mean(sample$X),3), round(mean(samplemeans$Xbar),3)), 
                      sd = c(1.708, round(sd(sample$X),3), round(sd(samplemeans$Xbar),3)))
 

@@ -50,6 +50,8 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 \newcommand{\mhat}[1]{\skew{3}\hat{#1}}
 
+--- 
+
 # 15--1 Regression Coefficients as Estimates
 
 In module 1 we introduced linear regression as a technique for modeling linearly related variables. We now have the tools to consider regression models with a little more rigour.   
@@ -99,17 +101,24 @@ confint(reg1, level = 0.99)
 
 After we've specified a regression model (i.e. estimated values for the coefficients), we can use it to predict the value of the response variable for given values of the predictors. The predicted value of a regression model, denoted $\mhat y$, is a *point estimate* of the model's prediction. We can generate an *interval estimate* of the model's prediction using the **residual standard error**.  
 
-First, consider the simple regression model of temperature on albedo, as depicted below, with the regression line overlaid:
+Consider the simple regression model of temperature on albedo, as depicted below, with the regression line overlaid in blue:
 
-```{r, fig.height=3.5, fig.width=5, fig.align='center', echo=FALSE}
+```{r, fig.height=3.5, fig.width=5, fig.align='center', include=FALSE}
 ggplot(aes(x = albedo, y = temperature), data = nycheat) +
   geom_point(size=0.5) +
   stat_smooth(method='lm', se = FALSE) +           # overlay regression line
   xlab('albedo (% solar reflectivity)') + ylab('temperature (farenheit)') +
   theme_bw()
+
+ggsave('./pics/c15-pic2.png')
 ```
 
-As it turns out, we can use the CLT to model the error terms of a regression model as *normally distributed* with mean 0 and standard deviation equal to the *residual standard error*. The residual standard error is assumed to be constant (so at any point on the regression line, the error has the same distribution). Below is the regression output for temperature on albedo:
+```{r, fig.height=3.5, fig.width=5, fig.align='center', echo=FALSE}
+knitr::include_graphics('./pics/c15-pic3.png')
+```
+
+
+As it turns out, the CLT allows us to model the error terms of a regression model as *normally distributed* with mean 0 and standard deviation equal to the *residual standard error*. The residual standard error is assumed to be constant (so at any point on the regression line, the error has the same distribution). In the above plot, the distribution of the residuals is depicted in red at two points in the data. Below is the regression output for temperature on albedo:
 
 ```{r}
 reg2 = lm(temperature ~ albedo, data = nycheat)
@@ -129,22 +138,31 @@ Note `fit` refers to the fitted value of the model (i.e. the point-estimate of t
 
 ## Hypothesis tests on regression coefficients
 
+We can use the hypothesis testing framework to test whether the predictor variables in a given model are really significant. Consider the multiple regression model of temperature, using using vegetation, albedo, building height, and population density as predictors:
+
+```{r}
+reg3 = lm(temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
+summary(reg3)
+```
+
+Note that each estimated coefficient also has an associated $p$-value (the column `Pr(>|t|)`). In R (and other software) the regression coefficients are treated as hypothesis tests, with the null hypothesis that the true coefficient is zero, i.e. 
+
+$$H_0: \beta = 0$$ 
+$$H_1: \beta \neq 0$$
+
+The $p$-value represents the likelihood of getting a value as extreme as the observed coefficient if the null were true (i.e. if the coefficient were really zero). In the output above, the first three predictors have very low $p$-values, suggesting that the coefficients for those variables are significant. Note $p$-value for population density is larger than the others, at 0.02, and is thus significant only at the 5\% level.  
 
 \ 
 
-# The Method of Least Squares 
+# 15--2 The Method of Least Squares 
 
-Although we described the regression coefficients as representing the effect of a predictor on a response variable. We did not show how they are derived. Here we do.   
+The technique most commonly used to fit the regression line is known as the *method of least squares*---this technique involves finding coefficients that minimize the sum of squared errors.     
 
-Regression coefficients are typically computed using the method of least squares, i.e. the coefficients that produce an equation that minimizes the sum of squared errors.  
-
-It turns out, for a simple (bivariate) regression, the coefficient on the predictor is given:
+In a simple (bivariate) regression, it turns out the value for $b_1$ that minimizes the sum of squared errors is given by:
 
 $$b_1 = r_{xy}\frac{s_y}{s_x}$$
 
-
-
-\ 
+where $r_{xy}$ is the sample correlation between $x$ and $y$, and $s_y$ and $s_x$ are the sample standard deviations of $y$ and $x$. The proof for this is below.  
 
 ## Bivariate Derivation  
 
@@ -152,7 +170,7 @@ For a given set of sample data on two variables, the regression equation predict
 
 $$y_i = b_0 + b_1 x_i + e_i$$
 
-Our goal is to find $b_0$ and $b_1$ such that the sum of squared residuals (SSR) is minimized. First, we can rearrange the equation above to get the error as a function of $b_0$ and $b_1$:
+Our goal is to find $b_0$ and $b_1$ such that the sum of squared residuals (SSR) is minimized. First, rearrange the equation above to get the error as a function of $b_0$ and $b_1$:
 
 $$e_i = e_i(b_0,b_1) = y_i - b_0 - b_1 x_i$$
 
@@ -160,21 +178,19 @@ The squared residuals are simply $(e_i)^2 = (y_i - b_0 - b_1 x_i)^2$, and the *s
 
 $$\SSR(b_0,b_1) = \sum_i^n (y_i - b_0 - b_1 x_i)^2$$
 
-To find $b_0$ for which $\SSR$ is minimum, we set the partial derivative of $\SSR$ with respect to $b_0$ equal to zero:
+To find $b_0$ for which $\SSR$ is minimum, set the partial derivative of $\SSR$ with respect to $b_0$ equal to zero:
 
 $$\frac{\partial{\SSR}}{\partial b_0} = -2 \sum_i^n(y_i - b_0 - b_1 x_i) = 0$$
 
-Rearranging:
+Rearranging, and using the fact that $\frac 1n \sum_i^n y_i = \bar y$:
 
 $$
 \begin{aligned}
   \sum_i^n b_0 &= \sum_i^n y_i - \sum_i^n b_1 x_i \\ 
-  \therefore \;\; b_0 &= \frac 1n \sum_i^n y_i - \frac 1n \sum_i^n b_1 x_i \\ 
-  \therefore \;\; b_0 &= \bar y - b_1 \bar x
+  b_0 &= \frac 1n \sum_i^n y_i - \frac 1n \sum_i^n b_1 x_i \\ 
+  b_0 &= \bar y - b_1 \bar x
 \end{aligned}  
 $$
-
-where we have used the fact that $\frac 1n \sum_i^n y_i = \bar y$.  
 
 Next, to find $b_1$ for which $\SSR$ is minimum, set the partial derivative of $\SSR$ with respect to $b_1$ equal to zero:
 
@@ -195,25 +211,25 @@ Using the fact that $\sum_i^n y_i = N\bar y$ and $\sum_i^n x_i = N \bar x$, and 
 $$
 \begin{aligned}
   b_1 \sum_i^n x_i^2 &= \sum_i^n x_i y_i - N \bar x \bar y - b_1 N \bar x^2 \\ 
-  \therefore \;\; b_1 &= \frac{\sum_i^n x_i y_i - N \bar x \bar y}{\sum_i^n x_i^2 - N \bar x^2} \\ 
-  \therefore \;\; b_1 &= \frac{\sum_i^n (x_i - \bar x)(y_i - \bar y)}{\sum_i^n (x_i - \bar x)^2} = \frac{s_{x,y}}{s_x^2} = r_{xy} \frac{s_y}{s_x}
+  b_1 &= \frac{\sum_i^n x_i y_i - N \bar x \bar y}{\sum_i^n x_i^2 - N \bar x^2} \\ 
+  b_1 &= \frac{\sum_i^n (x_i - \bar x)(y_i - \bar y)}{\sum_i^n (x_i - \bar x)^2} = \frac{s_{xy}}{s_x^2} = r_{xy} \frac{s_y}{s_x}
 \end{aligned}
 $$
 
-where we have used the fact that $\sum_i^n x_i y_i - N \bar x \bar y = \sum_i^n (x_i - \bar x)(y_i - \bar y)$. Note $s_{x,y}$ here denotes the sample covariance between $x$ and $y$. 
-
-
-
-\ 
+where we have used the fact that $\sum_i^n x_i y_i - N \bar x \bar y = \sum_i^n (x_i - \bar x)(y_i - \bar y)$. Note $s_{xy}$ denotes the sample covariance between $x$ and $y$. 
 
 ## Multivariate derivation 
 
 
 
 
+
+
+
+
 \ 
 
-# The Gauss-Markov Theorem 
+# 15--3 The Gauss-Markov Theorem 
 
 Note the variance of the regression coefficient is:
 
