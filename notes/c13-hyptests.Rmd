@@ -61,7 +61,7 @@ To test the null we compare it to a *competing* model for the population paramet
 
 There are two possible outcomes from a hypothesis test: either we *reject* the null or we *fail to reject* it---there's no in-between. For this reason hypothesis testing is only appropriate for testing a *well-defined* hypothesis---in other cases estimation and confidence intervals are better tools.  
 
-Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give a framework for *rejecting* a given model, but not for uniquely specifying one.  
+Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give a framework for rejecting a given model, but not for uniquely specifying one.  
 
 ## A simple example
 
@@ -90,7 +90,7 @@ y = dnorm(x, Xbar, SE)
 
 df = data.frame(x = x, y = y)
 
-breaks = round(seq(Xbar-4*SE, Xbar+4*SE, SE),3)
+breaks = round(seq(Xbar-4*SE, Xbar+4*SE, SE),2)
 
 alpha5 = 0.05
 alpha1 = 0.01
@@ -144,7 +144,7 @@ grid.arrange(plot1, plot2, ncol = 2)
   # theme_bw()
 ```
 
-Naturally, the total area occupied by the rejection region is simply the significance level. The **critical values** are the bounds of the rejection region. If $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles of the distribution (just like the bounds of a 95\% confidence interval). You can calculate these using `qnorm()` or `qt()`, as demonstrated last chapter, or you can simply compute a 95\% confidence interval for the mean:
+The total area occupied by the rejection region is simply the significance level. The **critical values** are the bounds of the rejection region. If $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles of the distribution (just like the bounds of a 95\% confidence interval). You can compute these using `qnorm()` or `qt()`, as demonstrated last chapter, or you can simply compute a 95\% confidence interval for the mean:
 
 ```{r, echo=FALSE}
 confidence_interval <- function(data, conflevel) {
@@ -242,7 +242,7 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
 
 Each region has a probability of 0.0116, which means the total probability of getting a value at least as extreme as the observed value is 0.0233. Thus the $p$-value of this test is 0.0233.  
 
-We say the result is statistically significant if the $p$-value is smaller than the significance level of the test. If we had used $\alpha = 0.05$, the result would have been statistically significant, and we would have rejected the null; but if we used $\alpha = 0.01$, we couldn't have rejected the null. Note this method is completely equivalent to the previous one (i.e. computing the rejection region and seeing whether it contains the observed value).  
+The result is statistically significant if the $p$-value is smaller than the significance level of the test. If we had used $\alpha = 0.05$, the result would have been statistically significant, and we would have rejected the null; but if we used $\alpha = 0.01$, we couldn't have rejected the null. Note this method is equivalent to the previous one (i.e. computing the rejection region and seeing whether it contains the observed value).  
 
 ## A workflow 
 
@@ -268,7 +268,7 @@ or:
 
 # 13--2  Errors and Power
 
-In a hypothesis test, the null assumed until there is strong evidence to suggest we should reject it. Of course, the outcome of a single hypothesis test does not necessarily lead to the correct result---the $p$-value (or whatever rubric you use) only represents a *likelihood*, and there's always a chance the conclusion we draw from a given test is the *wrong* conclusion, even if the likelihood is very low.   
+In a hypothesis test, the null is assumed until there is strong evidence to suggest we should reject it. Of course, the outcome of a single hypothesis test does not necessarily lead to the correct result---the $p$-value (or whatever rubric you use) only represents a *likelihood*, and there's always a chance the conclusion we draw from a given test is the *wrong* conclusion, even if the likelihood is very low.   
 
 ## Type I and Type II Errors
 
@@ -285,148 +285,123 @@ dimnames(hyptests) = list(' ' = c('$H_0$ true','$H_0$ false'),
 kable(hyptests)
 ```
 
-Usually the foremost goal in hypothesis testing is ensuring the probability of type I error is low.^[Since most hypothesis tests are out to *disprove* something, it would be particularly terrible if we rejected a null that was actually true.] Since the type I error is determined by the significance level, you must try to choose a significance level that is appropriate for the context---if type I errors are particularly dangerous, you should use a small significance level (e.g. $\alpha = 0.01$ or $\alpha = 0.005$), in order to minimize your chance of rejecting the null when it's actually true.  
+Usually the foremost goal in hypothesis testing is ensuring the probability of type I error is low.^[Since most hypothesis tests are out to *disprove* something, it would be particularly terrible if you rejected a null that was actually true.] Since the type I error is determined by the significance level, you must try to choose a significance level that is appropriate for the context---e.g. if type I errors are particularly dangerous, you should use a small significance level (e.g. $\alpha = 0.01$ or $\alpha = 0.005$), to minimize your chance of rejecting the null when it's actually true.  
 
-Naturally, decreasing the probability of type I error increases the probability of type II error, and vice versa. E.g.---if a judge decided to reduce the number of false convictions by *increasing* the burden of proof required to demonstrate guilt, this would inevitably result in more *actual* criminals getting away with their torts.  
+Naturally, decreasing the probability of type I error increases the probability of type II error, and vice versa. E.g.---if a judge decided to reduce the number of false convictions by increasing the burden of proof required to demonstrate guilt, this would also inevitably result in more *actual* criminals getting away with their torts.  
 
-*Example*---to visualize the type I and type II error, consider the case where the null hypothesis is $H_0: \mu = 0$. Suppose also that $\sigma = 1$ and $n = 100$. The figure below shows the distribution under the null, with the rejection region for an $\alpha = 0.05$ test shaded. If the null is *actually* true, then the probability of rejecting the null is simply the rejection region:  
+The two plots below should help you visualize the type I and type II error. Using the same example as above, the left figure shows the type I error if the true mean wage gap is really 12.36 (i.e. $H_0$ true). The right figure shows the type II error if the true mean wage gap is really 8 (i.e. $H_0$ false). The true distribution is overlaid in pink:  
 
-```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
-mu = 0; sigma = 1; n = 100; SE = sigma/sqrt(n)
+```{r, echo=FALSE, warning=FALSE, fig.width=8, fig.height=3.5}
+Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
+s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
+n = nrow(paygap)   #sample size
+SE = s / sqrt(n)   #standard error
+mu = 8
 
-c_null = qnorm(0.975)
-
-x = seq(-0.5, 0.5, length = 1000)
-y = dnorm(x, mean = mu, sd = SE)
+x = seq(-10, 4, length = 1000) * SE + Xbar
+y = dnorm(x, Xbar, SE)
+y1 = dnorm(x, mu, SE)
 
 df = data.frame(x = x, y = y)
+df1 = data.frame(x = x, y = y1)
 
-breaks = round(seq(-0.4, 0.4, 0.1),3)
+breaks = round(seq(Xbar-8*SE, Xbar+4*SE, SE),2)
 
-ggplot(data = df, mapping = aes(x = x, y = y)) +
+alpha5 = 0.05
+alpha1 = 0.01
+
+Z_5 = qnorm(1-alpha5/2)
+Z_1 = qnorm(1-alpha1/2)
+
+plot1 = ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_line() +
-  scale_x_continuous(breaks = breaks, 
-                     limits = c(-0.4, 0.4)) +
-  ylab('density') + xlab(TeX('$\\bar{X}$')) + 
-  geom_area(aes(x = ifelse(x < mu - c_null*SE, x, mu - c_null*SE)), fill='black', alpha=0.4) +
-  geom_area(aes(x = ifelse(x > mu + c_null*SE, x, mu + c_null*SE)), fill='black', alpha=0.4) +
-  geom_segment(x = 0, xend = 0, y = -1, yend = 5, linetype = 'dotted') +
-  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
-  geom_text(x = 0.25, y = -0.15, label = 'Type I Error', color = 'black') +
-  geom_text(x = -0.25, y = -0.15, label = 'Type I Error', color = 'black') +
-  ylim(-0.5,4.2) +
-  theme_light()
-```
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('Type I Error if $\\mu = 12.36$ ($H_0$ true)')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_text(label = TeX('$H_0: \\; \\mu = 12.36$'), x = 13, y = 0.05, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 8.8, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 15.7, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  theme_bw()
 
-Now suppose the true mean is actually $\mu = 0.3$. The figure below shows the distribution under the true mean, overlaid in pink. The type II error---the probability of failing to reject a false null---is the region to the left of the critical value, under the *true* distribution: 
-
-```{r, include=FALSE}
-mu = 0; sigma = 1; n = 100; SE = sigma/sqrt(n)
-
-c_null = qnorm(0.975)
-
-x = seq(-0.5, 1, length = 1000)
-y = dnorm(x, mean = mu, sd = SE)
-x1 = seq(-0.5, 1, length = 1000)
-y1 = dnorm(x, mean = 0.3, sd = SE)
-
-df = data.frame(x = x, y = y, x1 = x1, y1 = y1)
-
-breaks = round(seq(-0.4, 1, 0.1),3)
-
-ggplot(data = df, mapping = aes(x = x1, y = y1)) +
+plot2 = ggplot(data = df1, mapping = aes(x = x, y = y)) +
   geom_line(color = 'violetred') +
-  geom_line(aes(x = x, y = y), color = 'black') +
-  scale_x_continuous(breaks = breaks, 
-                     limits = c(-0.4, 0.7)) +
-  ylab('density') + xlab(TeX('$\\bar{X}$')) + 
-  geom_area(aes(x = ifelse(x1 < mu + c_null*SE, x1, mu + c_null*SE)), fill='violetred', alpha=0.4) +
-  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
-  geom_segment(x = 0.3, xend = 0.3, y = -1, yend = 5, color = 'violetred', linetype = 'dotted') +
-  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
-  geom_text(x = 0.35, y = 1, label = TeX('true mean: $\\mu = 0.3$'), color = 'violetred') +
-  geom_text(x = 0.25, y = -0.15, label = 'Type I Error', color = 'black') +
-  geom_text(x = -0.25, y = -0.15, label = 'Type I Error', color = 'black') +
-  geom_text(x = 0.08, y = -0.15, label = 'Type II Error', color = 'violetred') +
-  ylim(-0.5,4.2) +
-  theme_light() 
+  geom_line(data = df, aes(x = x, y = y), color = 'black') +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-8*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('Type II Error if $\\mu = 8$ ($H_0$ false)')) +
+  geom_area(aes(x = ifelse(x > Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  #geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_text(label = 'Type II Error', x = 11, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_text(label = TeX('$H_0: \\; \\mu = 12.36$'), x = 13, y = 0.05, size = 2.5, color = 'black') +
+  geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = TeX('$\\mu = 12.36$'), x = 7.5, y = 0.05, size = 2.5, color = 'violetred') +
+  theme_bw()
 
-ggsave('./pics/c13-pic1.png')
+grid.arrange(plot1, plot2, ncol = 2)
 ```
 
-```{r, echo=FALSE, fig.height=3.5, fig.width=5}
-knitr::include_graphics('./pics/c13-pic1.png')
-```
+Note that the type I error is simply the rejection region of the test. From the figure above you should be able to see why reducing the type I error must also increase the type II error.  
 
-From the above figure you should be able to see why decreasing the likelihood of type I error (by increasing the significance level) causes the type II error to increase.  
-
-## Power
+## The power of a test
 
 Another useful concept in hypothsis testing is *power*---this is the probability of *correctly* rejecting a false null. Note that power is the complement of type II error, i.e. Power = 1 - T2E. The secondary goal in hypothesis testing, after choosing the test with the smallest type I error, is to choose the test with maximum power---typically we want power to be greater than 0.8 (i.e. the probability of type II error to be smaller than 0.2).   
 
 Using the same example as above, the power of the test can be visualized as the following region:
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
-mu = 0; sigma = 1; n = 100; SE = sigma/sqrt(n)
-
-c_null = qnorm(0.975)
-
-x = seq(-0.5, 1, length = 1000)
-y = dnorm(x, mean = mu, sd = SE)
-x1 = seq(-0.5, 1, length = 1000)
-y1 = dnorm(x, mean = 0.3, sd = SE)
-
-df = data.frame(x = x, y = y, x1 = x1, y1 = y1)
-
-breaks = round(seq(-0.4, 1, 0.1),3)
-
-ggplot(data = df, mapping = aes(x = x1, y = y1)) +
+ggplot(data = df1, mapping = aes(x = x, y = y)) +
   geom_line(color = 'violetred') +
-  geom_line(aes(x = x, y = y), color = 'black') +
-  scale_x_continuous(breaks = breaks, 
-                     limits = c(-0.4, 0.7)) +
-  ylab('density') + xlab(TeX('$\\bar{X}$')) + 
-  geom_area(aes(x = ifelse(x1 < mu + c_null*SE, x1, mu + c_null*SE)), fill='violetred', alpha=0.4) +
-  geom_area(aes(x = ifelse(x1 > mu + c_null*SE, x1, mu + c_null*SE)), fill='blue', alpha=0.4) +
-  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
-  geom_segment(x = 0.3, xend = 0.3, y = -1, yend = 5, color = 'violetred', linetype = 'dotted') +
-  geom_text(x = 0.35, y = 1, label = TeX('true mean: $\\mu = 0.3$'), color = 'violetred') +
-  geom_text(x = 0.08, y = -0.15, label = 'Type II Error', color = 'violetred') +
-  geom_text(x = 0.5, y = 2, label = 'Power', color = 'blue') +
-  ylim(-0.5,4.2) +
-  theme_light() 
+  geom_line(data = df, aes(x = x, y = y), color = 'black') +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-8*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ggtitle(TeX('Power if $\\mu = 8$ ($H_0$ false)')) +
+  geom_area(aes(x = ifelse(x > Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='blue', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_text(label = 'Type II Error', x = 11, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'Power', x = 7.1, y = -0.005, size = 2.5, color = 'blue') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_text(label = TeX('$H_0: \\; \\mu = 12.36$'), x = 13, y = 0.05, size = 2.5, color = 'black') +
+  geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = TeX('$\\mu = 12.36$'), x = 7.5, y = 0.05, size = 2.5, color = 'violetred') +
+  theme_bw()
 ```
 
-The further away the true mean is from the proposed mean, the higher the power of the test. To see this, we'll consider something called the **power function**, $\beta$,^[Not to be confused with the regression coefficient, which is also denoted $\beta$.] which describes the power of a test as a function of $\mu$, i.e. $\beta = \beta(\mu)$. Since power is the probability of correctly rejecting the null, the power function is:
+The further away the true mean is from the proposed mean, the higher the power of the test. To see this mathematically, we'll consider something known as the **power function**, $\beta$,^[Not to be confused with the regression coefficient, which is also denoted $\beta$.] which describes the power of a test as a function of $\mu$, i.e. $\beta = \beta(\mu)$. Since power is the probability of correctly rejecting the null, the power function for a two-tailed test is simply:
+
+$$\beta(\mu) = \P(\bar X > c) + \P(X < -c)$$
+
+where $c = z_{(1-\alpha/2)}$. In full, this can be expressed:
 
 $$
 \begin{aligned}
-  \beta(\mu) &= \P(\bar X > c) \\ 
-  &= \P \bigg( \frac{\sqrt n (\bar X - \mu)}{\sigma} > \frac{\sqrt n (c - \mu)}{\sigma} \bigg) \\ 
-  &= \P \bigg( Z >  \frac{\sqrt n (c - \mu)}{\sigma} \bigg) \\ 
-  &= 1 -\P \bigg( Z < \frac{\sqrt n (c - \mu)}{\sigma} \bigg) \\ 
-  &= 1 - \Phi \bigg(  \frac{\sqrt n (c - \mu)}{\sigma} \bigg)
+  \beta(\mu) &= \P(\bar X > c) + \P(\bar X <  -c)\\ 
+  &= \P \bigg( \frac{\sqrt n (\bar X - \mu)}{\sigma} > \frac{\sqrt n (c - \mu)}{\sigma} \bigg) + \P \bigg( \frac{\sqrt n (\bar X - \mu)}{\sigma} < \frac{\sqrt n (-c - \mu)}{\sigma} \bigg)\\ 
+  &= \P \bigg( Z >  \frac{\sqrt n (c - \mu)}{\sigma} \bigg) + \bigg( Z <  \frac{\sqrt n (-c - \mu)}{\sigma} \bigg) \\ 
+  &= 1 -\P \bigg( Z < \frac{\sqrt n (c - \mu)}{\sigma} \bigg) + \bigg( Z <  \frac{\sqrt n (-c - \mu)}{\sigma} \bigg) \\ 
+  &= 1 - \Phi \bigg(  \frac{\sqrt n (c - \mu)}{\sigma} \bigg) + \Phi \bigg(  \frac{\sqrt n (-c - \mu)}{\sigma} \bigg)
 \end{aligned}
 $$
 
-where $\Phi$ is the cdf of the normal distribution. This function is clearly increasing in $\mu$, which means the power ($\beta$) increases as the true mean gets further away from its value under the null. Below is a plot of power as a function of the true mean:  
-
-```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
-c_null = qnorm(0.975)
-
-power = function(mu) {
-  1- pnorm(c_null - 10*mu)
-}
-
-xrange = data.frame(mu = seq(from = -0.5, to = 0.5, length = 100))
-
-ggplot(xrange, aes(mu)) + 
-  stat_function(fun = power) +
-  xlab(TeX('$\\mu$')) + ylab(TeX('$\\beta(\\mu)$')) +
-  ggtitle('power as a function of true mean') +
-  xlim(0,0.5) +
-  theme_light()
-```
+where $\Phi$ is the cdf of the normal distribution. Below is a plot of the power as a function of the true mean, using the example above:
 
 Of course, in a two-tailed hypothesis test, the true mean could be above or below the proposed mean, so the power function for a two-tailed test looks as follows:
 
@@ -434,17 +409,19 @@ Of course, in a two-tailed hypothesis test, the true mean could be above or belo
 c_null = qnorm(0.975)
 
 power = function(mu) {
-  pnorm(-c_null - 10*mu) + pnorm(c_null - 10*mu, lower.tail = F)
+  1 - pnorm(c_null - (10*(mu)/16)) + pnorm(-c_null - (10*(mu)/16))
 }
 
-xrange = data.frame(mu = seq(from = -0.5, to = 0.5, length = 100))
+#power(12.36)
+
+xrange = data.frame(mu = seq(from = -8, to = 8, length = 1000))
 
 ggplot(xrange, aes(mu)) + 
   stat_function(fun = power) +
   xlab(TeX('$\\mu$')) + ylab(TeX('$\\beta(\\mu)$')) +
   ggtitle('power as a function of true mean (two-tailed)') +
-  geom_segment(x = -0.6, xend = 0, y = 0.05, yend = 0.05, color  = 'violetred', linetype = 'dotted') +
-  geom_text(x = -0.3, y = 0.1, label = TeX('$\\alpha = 0.05$'), color = 'violetred') + 
+  geom_segment(x = -10, xend = 0, y = 0.05, yend = 0.05, color  = 'violetred', linetype = 'dotted') +
+  geom_text(x = -5, y = 0.1, label = TeX('$\\alpha = 0.05$'), color = 'violetred') + 
   theme_light()
 ```
 
@@ -453,7 +430,7 @@ We can also introduce another concept: the **size** of a test, which is the larg
 
 \ 
 
-# 13--3 Effect Size and Practical Significance 
+ 
 
 
 
