@@ -268,29 +268,195 @@ or:
 
 # 13--2  Errors and Power
 
-In a hypothesis test, the null is always assumed to be true until there is strong evidence to suggest we should reject it. Of course, the outcome of a single hypothesis test does not necessarily lead to the correct result---the $p$-value (or whatever rubric you use) only represents a *likelihood*, and there's always a chance our conclusion is the wrong conclusion, even if the likelihood is very low.  
+In a hypothesis test, the null assumed until there is strong evidence to suggest we should reject it. Of course, the outcome of a single hypothesis test does not necessarily lead to the correct result---the $p$-value (or whatever rubric you use) only represents a *likelihood*, and there's always a chance the conclusion we draw from a given test is the *wrong* conclusion, even if the likelihood is very low.   
+
+## Type I and Type II Errors
 
 There are two kinds of error we can make in a hypothesis test:  
 
-- **Type I Error** is the probability of rejecting the null, when the null is *actually* true. The type I error is simply the significance level of a test.^[Can you see why?]
-- **Type II Error** is the probability of failing to reject the null, when the null *actually* is false.  
+- **Type I Error:** rejecting the null, when the null is *actually* true. The probability of type I error is no more than the significance level of a test.^[Can you see why?]
+- **Type II Error:** failing to reject the null, when the null *actually* is false.  
+
+```{r, echo=FALSE}
+hyptests = as.table(rbind(c('$\\checkmark$','type I error'), c('type II error','$\\checkmark$')))
+dimnames(hyptests) = list(' ' = c('$H_0$ true','$H_0$ false'), 
+                           ' ' = c('retain null','reject null'))
+
+kable(hyptests)
+```
 
 Usually the foremost goal in hypothesis testing is ensuring the probability of type I error is low.^[Since most hypothesis tests are out to *disprove* something, it would be particularly terrible if we rejected a null that was actually true.] Since the type I error is determined by the significance level, you must try to choose a significance level that is appropriate for the context---if type I errors are particularly dangerous, you should use a small significance level (e.g. $\alpha = 0.01$ or $\alpha = 0.005$), in order to minimize your chance of rejecting the null when it's actually true.  
 
 Naturally, decreasing the probability of type I error increases the probability of type II error, and vice versa. E.g.---if a judge decided to reduce the number of false convictions by *increasing* the burden of proof required to demonstrate guilt, this would inevitably result in more *actual* criminals getting away with their torts.  
 
-There's another useful concept in hypothsis testing called **power**---this is the probability of *correctly* rejecting a false null. Note this is the complement of Type II Error, i.e. Power = 1 - T2E.     
+*Example*---to visualize the type I and type II error, consider the case where the null hypothesis is $H_0: \mu = 0$. Suppose also that $\sigma = 1$ and $n = 100$. The figure below shows the distribution under the null, with the rejection region for an $\alpha = 0.05$ test shaded. If the null is *actually* true, then the probability of rejecting the null is simply the rejection region:  
 
+```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
+mu = 0; sigma = 1; n = 100; SE = sigma/sqrt(n)
 
+c_null = qnorm(0.975)
 
+x = seq(-0.5, 0.5, length = 1000)
+y = dnorm(x, mean = mu, sd = SE)
 
+df = data.frame(x = x, y = y)
 
-To summarize this section: there are two primary imperatives in a hypothesis test:
+breaks = round(seq(-0.4, 0.4, 0.1),3)
 
-- minimize the probability of type I error  
-- maximize the power of the test---typically we want power to be greater than 0.8 (i.e. the probability of type II error to be smaller than 0.2)
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks, 
+                     limits = c(-0.4, 0.4)) +
+  ylab('density') + xlab(TeX('$\\bar{X}$')) + 
+  geom_area(aes(x = ifelse(x < mu - c_null*SE, x, mu - c_null*SE)), fill='black', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > mu + c_null*SE, x, mu + c_null*SE)), fill='black', alpha=0.4) +
+  geom_segment(x = 0, xend = 0, y = -1, yend = 5, linetype = 'dotted') +
+  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
+  geom_text(x = 0.25, y = -0.15, label = 'Type I Error', color = 'black') +
+  geom_text(x = -0.25, y = -0.15, label = 'Type I Error', color = 'black') +
+  ylim(-0.5,4.2) +
+  theme_light()
+```
+
+Now suppose the true mean is actually $\mu = 0.3$. The figure below shows the distribution under the true mean, overlaid in pink. The type II error---the probability of failing to reject a false null---is the region to the left of the critical value, under the *true* distribution: 
+
+```{r, include=FALSE}
+mu = 0; sigma = 1; n = 100; SE = sigma/sqrt(n)
+
+c_null = qnorm(0.975)
+
+x = seq(-0.5, 1, length = 1000)
+y = dnorm(x, mean = mu, sd = SE)
+x1 = seq(-0.5, 1, length = 1000)
+y1 = dnorm(x, mean = 0.3, sd = SE)
+
+df = data.frame(x = x, y = y, x1 = x1, y1 = y1)
+
+breaks = round(seq(-0.4, 1, 0.1),3)
+
+ggplot(data = df, mapping = aes(x = x1, y = y1)) +
+  geom_line(color = 'violetred') +
+  geom_line(aes(x = x, y = y), color = 'black') +
+  scale_x_continuous(breaks = breaks, 
+                     limits = c(-0.4, 0.7)) +
+  ylab('density') + xlab(TeX('$\\bar{X}$')) + 
+  geom_area(aes(x = ifelse(x1 < mu + c_null*SE, x1, mu + c_null*SE)), fill='violetred', alpha=0.4) +
+  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
+  geom_segment(x = 0.3, xend = 0.3, y = -1, yend = 5, color = 'violetred', linetype = 'dotted') +
+  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
+  geom_text(x = 0.35, y = 1, label = TeX('true mean: $\\mu = 0.3$'), color = 'violetred') +
+  geom_text(x = 0.25, y = -0.15, label = 'Type I Error', color = 'black') +
+  geom_text(x = -0.25, y = -0.15, label = 'Type I Error', color = 'black') +
+  geom_text(x = 0.08, y = -0.15, label = 'Type II Error', color = 'violetred') +
+  ylim(-0.5,4.2) +
+  theme_light() 
+
+ggsave('./pics/c13-pic1.png')
+```
+
+```{r, echo=FALSE, fig.height=3.5, fig.width=5}
+knitr::include_graphics('./pics/c13-pic1.png')
+```
+
+From the above figure you should be able to see why decreasing the likelihood of type I error (by increasing the significance level) causes the type II error to increase.  
+
+## Power
+
+Another useful concept in hypothsis testing is *power*---this is the probability of *correctly* rejecting a false null. Note that power is the complement of type II error, i.e. Power = 1 - T2E. The secondary goal in hypothesis testing, after choosing the test with the smallest type I error, is to choose the test with maximum power---typically we want power to be greater than 0.8 (i.e. the probability of type II error to be smaller than 0.2).   
+
+Using the same example as above, the power of the test can be visualized as the following region:
+
+```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
+mu = 0; sigma = 1; n = 100; SE = sigma/sqrt(n)
+
+c_null = qnorm(0.975)
+
+x = seq(-0.5, 1, length = 1000)
+y = dnorm(x, mean = mu, sd = SE)
+x1 = seq(-0.5, 1, length = 1000)
+y1 = dnorm(x, mean = 0.3, sd = SE)
+
+df = data.frame(x = x, y = y, x1 = x1, y1 = y1)
+
+breaks = round(seq(-0.4, 1, 0.1),3)
+
+ggplot(data = df, mapping = aes(x = x1, y = y1)) +
+  geom_line(color = 'violetred') +
+  geom_line(aes(x = x, y = y), color = 'black') +
+  scale_x_continuous(breaks = breaks, 
+                     limits = c(-0.4, 0.7)) +
+  ylab('density') + xlab(TeX('$\\bar{X}$')) + 
+  geom_area(aes(x = ifelse(x1 < mu + c_null*SE, x1, mu + c_null*SE)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x1 > mu + c_null*SE, x1, mu + c_null*SE)), fill='blue', alpha=0.4) +
+  geom_text(x = 0.05, y = 1, label = TeX('$H_0: \\; \\mu = 0$')) +
+  geom_segment(x = 0.3, xend = 0.3, y = -1, yend = 5, color = 'violetred', linetype = 'dotted') +
+  geom_text(x = 0.35, y = 1, label = TeX('true mean: $\\mu = 0.3$'), color = 'violetred') +
+  geom_text(x = 0.08, y = -0.15, label = 'Type II Error', color = 'violetred') +
+  geom_text(x = 0.5, y = 2, label = 'Power', color = 'blue') +
+  ylim(-0.5,4.2) +
+  theme_light() 
+```
+
+The further away the true mean is from the proposed mean, the higher the power of the test. To see this, we'll consider something called the **power function**, $\beta$,^[Not to be confused with the regression coefficient, which is also denoted $\beta$.] which describes the power of a test as a function of $\mu$, i.e. $\beta = \beta(\mu)$. Since power is the probability of correctly rejecting the null, the power function is:
+
+$$
+\begin{aligned}
+  \beta(\mu) &= \P(\bar X > c) \\ 
+  &= \P \bigg( \frac{\sqrt n (\bar X - \mu)}{\sigma} > \frac{\sqrt n (c - \mu)}{\sigma} \bigg) \\ 
+  &= \P \bigg( Z >  \frac{\sqrt n (c - \mu)}{\sigma} \bigg) \\ 
+  &= 1 -\P \bigg( Z < \frac{\sqrt n (c - \mu)}{\sigma} \bigg) \\ 
+  &= 1 - \Phi \bigg(  \frac{\sqrt n (c - \mu)}{\sigma} \bigg)
+\end{aligned}
+$$
+
+where $\Phi$ is the cdf of the normal distribution. This function is clearly increasing in $\mu$, which means the power ($\beta$) increases as the true mean gets further away from its value under the null. Below is a plot of power as a function of the true mean:  
+
+```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
+c_null = qnorm(0.975)
+
+power = function(mu) {
+  1- pnorm(c_null - 10*mu)
+}
+
+xrange = data.frame(mu = seq(from = -0.5, to = 0.5, length = 100))
+
+ggplot(xrange, aes(mu)) + 
+  stat_function(fun = power) +
+  xlab(TeX('$\\mu$')) + ylab(TeX('$\\beta(\\mu)$')) +
+  ggtitle('power as a function of true mean') +
+  xlim(0,0.5) +
+  theme_light()
+```
+
+Of course, in a two-tailed hypothesis test, the true mean could be above or below the proposed mean, so the power function for a two-tailed test looks as follows:
+
+```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
+c_null = qnorm(0.975)
+
+power = function(mu) {
+  pnorm(-c_null - 10*mu) + pnorm(c_null - 10*mu, lower.tail = F)
+}
+
+xrange = data.frame(mu = seq(from = -0.5, to = 0.5, length = 100))
+
+ggplot(xrange, aes(mu)) + 
+  stat_function(fun = power) +
+  xlab(TeX('$\\mu$')) + ylab(TeX('$\\beta(\\mu)$')) +
+  ggtitle('power as a function of true mean (two-tailed)') +
+  geom_segment(x = -0.6, xend = 0, y = 0.05, yend = 0.05, color  = 'violetred', linetype = 'dotted') +
+  geom_text(x = -0.3, y = 0.1, label = TeX('$\\alpha = 0.05$'), color = 'violetred') + 
+  theme_light()
+```
+
+We can also introduce another concept: the **size** of a test, which is the largest probability of rejecting $H_0$ when $H_0$ is true. This is simply the value of the power function at the true mean is equal to the null mean, which in this case is $\beta(0) = 0.05$.  
+
 
 \ 
+
+# 13--3 Effect Size and Practical Significance 
+
+
+
 
 
 
@@ -331,15 +497,11 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
 
 i.e. with $\alpha = 0.05$ the critical value for a one-tailed test is the 95th percentile of the distribution (in a two-tailed test with $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles).   
 
-\ 
-
-# 13--5 
 
 
 \ 
 
-
-# 13--6 Tests for a Difference in Means
+# 13--5 Testing for a Difference in Means
 
 A score ages ago was 290. The score now is 285. Is this a statistically significant change, or is it just chance variation? 
 
@@ -355,9 +517,17 @@ The expected value of X is: $E[X] = 0$ since the null is that there is no differ
 
 Recall the formula for linear combinations of Variance: $Var[W-V] = Var[W] + Var[V] = \frac{s_v^2}{n} + \frac{s_w^2}{n}$. Thus the standard error is:
 
-$$SE = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$$
+$$\SE = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$$
 
 
 
+
+\ 
+
+--- 
+
+\ 
+
+\ 
 
 
