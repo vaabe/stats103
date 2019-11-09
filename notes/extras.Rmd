@@ -1,15 +1,52 @@
 ---
-title: "Untitled"
-author: "Vinu Abeywick"
-date: "04/11/2019"
-output: pdf_document
+title: 'extras'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
 ```
 
-## extras
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
 
 # 14--3 Multivariate Normal 
 
@@ -26,8 +63,98 @@ The multivariate Gaussian has mean vector mu and correlation matrix Sigma.
 
 \ 
 
+# 13--5 The t-test 
 
-# 13--3 Effect Size and Practical Significance 
+To recap: the $t$-distribution is used to approximate the limiting behavior of a sample mean, when the true mean and variance of a population is *unknown*. The $t$-distribution has one parameter, *degrees of freedom*, which describes the exact shape of the bell curve. For a sample of size $n$, the random variable $\frac{\bar X - \mu}{s/\sqrt n}$ follows a $t$-distribution with $n-1$ degrees of freedom. For more on this, see: <a href="https://stats103.org/notes/c11-clt.html#the-t-distribution">$t$-distribution</a>.  
 
-"When the sample size becomes larger, point estimates become more precise and any real differ- ences in the mean and null value become easier to detect and recognize. Even a very small difference would likely be detected if we took a large enough sample. Sometimes researchers will take such large samples that even the slightest difference is detected, even differences where there is no practical value. In such cases, we still say the difference is statistically significant, but it is not practi- cally significant. For example, an online experiment might identify that placing additional ads on a movie review website statistically significantly increases viewership of a TV show by 0.001%, but this increase might not have any practical value.
-One role of a data scientist in conducting a study often includes planning the size of the study. The data scientist might first consult experts or scientific literature to learn what would be the smallest meaningful difference from the null value. She also would obtain other information, such as a very rough estimate of the true proportion p, so that she could roughly estimate the standard error. From here, she can suggest a sample size that is sufficiently large that, if there is a real difference that is meaningful, we could detect it. While larger sample sizes may still be used, these calculations are especially helpful when considering costs or potential risks, such as possible health impacts to volunteers in a medical study."
+Below are some common examples of hypothesis tests conducted using the $t$-distribution.  
+
+## One-sample t-test
+
+A one-sample $t$-test can be used to test whether the mean of a population is equal to some specified value. For a two-sided test, the null and alternative hypotheses are:
+
+$$H_0: \mu = k$$
+$$H_1: \mu \neq k$$
+
+Using data with sample mean $\bar X$, sample s.d. $s$, and sample size $n$, the $t$-statistic for this test is:
+
+$$t = \frac{\bar X - k}{\frac{s}{\sqrt n}}$$
+
+For a two-sided test of size $\alpha$, the bounds of the rejection region are:
+
+$$\bigg\{ k - t_{(1-\alpha/2)} \cdot \frac{s}{\sqrt n} \; , \; k + t_{(1-\alpha/2)} \cdot \frac{s}{\sqrt n} \bigg\}$$
+
+To perform the test you can either compute these bounds manually, or you can use the `t.test()` function, entering the array of sample data as one argument, and the proposed null value of the mean as the second argument. E.g. for the pay gap data, testing whether the true mean bonus betweeen females and males is really zero:
+
+```{r}
+t.test(paygap$DiffMeanBonusPercent, mu = 0)
+```
+
+## Welch two-sample t-test 
+
+The two-sample $t$-test can be used to test whether two groups have the same mean. The easiest way to do this is to think of the two groups as independent RVs, $X$ and $Y$, and to create a new RV that is a linear combination of both. For a two-sided test, the null and alternative hypotheses are:
+
+$$H_0: \mu_X - \mu_Y = 0$$
+$$H_1: \mu_X - \mu_Y \neq 0$$
+
+where $\mu_X$ denotes the true mean of group $X$ and $\mu_Y$ denotes the true mean of group $Y$. 
+
+The $t$-statistic for the test is:
+
+$$t = \frac{\bar X - \bar Y}{\sqrt{\frac{s_X^2}{n_X}+\frac{s_Y^2}{n_Y}}}$$
+
+where the subscripts $X$ and $Y$ denote the sample parameters for each of the two groups. In this case the distribution of the $t$-statistic follows a $t$-distribution with degrees of freedom:
+
+$$\text{DoF} = \frac{\bigg( \frac{s_X^2}{n_X} + \frac{s_Y^2}{n_Y} \bigg)^2}{\frac{(s_X^2 / n_X)^2}{n_X-1}+\frac{(s_Y^2 / n_Y)^2}{n_Y-1}}$$
+
+which is known as the Welch-Satterthwaite equation. For simplicity, you can use the smaller of $n_X-1$ and $n_Y-1$ as the DoF.  
+
+In any case, the `t.test()` function in R will do these cumbersome calculations for you: 
+
+```{r}
+t.test(paygap$FemaleBonusPercent, paygap$MaleBonusPercent)
+```
+
+## Two-sample t-test with pooled data
+
+If the two groups under scrutiny have the same population variance (or you have good reason to believe that they do), the difference in their sample means can be better approximated using what's known as the *pooled standard deviation:*
+
+$$s_p = \sqrt{\frac{s_X^2 (n_X - 1)+s_Y^2(n_Y-1)}{n_X+n_Y-2}}$$
+
+The $t$-statistic for this test is:
+
+$$t = \frac{\bar X - \bar Y}{s_p \cdot \sqrt{\frac{1}{n_X}+\frac{1}{n_Y}}}$$
+
+where the $t$-statistic follows a $t$-distribution with $n_X + n_Y - 2$ degrees of freedom. 
+
+Pooling the standard deviation gives an unbiased estimate of the common variance of the two groups, which gives a more accurate model overall. Note that if the two groups don't have the same variance, the Welch two-sample test must be used instead.  
+
+## Two-sample t-test with paired data
+
+Two samples are said to be *paired* if the observations are matched, i.e. both samples have observations on the *same* subjects. In this case we can use the *paired difference test*, which has a $t$-statistic:
+
+$$t = \frac{\bar X_D - \mu}{\frac{s_D}{\sqrt{n}}}$$
+
+where the subscript $D$ denotes the sample parameter pertaining to the difference in measurements for each subject---e.g. $s_D$ is the s.d. of the *difference* in measurements for each subject between the two groups. The $t$-statistic in this case follows a $t$-distribution with $n-1$ degrees of freeedom.  
+
+Using the paired $t$-test increases the overall power of the test (when compared to the unpaired Welch test), and so is beneficial in applicable contexts.  
+
+In R you can perform a paired two-sample $t$ test by specifying the parameter `paired = TRUE` in the `t.test()` function.  
+
+
+
+\ 
+
+# 13--6 Pearson's $\chi^2$ Test For Multinomial Data
+
+\ 
+
+\ 
+
+---
+
+\ 
+
+
+
+

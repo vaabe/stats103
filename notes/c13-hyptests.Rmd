@@ -291,7 +291,7 @@ Naturally, decreasing the probability of type I error increases the probability 
 
 The two plots below should help you visualize the type I and type II error. Using the same example as above, the left figure shows the type I error if the true mean wage gap is really 12.36 (i.e. $H_0$ true). The right figure shows the type II error if the true mean wage gap is really 8 (i.e. $H_0$ false). The true distribution is overlaid in pink:  
 
-```{r, echo=FALSE, warning=FALSE, fig.width=8, fig.height=3.5, fig.fullwidth = TRUE}
+```{r, echo=FALSE, warning=FALSE, fig.width=10, fig.height=3.5, fig.fullwidth = TRUE}
 Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
 s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
 n = nrow(paygap)   #sample size
@@ -433,7 +433,7 @@ We can also introduce another concept: the **size** of a test, which is the larg
 
 # 13--3 Effect Size and Practical Significance 
 
-There is a major issue in hypothesis testing that arises when using large samples. In a two-tailed test the critical values (the bounds of the rejection region) are given by $\mu \pm c \cdot \frac{s}{\sqrt n}$, where $\mu$ is the value of the true mean under the null. Note how the critical values have a dependency on $n$ $n$---specifically, that as $n$ becomes larger, the distance between the proposed null and the critical values becomes smaller. This means that for very large $n$, we will reject the null for very small deviations of the observed value from the null---even if the deviations are so small that they have no *practical significance*.   
+There is a major issue in hypothesis testing that arises when using large samples. In a two-tailed test the critical values (the bounds of the rejection region) are given by $\mu \pm c \cdot \frac{s}{\sqrt n}$, where $\mu$ is the value of the true mean under the null. Note how the critical values have a dependency on  $n$---specifically, that as $n$ becomes larger, the distance between the proposed null and the critical values becomes smaller. This means that for very large $n$, we will reject the null for very small deviations of the observed value from the null---even if the deviations are so small that they have no *practical significance*.   
 
 To illustrate this, suppose we are testing the average height in a population, and the null hypothesis is $\mu = 178$ cm. Suppose we have sample data with $\bar X = 179$ cm, $s = 23.5$ cm, and $n = 100$. If we were to conduct the hypothesis test that $\mu \neq 178$ cm at the $\alpha = 0.05$ level, with $c = Z_{(1-\alpha/2)} = 1.96$, we would have a rejection  region as follows:  
 
@@ -446,7 +446,11 @@ $$\Bigg\{ 178 - 1.96 \cdot \frac{23.5}{\sqrt{10000}} \;\; , \;\; 178 + 1.96 \cdo
 
 $$\Longrightarrow \;\;\; \{ 177.54 \; \text{cm},178.46 \; \text{cm} \}$$
 
-i.e. with $n = 10,000$ we would reject our observed value of 179 cm, even though in reality such a small difference doesn't really warrant concluding that the true mean height is not 178 cm. This example illustrates the fact that with large samples, results that are not *practically* significant can still be considered *statistically* significant, and the larger the sample size, the more this is going to happen.  
+i.e. with $n = 10,000$ we would reject our observed value of 179 cm, even though in reality such a small difference doesn't really warrant concluding that the true mean height is not 178 cm. This example illustrates the fact that with large samples, results that are not *practically* significant can still be considered *statistically* significant, and the larger the sample size, the more this is going to happen.   
+
+
+
+
  
 
 
@@ -495,24 +499,87 @@ i.e. with $\alpha = 0.05$ the critical value for a one-tailed test is the 95th p
 
 \ 
 
-# 13--5 Testing for a Difference in Means
+# 13--5 The t-test 
 
-A score ages ago was 290. The score now is 285. Is this a statistically significant change, or is it just chance variation? 
+To recap: the $t$-distribution is used to approximate the limiting behavior of a sample mean, when the true mean and variance of a population is *unknown*. The $t$-distribution has one parameter, *degrees of freedom*, which describes the exact shape of the bell curve. For a sample of size $n$, the random variable $\frac{\bar X - \mu}{s/\sqrt n}$ follows a $t$-distribution with $n-1$ degrees of freedom. For more on this, see: <a href="https://stats103.org/notes/c11-clt.html#the-t-distribution">$t$-distribution</a>.  
 
-You can use the z-test. Recall the z-statistic is calculated as follows:
+Below are some common examples of hypothesis tests conducted using the $t$-distribution.  
 
-$$Z = \frac{\bar X - \mu}{SE}$$
+## One-sample t-test
 
-where $SE = \frac{s}{\sqrt n}$, where $s$ is the sample standard deviation. Once you compute a test statistic, you can calculate its probability, which will give you a result.  
+A one-sample $t$-test can be used to test whether the mean of a population is equal to some specified value. For a two-sided test, the null and alternative hypotheses are:
 
-The easiest way to answer this problem is to think of the two samples as two independent RVs. You can then create a new RV that is a linear combination of both. E.g. let X be the RV for the difference between the two samples, i.e. X = W - V. 
+$$H_0: \mu = k$$
+$$H_1: \mu \neq k$$
 
-The expected value of X is: $E[X] = 0$ since the null is that there is no difference. The observed value is W-V=5. 
+Using data with sample mean $\bar X$, sample s.d. $s$, and sample size $n$, the $t$-statistic for this test is:
 
-Recall the formula for linear combinations of Variance: $Var[W-V] = Var[W] + Var[V] = \frac{s_v^2}{n} + \frac{s_w^2}{n}$. Thus the standard error is:
+$$t = \frac{\bar X - k}{\frac{s}{\sqrt n}}$$
 
-$$\SE = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$$
+For a two-sided test of size $\alpha$, the bounds of the rejection region are:
 
+$$\bigg\{ k - t_{(1-\alpha/2)} \cdot \frac{s}{\sqrt n} \; , \; k + t_{(1-\alpha/2)} \cdot \frac{s}{\sqrt n} \bigg\}$$
+
+To perform the test you can either compute these bounds manually, or you can use the `t.test()` function, entering the array of sample data as one argument, and the proposed null value of the mean as the second argument. E.g. for the pay gap data, testing whether the true mean bonus betweeen females and males is really zero:
+
+```{r}
+t.test(paygap$DiffMeanBonusPercent, mu = 0)
+```
+
+## Welch two-sample t-test 
+
+The two-sample $t$-test can be used to test whether two groups have the same mean. The easiest way to do this is to think of the two groups as independent RVs, $X$ and $Y$, and to create a new RV that is a linear combination of both. For a two-sided test, the null and alternative hypotheses are:
+
+$$H_0: \mu_X - \mu_Y = 0$$
+$$H_1: \mu_X - \mu_Y \neq 0$$
+
+where $\mu_X$ denotes the true mean of group $X$ and $\mu_Y$ denotes the true mean of group $Y$. 
+
+The $t$-statistic for the test is:
+
+$$t = \frac{\bar X - \bar Y}{\sqrt{\frac{s_X^2}{n_X}+\frac{s_Y^2}{n_Y}}}$$
+
+where the subscripts $X$ and $Y$ denote the sample parameters for each of the two groups. In this case the distribution of the $t$-statistic follows a $t$-distribution with degrees of freedom:
+
+$$\text{DoF} = \frac{\bigg( \frac{s_X^2}{n_X} + \frac{s_Y^2}{n_Y} \bigg)^2}{\frac{(s_X^2 / n_X)^2}{n_X-1}+\frac{(s_Y^2 / n_Y)^2}{n_Y-1}}$$
+
+which is known as the Welch-Satterthwaite equation. For simplicity, you can use the smaller of $n_X-1$ and $n_Y-1$ as the DoF.  
+
+In any case, the `t.test()` function in R will do these cumbersome calculations for you: 
+
+```{r}
+t.test(paygap$FemaleBonusPercent, paygap$MaleBonusPercent)
+```
+
+## Two-sample t-test with pooled data
+
+If the two groups under scrutiny have the same population variance (or you have good reason to believe that they do), the difference in their sample means can be better approximated using what's known as the *pooled standard deviation:*
+
+$$s_p = \sqrt{\frac{s_X^2 (n_X - 1)+s_Y^2(n_Y-1)}{n_X+n_Y-2}}$$
+
+The $t$-statistic for this test is:
+
+$$t = \frac{\bar X - \bar Y}{s_p \cdot \sqrt{\frac{1}{n_X}+\frac{1}{n_Y}}}$$
+
+where the $t$-statistic follows a $t$-distribution with $n_X + n_Y - 2$ degrees of freedom. 
+
+Pooling the standard deviation gives an unbiased estimate of the common variance of the two groups, which gives a more accurate model overall. Note that if the two groups don't have the same variance, the Welch two-sample test must be used instead.  
+
+## Two-sample t-test with paired data
+
+Two samples are said to be *paired* if the observations are matched, i.e. both samples have observations on the *same* subjects. In this case we can use the *paired difference test*, which has a $t$-statistic:
+
+$$t = \frac{\bar X_D - \mu}{\frac{s_D}{\sqrt{n}}}$$
+
+where the subscript $D$ denotes the sample parameter pertaining to the difference in measurements for each subject---e.g. $s_D$ is the s.d. of the *difference* in measurements for each subject between the two groups. The $t$-statistic in this case follows a $t$-distribution with $n-1$ degrees of freeedom.  
+
+Using the paired $t$-test increases the overall power of the test (when compared to the unpaired Welch test), and so is beneficial in applicable contexts.  
+
+In R you can perform a paired two-sample $t$ test by specifying the parameter `paired = TRUE` in the `t.test()` function.  
+
+
+
+\ 
 
 
 
