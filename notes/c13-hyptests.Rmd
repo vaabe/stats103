@@ -26,6 +26,7 @@ library(latex2exp)
 library(moments)
 library(bookdown)
 library(rsconnect)
+library(tufte)
 ```
 
 ```{r, include=FALSE}
@@ -291,7 +292,7 @@ Naturally, decreasing the probability of type I error increases the probability 
 
 The two plots below should help you visualize the type I and type II error. Using the same example as above, the left figure shows the type I error if the true mean wage gap is really 12.36 (i.e. $H_0$ true). The right figure shows the type II error if the true mean wage gap is really 8 (i.e. $H_0$ false). The true distribution is overlaid in pink:  
 
-```{r, echo=FALSE, warning=FALSE, fig.width=14, fig.height=3.5, fig.fullwidth = TRUE}
+```{r, echo=FALSE, warning=FALSE, fig.width=12, fig.height=3.5, fig.fullwidth = TRUE}
 Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
 s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
 n = nrow(paygap)   #sample size
@@ -575,12 +576,160 @@ where the subscript $D$ denotes the sample parameter pertaining to the differenc
 
 Using the paired $t$-test increases the overall power of the test (when compared to the unpaired Welch test), and so is beneficial in applicable contexts.  
 
-In R you can perform a paired two-sample $t$ test by specifying the parameter `paired = TRUE` in the `t.test()` function.  
+In R you can perform a paired two-sample $t$ test by specifying the parameter `paired = TRUE` in the `t.test()` function.   
 
 
 
 \ 
 
+# 13--6 Pearson's $\chi^2$ Test 
+
+The chi-squared test is useful for testing whether groups of categorical resemble each other. Consider the following example, which shows data on blood type and the observed incidence of a particular ailment: 
+
+```{r, echo=FALSE}
+ailment_study = as.table(rbind(c(55,50,7,24), c(7,5,3,13), c(26,32,8,17)))
+dimnames(ailment_study) = list(' ' = c('no ailment','advanced ailment','minimal ailment'), 
+                           ' ' = c('O','A','AB','B'))
+
+kable(ailment_study)
+```
+
+Suppose we're interested in finding whether the strength of the ailment is dependent on blood type. In this test the null hypothesis is that the strength of the ailment is *not* dependent on blood type.^[If the null were true, and the strength of the ailment is independent of blood type, then the data for each of the categories should *resemble* each other.]   
+
+To perform this test, for each cell in the data we compute the squared difference between the observed count and the expected count, divided by the expected count:
+
+$$\frac{(\text{observed-expected}^2)}{\text{expected}}$$
+
+E.g. for the first cell in the table (the number of subjects with no ailment and blood type O), the observed count is 55 and the expected count is 48.45.^[To calculate the expected count, note that there are 88 subjects in total with blood type O, and 247 subjects in the dataset in total, meaning the proportion of subjects in the study with blood type O is $\frac{88}{247} = 0.356$. Note also there are 136 subjects in in total with no ailment. This the *expected* count for subjects with no ailment and blood type O is $136 \cdot \frac{88}{246}=48.45$.] Thus: 
+
+$$\frac{(55-48.45)^2}{48.45}$$
+
+The chi-squared test-statistic is the sum of these values for each cell in the table:
+
+$$\chi^2 = \sum_i^k \frac{(X_i - \E[X_i])^2}{\E[X_i]}$$
+
+Which, in this case, is:
+
+$$\Longrightarrow \;\; \chi^2 = 15.797$$
+
+## The $\chi^2$ distribution 
+
+The chi-squared test statistic follows the *chi-squared distribution*, which describes the distribution of a *sum* of several independent standard normal distributions. The chi-squared distribution has one parameter, degrees of freedom, calculated as:
+
+$$\text{DoF} = (\text{num. rows - 1})(\text{num. cols - 1})$$
+
+In the example above, DoF = $(3-1)(4-1) = 6$. Below is a plot showing the chi-squared distribution for different DoFs:
+
+```{r, echo=FALSE, fig.width=7, fig.height=3.5, fig.align='center'}
+curve(dchisq(x,1),xlim=c(0,15),ylim=c(0,0.6),ylab="Chi Square Density")
+curve(dchisq(x,2),col="red",add=TRUE)
+curve(dchisq(x,3),col="blue",add=TRUE)
+curve(dchisq(x,5),col="dark green",add=TRUE)
+curve(dchisq(x,10),col="brown",add=TRUE)
+legend(12,0.55,c("DoF=1","DoF=2","DoF=3","DoF=5","DoF=10"),
+       col=c("black","red","blue","dark green","brown"),lty=1:5)
+```
+
+
+## The $\chi^2$-test
+
+In the example above, the observed test statistic $\chi^2 = 15.797$ encloses the following region in a $\chi^2$ distribution with 6 DoFs:
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
+x = seq(0,30, length = 1000)
+y = dchisq(x,6)
+
+df = data.frame(x = x, y = y)
+
+ggplot(data = df, aes(x = x, y = y)) + 
+  geom_line() +
+  geom_area(aes(x = ifelse(x > 15.797, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = 15.797, xend = 15.797, y = 0, yend = 0.05, color = 'violetred', linetype = 'dotted') +
+  geom_text(x = 15.797, y =  0.06, label = TeX("$\\chi^2 = 15.797$"), color = 'violetred') +
+  ggtitle(TeX('$\\chi^2$ distribution with 6 DoF')) +
+  ylab('density') + 
+  ylim(0,0.14) +
+  theme_light()
+```
+
+The shaded region is the $p$-value of the test, since this region contains values at least as extreme as the observed test statistic.  
+
+In R we can perform the test using the `chisq.test()` function, as follows:
+
+`r margin_note("Note the $\\texttt{chisq.test()}$ function requires data to be in the matrix or table format.")`
+
+```{r, warning=FALSE}
+## make contingency table 
+ailment_study = as.table(rbind(c(55,50,7,24), c(7,5,3,13), c(26,32,8,17)))
+
+## perform chi-squared test
+chisq.test(ailment_study)
+```
+
+The $p$-value of the test is 0.0149, which implies we can reject the null at the 5\% level, and conclude that the strength of the ailment is not independent of blood type.  
+
+Note in the above example we tested several hypotheses simultaneously---we could also have tested each group (advanced ailment and minimal ailment) *separately* against the control group for dependence on blood type:
+
+```{r, warning=FALSE}
+## test advanced ailament group against control group
+chisq.test(ailment_study[c(1,2), ])
+```
+
+```{r, warning=FALSE}
+## test minimal ailament group against control group
+chisq.test(ailment_study[c(1,3), ])
+```
+
+Note how each of these groups, when tested *separately* against the control group, yield vastly different results: the advanced ailment group has a significant $p$-value of 0.00343, but the minimal ailment group does not have a significant $p$-value.   
+
+
+
+\ 
+
+# 13--7 Multiple Testing 
+
+Testing many hypotheses simultaneously is known as *multiple testing*. For any one test, the chance of a false rejection of the null (type I error) is $\alpha$. But when conducting many tests simultaneously, the chance of *at least* one false rejection is much larger:
+
+$$\P(\text{at least 1 false rejection in }m \text{ tests}) = 1  - \P(\text{no false rejections in }m \text{ tests}) = 1-(1-\alpha)^m$$
+
+This is the **multiple testing problem**---it becomes particularly problematic when we conduct a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least 1 false rejection (or type I error) is known as the **familywise error rate**, or FWER.   
+
+Below we will discuss two methods of dealing with this problem: the **Bonferonni** method and the **Benjamini-Hochberg** method. 
+
+## The Bonferroni method
+
+The Bonferonni method works as follows: given $m$ hypothesis tests:
+
+$$H_{0i} \;\; \text{vs.} \;\; H_{1i} \;\;\;\; \text{for} \;\; i = 1,...,m$$
+
+If $p_1, ..., p_m$ denote the $m$ $p$-values for these tests, then reject the null hypothesis $H_{0i}$ if and only if: 
+
+$$p_i < \frac \alpha m$$
+
+This condition controls the familywise error rate to be $\text{FWER} \leq \alpha$. To see this:
+
+$$\text{FWER} = \P \Bigg\{ \bigcup_{i=1}^m \bigg( p_i \leq \frac \alpha m \bigg) \Bigg\} \leq \sum_i^m \bigg\{ \P(p_i \leq \frac \alpha m \bigg) \bigg\} = \sum_i^m \frac \alpha m = \alpha$$
+
+In R, you can adjust a vector of $p$-values with the Bonferonni correction with the function `p.adjust(p, method = p.adjust.methods = 'bonferonni')`, where `p` is a numeric vector of $p$-values.    
+
+One issue with the Bonferroni method is that it's very *conservative*---it tries to make it unlikely that you will make even one false rejection. It's often more reasonable to *control* the false discovery rate (FDR)---this is the basis of the BH method (next). 
+
+## The Benjamini-Hochberg method 
+
+The BH method gives a way to control the false discovery rate (FDR), which is defined as the number of false rejections divided by the number of rejections.  
+
+For $m$ tests, the BH method works as follows: 
+
+- arrange the observed $p$-values $p_1, ..., p_m$ in increasing order, and assign ranks to each value based on its order, i.e. $p_{(1)}, p_{(2)}, ...$
+- for each $p$-value, compute the BH critical value, defined as $\frac im \alpha$, where $\alpha$ is the desired false discovery rate (e.g. 5\% or 10\%)
+- compare the set of $p$-values to the BH critical value, and find the largest $p$-value that is smaller than the critical value
+- all $p$-values higher than this value are considered significant, and all those below are rejected
+
+If this procedure is applied, then regardless of how many null hypotheses are true, then the false discovery rate (FDR) will be:
+
+$$\text{FDR} \leq \alpha$$
+
+In R, you can adjust a vector of $p$-values with the BH correction by setting  `p.adjust(p, method = p.adjust.methods = 'fdr')`.  
 
 
 \ 
