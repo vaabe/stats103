@@ -382,11 +382,11 @@ ggplot(data = df1, mapping = aes(x = x, y = y)) +
   geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
   geom_text(label = TeX('$H_0: \\; \\mu = 12.36$'), x = 13, y = 0.05, size = 2.5, color = 'black') +
   geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
-  geom_text(label = TeX('$\\mu = 12.36$'), x = 7.5, y = 0.05, size = 2.5, color = 'violetred') +
+  geom_text(label = TeX('$\\mu = 8.0$'), x = 7.5, y = 0.05, size = 2.5, color = 'violetred') +
   theme_bw()
 ```
 
-The further away the true mean is from the proposed mean, the higher the power of the test. To see this mathematically, we'll consider something known as the **power function**, $\beta$,^[Not to be confused with the regression coefficient, which is also denoted $\beta$.] which describes the power of a test as a function of $\mu$, i.e. $\beta = \beta(\mu)$. Since power is the probability of correctly rejecting the null, the power function for a two-tailed test is simply:
+The further away the true mean is from the proposed mean, the higher the power of the test. To see this mathematically, we'll consider something known as the **power function**, $\beta$, which describes the power of a test as a function of $\mu$, i.e. $\beta = \beta(\mu)$.^[Not to be confused with the regression coefficient, which is also denoted $\beta$.] Since power is the probability of correctly rejecting the null, the power function for a two-tailed test is simply:
 
 $$\beta(\mu) = \P(\bar X > c) + \P(X < -c)$$
 
@@ -402,9 +402,7 @@ $$
 \end{aligned}
 $$
 
-where $\Phi$ is the cdf of the normal distribution. Below is a plot of the power as a function of the true mean, using the example above:
-
-Of course, in a two-tailed hypothesis test, the true mean could be above or below the proposed mean, so the power function for a two-tailed test looks as follows:
+where $\Phi$ is the cdf of the normal distribution. Below is a plot of the power as a function of the true mean:
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
 c_null = qnorm(0.975)
@@ -426,7 +424,7 @@ ggplot(xrange, aes(mu)) +
   theme_light()
 ```
 
-We can also introduce another concept: the **size** of a test, which is the largest probability of rejecting $H_0$ when $H_0$ is true. This is simply the value of the power function at the true mean is equal to the null mean, which in this case is $\beta(0) = 0.05$.  
+We can also introduce another concept: the **size** of a test, which is the largest probability of rejecting $H_0$ when $H_0$ is true. This is simply the value of the power function when the true mean is equal to the null mean, which in this case is $\beta(0) = 0.05$.  
 
 
 
