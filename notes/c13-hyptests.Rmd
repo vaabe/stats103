@@ -291,7 +291,7 @@ Naturally, decreasing the probability of type I error increases the probability 
 
 The two plots below should help you visualize the type I and type II error. Using the same example as above, the left figure shows the type I error if the true mean wage gap is really 12.36 (i.e. $H_0$ true). The right figure shows the type II error if the true mean wage gap is really 8 (i.e. $H_0$ false). The true distribution is overlaid in pink:  
 
-```{r, echo=FALSE, warning=FALSE, fig.width=10, fig.height=3.5, fig.fullwidth = TRUE}
+```{r, echo=FALSE, warning=FALSE, fig.width=14, fig.height=3.5, fig.fullwidth = TRUE}
 Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
 s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
 n = nrow(paygap)   #sample size
