@@ -211,6 +211,7 @@ ggplot(data = df, aes(x = x, y = y)) +
   geom_segment(x = 15.797, xend = 15.797, y = 0, yend = 0.05, color = 'violetred', linetype = 'dotted') +
   geom_text(x = 15.797, y =  0.06, label = TeX("$\\chi^2 = 15.797$"), color = 'violetred') +
   ggtitle(TeX('$\\chi^2$ distribution with 6 DoF')) +
+  ylab('density') + 
   ylim(0,0.14) +
   theme_light()
 ```
@@ -219,7 +220,7 @@ The shaded region is the $p$-value of the test, since this region contains value
 
 In R we can perform the test using the `chisq.test()` function, as follows:
 
-`r margin_note("Note the $\\texttt{chisq.text()}$ function requires data to be in the matrix or table format.")`
+`r margin_note("Note the $\\texttt{chisq.test()}$ function requires data to be in the matrix or table format.")`
 
 ```{r, warning=FALSE}
 ## make contingency table 
@@ -229,9 +230,9 @@ ailment_study = as.table(rbind(c(55,50,7,24), c(7,5,3,13), c(26,32,8,17)))
 chisq.test(ailment_study)
 ```
 
-i.e. the $p$-value of the test is 0.0149, which implies we can reject the null at the 5\% level, and conclude that the strength of the ailment is not independent of blood type.  
+The $p$-value of the test is 0.0149, which implies we can reject the null at the 5\% level, and conclude that the strength of the ailment is not independent of blood type.  
 
-Note in the above example we tested several hypotheses simultaneously---we could also have tested each group  (advanced ailment and minimal ailment) *separately* against the control for dependence on blood type:
+Note in the above example we tested several hypotheses simultaneously---we could also have tested each group (advanced ailment and minimal ailment) *separately* against the control group for dependence on blood type:
 
 ```{r, warning=FALSE}
 ## test advanced ailament group against control group
@@ -243,7 +244,7 @@ chisq.test(ailment_study[c(1,2), ])
 chisq.test(ailment_study[c(1,3), ])
 ```
 
-Note how each of these groups, when tested *separately* against the control group, yielded vastly different results: the advanced ailment group has a significant $p$-value of 0.00343, but the minimal ailment group does not have a significant $p$-value.   
+Note how each of these groups, when tested *separately* against the control group, yield vastly different results: the advanced ailment group has a significant $p$-value of 0.00343, but the minimal ailment group does not have a significant $p$-value.   
 
 
 
@@ -251,7 +252,84 @@ Note how each of these groups, when tested *separately* against the control grou
 
 # Multiple Testing 
 
-Testing many hypotheses simultaneously is known as *multiple testing*. For any one test, the chance of a false rejection of the null (type I error) is $\alpha$. But when conducting the tests  simultaneously, the chance of *at least* one false rejection is much higher.  This is the **multiple testing problem**.  
+Testing many hypotheses simultaneously is known as *multiple testing*. For any one test, the chance of a false rejection of the null (type I error) is $\alpha$. But when conducting many tests simultaneously, the chance of *at least* one false rejection is much larger:
+
+$$\P(\text{at least 1 false rejection in }m \text{ tests}) = 1  - \P(\text{no false rejections in }m \text{ tests}) = 1-(1-\alpha)^m$$
+
+This is the **multiple testing problem**---it becomes particularly problematic when we conduct a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least 1 false rejection (or type I error) is known as the **familywise error rate**, or FWER.   
+
+Below we will discuss two methods of dealing with this problem: the **Bonferonni** method and the **Benjamini-Hochberg** method. 
+
+## The Bonferroni method
+
+The Bonferonni method works as follows: given $m$ hypothesis tests:
+
+$$H_{0i} \;\; \text{vs.} \;\; H_{1i} \;\;\;\; \text{for} \;\; i = 1,...,m$$
+
+If $p_1, ..., p_m$ denote the $m$ $p$-values for these tests, then reject the null hypothesis $H_{0i}$ if and only if: 
+
+$$p_i < \frac \alpha m$$
+
+This condition controls the familywise error rate to be $\text{FWER} \leq \alpha$. To see this:
+
+$$\text{FWER} = \P \Bigg\{ \bigcup_{i=1}^m \bigg( p_i \leq \frac \alpha m \bigg) \Bigg\} \leq \sum_i^m \bigg\{ \P(p_i \leq \frac \alpha m \bigg) \bigg\} = \sum_i^m \frac \alpha m = \alpha$$
+
+In R, you can adjust a vector of $p$-values with the Bonferonni correction with the function `p.adjust(p, method = p.adjust.methods = 'bonferonni')`, where `p` is a numeric vector of $p$-values.    
+
+One issue with the Bonferroni method is that it's very *conservative*---it tries to make it unlikely that you will make even one false rejection. It's often more reasonable to *control* the false discovery rate (FDR)---this is the basis of the BH method (next). 
+
+## The Benjamini-Hochberg method 
+
+The BH method gives a way to control the false discovery rate (FDR), which is defined as the number of false rejections divided by the number of rejections.  
+
+For $m$ tests, the BH method works as follows: 
+
+- arrange the observed $p$-values $p_1, ..., p_m$ in increasing order, and assign ranks to each value based on its order, i.e. $p_{(1)}, p_{(2)}, ...$
+- for each $p$-value, compute the BH critical value, defined as $\frac im \alpha$, where $\alpha$ is the desired false discovery rate (e.g. 5\% or 10\%)
+- compare the set of $p$-values to the BH critical value, and find the largest $p$-value that is smaller than the critical value
+- all $p$-values higher than this value are considered significant, and all those below are rejected
+
+If this procedure is applied, then regardless of how many null hypotheses are true, then the false discovery rate (FDR) will be:
+
+$$\text{FDR} \leq \alpha$$
+
+In R, you can adjust a vector of $p$-values with the BH correction by setting  `p.adjust(p, method = p.adjust.methods = 'fdr')`.  
+
+
+
+## The BH method 
+
+
+
+by arranging the $p$-values $p_1, ..., p_m$ in *increasing* order, then for a given $\alpha$, finding the largest $k$ such that $p_k \leq k \frac \alpha m$. We then reject all null hypotheses $H_{0i}$ for $i = 1,...,k$.  
+
+Some definitions:
+
+- the false discovery rate (FDR) is the number of false rejections divided by the number of rejections 
+- the false discovery proportion (FDP) is the proportion of false rejections
+- given $m$ tests, let $m_0$ be the number of null hypotheses that are *true*
+- let $m_1$ be the number of null hypotheses that are false, such that $m_1 = m - m_0$
+
+Construct the following table showing the outcomes:
+
+```{r, echo=FALSE}
+multtests = as.table(rbind(c('$U$','$V$','$m_0$'), c('$T$','$S$','$m_1$'), c('$m-R$','$R$','$m$')))
+dimnames(multtests) = list(' ' = c('$H_0$ true','$H_0$ false','total'), 
+                           ' ' = c('$H_0$ not rejected','$H_0$ rejected','total'))
+
+kable(multtests)
+```
+
+Using this table, define the FDP as follows:
+
+$$\text{FDP} = \begin{cases} V/R & R > 0 \\ 0 & R=0 \end{cases}$$
+
+Then, if $p_1, ..., p_m$ are the **ordered** $p$-values from the $m$ tests, define:
+
+$$k_i = \frac{i}{C_m} \frac \alpha m \hspace{1cm} R = \text{max} \big\{ p_i < k_i \big\}$$
+
+where $C_m = 1$ if the $p$-values are independent, and if not, then $C_m = \sum_i^m \frac 1i$. If we let $T = p_R$, then $T$ is the **BH rejection threshold**. We can thus reject all null hypotheses $H_{0i}$ for which $P_i \leq T$.   
+
 
 
 

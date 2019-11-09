@@ -474,7 +474,7 @@ $$H_1: \mu > 0$$
 
 To conduct this one-tailed test at the 5\% significance level, the rejection region comprises only the uppermost extreme 5\% of values under the distribution:
 
-```{r, fig.height=3.5, fig.width=5, fig.align='center'}
+```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
 x = seq(-4, 4, length = 1000)
 y = dnorm(x, mean = 0, sd = 1)
 
@@ -698,7 +698,7 @@ Below we will discuss two methods of dealing with this problem: the **Bonferonni
 
 ## The Bonferroni method
 
-The Bonferonni method works as follows: given $m$ hypothesis tests:
+The Bonferonni method gives a way to control the familywise error rate (FWER). For $m$ tests, the Bonferonni method works as follows: 
 
 $$H_{0i} \;\; \text{vs.} \;\; H_{1i} \;\;\;\; \text{for} \;\; i = 1,...,m$$
 
