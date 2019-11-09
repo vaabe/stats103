@@ -291,7 +291,7 @@ Naturally, decreasing the probability of type I error increases the probability 
 
 The two plots below should help you visualize the type I and type II error. Using the same example as above, the left figure shows the type I error if the true mean wage gap is really 12.36 (i.e. $H_0$ true). The right figure shows the type II error if the true mean wage gap is really 8 (i.e. $H_0$ false). The true distribution is overlaid in pink:  
 
-```{r, echo=FALSE, warning=FALSE, fig.width=8, fig.height=3.5}
+```{r, echo=FALSE, warning=FALSE, fig.width=8, fig.height=3.5, fig.fullwidth = TRUE}
 Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
 s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
 n = nrow(paygap)   #sample size
@@ -428,8 +428,25 @@ ggplot(xrange, aes(mu)) +
 We can also introduce another concept: the **size** of a test, which is the largest probability of rejecting $H_0$ when $H_0$ is true. This is simply the value of the power function at the true mean is equal to the null mean, which in this case is $\beta(0) = 0.05$.  
 
 
+
 \ 
 
+# 13--3 Effect Size and Practical Significance 
+
+There is a major issue in hypothesis testing that arises when using large samples. In a two-tailed test the critical values (the bounds of the rejection region) are given by $\mu \pm c \cdot \frac{s}{\sqrt n}$, where $\mu$ is the value of the true mean under the null. Note how the critical values have a dependency on $n$ $n$---specifically, that as $n$ becomes larger, the distance between the proposed null and the critical values becomes smaller. This means that for very large $n$, we will reject the null for very small deviations of the observed value from the null---even if the deviations are so small that they have no *practical significance*.   
+
+To illustrate this, suppose we are testing the average height in a population, and the null hypothesis is $\mu = 178$ cm. Suppose we have sample data with $\bar X = 179$ cm, $s = 23.5$ cm, and $n = 100$. If we were to conduct the hypothesis test that $\mu \neq 178$ cm at the $\alpha = 0.05$ level, with $c = Z_{(1-\alpha/2)} = 1.96$, we would have a rejection  region as follows:  
+
+$$\Bigg\{ 178 - 1.96 \cdot \frac{23.5}{\sqrt{100}} \;\; , \;\; 178 + 1.96 \cdot \frac{23.5}{\sqrt{100}} \Bigg\}$$
+$$\Longrightarrow \;\;\; \{ 173.39 \; \text{cm},182.61 \; \text{cm} \}$$
+
+i.e. we would reject the null if we observed a value more extreme than the two critical values given. Since our observed value is 179 cm, we do not reject the null, which is an appropriate result since the difference between 178 cm and 179 cm is trivial in the context of people's heights. But if we do the same test with a sample size $n= 10,000$, the rejection region would be:
+
+$$\Bigg\{ 178 - 1.96 \cdot \frac{23.5}{\sqrt{10000}} \;\; , \;\; 178 + 1.96 \cdot \frac{23.5}{\sqrt{10000}} \Bigg\}$$
+
+$$\Longrightarrow \;\;\; \{ 177.54 \; \text{cm},178.46 \; \text{cm} \}$$
+
+i.e. with $n = 10,000$ we would reject our observed value of 179 cm, even though in reality such a small difference doesn't really warrant concluding that the true mean height is not 178 cm. This example illustrates the fact that with large samples, results that are not *practically* significant can still be considered *statistically* significant, and the larger the sample size, the more this is going to happen.  
  
 
 
