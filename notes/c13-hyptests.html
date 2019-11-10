@@ -460,7 +460,7 @@ chisq.test(ailment_study[c(1,3), ])</code></pre>
 <p>E.g. if you conducted 10 tests simultaneously at the 5% level, the chance of <em>at least</em> one false rejection is:</p>
 <p><span class="math display">\[1-(0.95)^{10} = 0.401\]</span></p>
 <p>which is clearly much larger than the chance of false rejection in a single test. This is the <strong>multiple testing problem</strong>—it becomes particularly problematic when conducting a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least one false rejection in multiple hypothesis tests is known as the <strong>familywise error rate</strong>, or FWER.</p>
-<p>Of course, the easiest way to get around this problem is to do as few simultaneous tests as necessary—this will ensure a small FWER. But in contexts where multiple testing is necessary, there are a number of methods for dealing with this problem. Below we will briefly discuss two: the <strong>Bonferonni</strong> method and the <strong>Benjamini-Hochberg</strong> method.</p>
+<p>Of course, the easiest way to get around this problem is to do as few tests as necessary—this will ensure a small FWER. But in contexts where multiple testing is necessary, there are a number of methods for dealing with this problem. Below we will briefly discuss two: the <strong>Bonferonni</strong> method and the <strong>Benjamini-Hochberg</strong> method.</p>
 <div id="the-bonferroni-method" class="section level2">
 <h2>The Bonferroni method</h2>
 <p>The Bonferonni method gives a way to control the familywise error rate (FWER). It works as follows.</p>

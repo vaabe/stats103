@@ -698,7 +698,7 @@ $$1-(0.95)^{10} = 0.401$$
 
 which is clearly much larger than the chance of false rejection in a single test. This is the **multiple testing problem**---it becomes particularly problematic when conducting a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least one false rejection in multiple hypothesis tests is known as the **familywise error rate**, or FWER.   
 
-Of course, the easiest way to get around this problem is to do as few simultaneous tests as necessary---this will ensure a small FWER. But in contexts where multiple testing is necessary, there are a number of methods for dealing with this problem. Below we will briefly discuss two: the **Bonferonni** method and the **Benjamini-Hochberg** method. 
+Of course, the easiest way to get around this problem is to do as few tests as necessary---this will ensure a small FWER. But in contexts where multiple testing is necessary, there are a number of methods for dealing with this problem. Below we will briefly discuss two: the **Bonferonni** method and the **Benjamini-Hochberg** method. 
 
 ## The Bonferroni method
 
