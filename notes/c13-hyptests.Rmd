@@ -592,7 +592,7 @@ dimnames(ailment_study) = list(' ' = c('no ailment','advanced ailment','minimal 
 kable(ailment_study)
 ```
 
-Suppose we're interested in finding whether the strength of the ailment is dependent on blood type. In this test the null hypothesis is that the strength of the ailment is *not* dependent on blood type.^[If the null were true, and the strength of the ailment is independent of blood type, then the data for each of the categories should *resemble* each other.]   
+Suppose we're interested in finding whether the strength of the ailment is dependent on blood type. To test this, we define the null hypothesis that the strength of the ailment is *not* dependent on blood type---i.e. that the data in different categories *resemble* each other---and the alternative hypotheses that the strength of ailment is *dependent* on blood type.  
 
 To perform this test, for each cell in the data we compute the squared difference between the observed count and the expected count, divided by the expected count:
 
@@ -614,9 +614,9 @@ $$\Longrightarrow \;\; \chi^2 = 15.797$$
 
 The chi-squared test statistic follows the *chi-squared distribution*, which describes the distribution of a *sum* of several independent standard normal distributions. The chi-squared distribution has one parameter, degrees of freedom, calculated as:
 
-$$\text{DoF} = (\text{num. rows - 1})(\text{num. cols - 1})$$
+$$\text{DoF} = (\text{number of rows - 1})(\text{number of cols - 1})$$
 
-In the example above, DoF = $(3-1)(4-1) = 6$. Below is a plot showing the chi-squared distribution for different DoFs:
+Below is a plot showing the chi-squared distribution for different DoFs:
 
 ```{r, echo=FALSE, fig.width=7, fig.height=3.5, fig.align='center'}
 curve(dchisq(x,1),xlim=c(0,15),ylim=c(0,0.6),ylab="Chi Square Density")
@@ -631,7 +631,7 @@ legend(12,0.55,c("DoF=1","DoF=2","DoF=3","DoF=5","DoF=10"),
 
 ## The $\chi^2$-test
 
-In the example above, the observed test statistic $\chi^2 = 15.797$ encloses the following region in a $\chi^2$ distribution with 6 DoFs:
+In the example above, DoF = $(3-1)(4-1) = 6$. The observed test statistic, $\chi^2 = 15.797$, encloses the following region in a $\chi^2$ distribution with 6 DoFs:
 
 ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
 x = seq(0,30, length = 1000)
@@ -650,15 +650,17 @@ ggplot(data = df, aes(x = x, y = y)) +
   theme_light()
 ```
 
-The shaded region is the $p$-value of the test, since this region contains values at least as extreme as the observed test statistic.  
+The shaded region is the $p$-value of the test, since this region contains values at least as extreme as the observed test statistic. As always, the size of the $p$-value will tell us whether to reject or retain the null, depending on the significance level of the test.  
 
-In R we can perform the test using the `chisq.test()` function, as follows:
+In R we can perform the test and find the $p$-value using the `chisq.test()` function, as follows:
 
-`r margin_note("Note the $\\texttt{chisq.test()}$ function requires data to be in the matrix or table format.")`
+`r margin_note("Note the $\\texttt{chisq.test()}$ function requires data to be in the matrix or table format (in R). The data should be presented as a <a href='https://en.wikipedia.org/wiki/Contingency_table'>contigency table</a>.")`
 
 ```{r, warning=FALSE}
 ## make contingency table 
 ailment_study = as.table(rbind(c(55,50,7,24), c(7,5,3,13), c(26,32,8,17)))
+dimnames(ailment_study) = list(' ' = c('no ailment','advanced ailment','minimal ailment'), ' ' = c('O','A','AB','B'))
+ailment_study
 
 ## perform chi-squared test
 chisq.test(ailment_study)
@@ -666,7 +668,7 @@ chisq.test(ailment_study)
 
 The $p$-value of the test is 0.0149, which implies we can reject the null at the 5\% level, and conclude that the strength of the ailment is not independent of blood type.  
 
-Note in the above example we tested several hypotheses simultaneously---we could also have tested each group (advanced ailment and minimal ailment) *separately* against the control group for dependence on blood type:
+Note the above example involved performing several hypothesis tests *simultaneously*. We could also have tested each group (advanced ailment and minimal ailment) *separately* against the control group for dependence on blood type:
 
 ```{r, warning=FALSE}
 ## test advanced ailament group against control group
@@ -678,7 +680,7 @@ chisq.test(ailment_study[c(1,2), ])
 chisq.test(ailment_study[c(1,3), ])
 ```
 
-Note how each of these groups, when tested *separately* against the control group, yield vastly different results: the advanced ailment group has a significant $p$-value of 0.00343, but the minimal ailment group does not have a significant $p$-value.   
+Note how each of these groups, when tested *separately* against the control group, yields more variable results: the advanced ailment group has a significant $p$-value of 0.00343, but the minimal ailment group does not have a significant $p$-value.   
 
 
 
@@ -686,29 +688,35 @@ Note how each of these groups, when tested *separately* against the control grou
 
 # 13--7 Multiple Testing 
 
-Testing many hypotheses simultaneously is known as *multiple testing*. For any one test, the chance of a false rejection of the null (type I error) is $\alpha$. But when conducting many tests simultaneously, the chance of *at least* one false rejection is much larger:
+Testing many hypotheses simultaneously is known as *multiple testing*. For any one test, the chance of a false rejection (type I error) is $\alpha$. But when conducting many tests simultaneously, the chance of *at least* one false rejection is much larger:
 
 $$\P(\text{at least 1 false rejection in }m \text{ tests}) = 1  - \P(\text{no false rejections in }m \text{ tests}) = 1-(1-\alpha)^m$$
 
-This is the **multiple testing problem**---it becomes particularly problematic when we conduct a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least 1 false rejection (or type I error) is known as the **familywise error rate**, or FWER.   
+E.g. if you conducted 10 tests simultaneously at the 5\% level, the chance of *at least* one false rejection is:
 
-Below we will discuss two methods of dealing with this problem: the **Bonferonni** method and the **Benjamini-Hochberg** method. 
+$$1-(0.95)^{10} = 0.401$$
+
+which is clearly much larger than the chance of false rejection in a single test. This is the **multiple testing problem**---it becomes particularly problematic when conducting a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least one false rejection in multiple hypothesis tests is known as the **familywise error rate**, or FWER.   
+
+Of course, the easiest way to get around this problem is to do as few simultaneous tests as necessary---this will ensure a small FWER. But in contexts where multiple testing is necessary, there are a number of methods for dealing with this problem. Below we will briefly discuss two: the **Bonferonni** method and the **Benjamini-Hochberg** method. 
 
 ## The Bonferroni method
 
-The Bonferonni method gives a way to control the familywise error rate (FWER). For $m$ tests, the Bonferonni method works as follows: 
+The Bonferonni method gives a way to control the familywise error rate (FWER). It works as follows.  
+
+Given $m$ tests: 
 
 $$H_{0i} \;\; \text{vs.} \;\; H_{1i} \;\;\;\; \text{for} \;\; i = 1,...,m$$
 
-If $p_1, ..., p_m$ denote the $m$ $p$-values for these tests, then reject the null hypothesis $H_{0i}$ if and only if: 
+If $p_1, ..., p_m$ denote the $p$-values for these $m$ tests, then reject the null hypothesis $H_{0i}$ if and only if: 
 
 $$p_i < \frac \alpha m$$
 
-This condition controls the familywise error rate to be $\text{FWER} \leq \alpha$. To see this:
+This condition enforces the familywise error rate to be $\text{FWER} \leq \alpha$. To see this:
 
-$$\text{FWER} = \P \Bigg\{ \bigcup_{i=1}^m \bigg( p_i \leq \frac \alpha m \bigg) \Bigg\} \leq \sum_i^m \bigg\{ \P(p_i \leq \frac \alpha m \bigg) \bigg\} = \sum_i^m \frac \alpha m = \alpha$$
+$$\text{FWER} = \P \Bigg\{ \bigcup_{i=1}^m \bigg( p_i \leq \frac \alpha m \bigg) \Bigg\} \leq \sum_i^m \bigg\{ \P \bigg( p_i \leq \frac \alpha m \bigg) \bigg\} = \sum_i^m \frac \alpha m = \alpha$$
 
-In R, you can adjust a vector of $p$-values with the Bonferonni correction with the function `p.adjust(p, method = p.adjust.methods = 'bonferonni')`, where `p` is a numeric vector of $p$-values.    
+In R, you can adjust a vector of $p$-values with the Bonferonni correction by specifying the function `p.adjust(p, method = p.adjust.methods = 'bonferonni')`, where `p` is a numeric vector of $p$-values.    
 
 One issue with the Bonferroni method is that it's very *conservative*---it tries to make it unlikely that you will make even one false rejection. It's often more reasonable to *control* the false discovery rate (FDR)---this is the basis of the BH method (next). 
 
@@ -716,10 +724,10 @@ One issue with the Bonferroni method is that it's very *conservative*---it tries
 
 The BH method gives a way to control the false discovery rate (FDR), which is defined as the number of false rejections divided by the number of rejections.  
 
-For $m$ tests, the BH method works as follows: 
+Given $m$ tests, the BH method works as follows: 
 
-- arrange the observed $p$-values $p_1, ..., p_m$ in increasing order, and assign ranks to each value based on its order, i.e. $p_{(1)}, p_{(2)}, ...$
-- for each $p$-value, compute the BH critical value, defined as $\frac im \alpha$, where $\alpha$ is the desired false discovery rate (e.g. 5\% or 10\%)
+- arrange the observed $p$-values $p_1, ..., p_m$ in increasing order, and assign ranks to each value based on its order, i.e. $p_{(1)}, p_{(2)}, ..., p_{(m)}$
+- for each $p$-value, compute the BH critical value, defined as $\frac im \alpha$, where $\alpha$ is the desired false discovery rate (e.g. 5\% or 10\%), and $i$ is the rank
 - compare the set of $p$-values to the BH critical value, and find the largest $p$-value that is smaller than the critical value
 - all $p$-values higher than this value are considered significant, and all those below are rejected
 
