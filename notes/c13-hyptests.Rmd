@@ -103,7 +103,7 @@ plot1 = ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_line() +
   scale_x_continuous(breaks = breaks,
                      limits = c(Xbar-4*SE, Xbar+4*SE)) +
-  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ylab('probability') + xlab(TeX('distribution of $\\mu$ under $H_0$')) +
   ggtitle(TeX('rejection region for $\\alpha = 0.05$')) +
   geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
@@ -119,7 +119,7 @@ plot2 = ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_line() +
   scale_x_continuous(breaks = breaks,
                      limits = c(Xbar-4*SE, Xbar+4*SE)) +
-  ylab('probability') + xlab(TeX('$\\bar{X}$')) +
+  ylab('probability') + xlab(TeX('distribution of $\\mu$ under $H_0$')) +
   ggtitle(TeX('rejection region for $\\alpha = 0.01$')) +
   geom_area(aes(x = ifelse(x < Xbar - Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
@@ -145,7 +145,16 @@ grid.arrange(plot1, plot2, ncol = 2)
   # theme_bw()
 ```
 
-The total area occupied by the rejection region is simply the significance level. The **critical values** are the bounds of the rejection region. If $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles of the distribution (just like the bounds of a 95\% confidence interval). You can compute these using `qnorm()` or `qt()`, as demonstrated last chapter, or you can simply compute a 95\% confidence interval for the mean:
+The total area occupied by the rejection region is simply the significance level. The **critical values** are the bounds of the rejection region:
+
+$$\bigg\{ \mu - c \cdot \frac{s}{\sqrt n} \;\; , \;\; \mu - c \cdot \frac{s}{\sqrt n} \bigg\}$$
+
+where $\mu$ is the mean under the null distribution. In this case the null distribution has $\mu = 12.36$, $s = 16.01$, and $n = 153$. If we conduct the test at the $\alpha = 0.05$ level, the critical values are the 2.5th and 97.5th percentiles of the distribution, so $c = t_{\{(1-\alpha/2),df=152\}} = 1.976$.^[Recall you can compute $c$ using $\texttt{qt(0.975, df=152)}$.] Using these values the rejection region in this case is: 
+
+$$\bigg\{ 12.36 - 1.976 \cdot \frac{16.06}{\sqrt{153}}, 12.36 + 1.976 \cdot \frac{16.06}{\sqrt{153}} \bigg\}$$
+$$\Longrightarrow \;\; \{ 9.8, 14.9 \}$$
+
+Note the critical values for an $\alpha=0.05$ test are also just the bounds for a 95\% confidence interval: 
 
 ```{r, echo=FALSE}
 confidence_interval <- function(data, conflevel) {
