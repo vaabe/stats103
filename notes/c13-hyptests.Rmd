@@ -109,8 +109,8 @@ plot1 = ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
   geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
-  geom_text(label = 'p = 0.025', x = 8.8, y = -0.005, size = 2.5, color = 'violetred') +
-  geom_text(label = 'p = 0.025', x = 15.7, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'P = 0.025', x = 8.8, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'P = 0.025', x = 15.7, y = -0.005, size = 2.5, color = 'violetred') +
   geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'violetred') +
   geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'violetred') +
   theme_bw()
@@ -125,8 +125,8 @@ plot2 = ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = Xbar - Z_1*SE, xend = Xbar - Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
   geom_segment(x = Xbar + Z_1*SE, xend = Xbar + Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
-  geom_text(label = 'p = 0.005', x = 8.4, y = -0.005, size = 2.5, color = 'violetred') +
-  geom_text(label = 'p = 0.005', x = 16.1, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'P = 0.005', x = 8.4, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'P = 0.005', x = 16.1, y = -0.005, size = 2.5, color = 'violetred') +
   geom_text(label = 'critical \n value', x = Xbar - Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
   geom_text(label = 'critical \n value', x = Xbar + Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
   theme_bw()
@@ -456,9 +456,13 @@ $$\Longrightarrow \;\;\; \{ 177.54 \; \text{cm},178.46 \; \text{cm} \}$$
 
 i.e. with $n = 10,000$ we would reject our observed value of 179 cm, even though in reality such a small difference doesn't really warrant concluding that the true mean height is not 178 cm. This example illustrates the fact that with large samples, results that are not *practically* significant can still be considered *statistically* significant, and the larger the sample size, the more this is going to happen.   
 
+One way to control this issue when conducting a study is to *plan* an appropriate sample size---i.e. to *choose* a sample size that will result in practically significant rejections only. First, you must decide what constitutes a practically significant result---e.g. in the above example, suppose we believe that a deviation of at least $\pm 5$ cm from the null mean should permit us to reject the null (i.e. reject if $\bar X < 173$ cm or $\bar X > 183$ cm). What is the sample size necessary to make rejections of this magnitude only, at the $\alpha = 0.05$ level? Simply set the bounds of the rejection equal to the desired values, and solve for $n$, e.g. $\mu  + c \cdot \tfrac{s}{\sqrt n} = 183$, which you will find gives $n \approx 85$.  
 
+It's also convenient to introduce a quantity called the **effect size**, $d$, defined as follows:
 
+$$d = \frac{\mu_1 - \mu_2}{s}$$
 
+where $\mu_1 - \mu_2$ is the mean difference (i.e. the desired deviation from the null mean) and $s$ is the standard deviation.^[Note this definition of effect size is known as *Cohen's* $d$.] E.g.---in the above example the effect size is $d = \frac{5}{23.5} = 0.213$. In general, to determine the appropriate sample size for a study, first determine the smallest effect size that would be considered practically significant, then solve for $n$. It can be shown that $n = \big( \tfrac cd \big)^2$.   
  
 
 
@@ -491,14 +495,17 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   geom_line() +
   xlab('temperature (K)') + 
   ylab('probability') + 
-  ggtitle(TeX('$\\alpha = 0.05$ rejection region for one-tailed test for an increase')) + 
+  ggtitle(TeX('$\\alpha = 0.05$ rejection region for one-tailed (increase)')) + 
   theme_classic() +
   ylim(-0.05,0.42) +
   theme(axis.text.x=element_blank()) +
   theme(axis.ticks.x=element_blank()) +
   geom_area(aes(x = ifelse(x > 1.64, x, 0)), fill='violetred', alpha=0.4) +
   geom_segment(x = 1.64, xend = 1.64, y = 0, yend = 0.3, linetype = 'dotted', color = 'violetred') +
-  geom_text(label = 'critical value \n = 95th percentile', x = 1.64, y = 0.35,  color = 'violetred') 
+  geom_segment(x = 0, xend = 0, y = 0, yend = 0.5, linetype = 'dotted', color = 'black') +
+  geom_text(label = TeX('$H_0: \\mu = 0$'), x = 0, y = 0.15,  color = 'black') + 
+  geom_text(label = 'critical value \n = 95th percentile', x = 1.64, y = 0.35,  color = 'violetred') +
+  geom_text(label = 'P =  0.05', x = 2, y = -0.02,  color = 'violetred') 
 ```
 
 i.e. with $\alpha = 0.05$ the critical value for a one-tailed test is the 95th percentile of the distribution (in a two-tailed test with $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles).   
@@ -551,7 +558,7 @@ where the subscripts $X$ and $Y$ denote the sample parameters for each of the tw
 
 $$\text{DoF} = \frac{\bigg( \frac{s_X^2}{n_X} + \frac{s_Y^2}{n_Y} \bigg)^2}{\frac{(s_X^2 / n_X)^2}{n_X-1}+\frac{(s_Y^2 / n_Y)^2}{n_Y-1}}$$
 
-which is known as the Welch-Satterthwaite equation. For simplicity, you can use the smaller of $n_X-1$ and $n_Y-1$ as the DoF.  
+which is known as the Welch-Satterthwaite equation. For simplicity, you can use the smaller of $n_X-1$ and $n_Y-1$ as the DoF (if doing the computations by hand).    
 
 In any case, the `t.test()` function in R will do these cumbersome calculations for you: 
 
@@ -575,11 +582,11 @@ Pooling the standard deviation gives an unbiased estimate of the common variance
 
 ## Two-sample t-test with paired data
 
-Two samples are said to be *paired* if the observations are matched, i.e. both samples have observations on the *same* subjects. In this case we can use the *paired difference test*, which has a $t$-statistic:
+Two samples are said to be *paired* if both samples have observations on the *same* subjects (e.g. observing a group of patients before and after some form of treatment). In this case we can use the *paired difference test*, which has a $t$-statistic:
 
 $$t = \frac{\bar X_D - \mu}{\frac{s_D}{\sqrt{n}}}$$
 
-where the subscript $D$ denotes the sample parameter pertaining to the difference in measurements for each subject---e.g. $s_D$ is the s.d. of the *difference* in measurements for each subject between the two groups. The $t$-statistic in this case follows a $t$-distribution with $n-1$ degrees of freeedom.  
+where the subscript $D$ denotes the sample parameter for the difference in measurements for each subject---e.g. $s_D$ is the s.d. of the *difference* in measurements for each subject between the two groups. The $t$-statistic in this case follows a $t$-distribution with $n-1$ degrees of freeedom.  
 
 Using the paired $t$-test increases the overall power of the test (when compared to the unpaired Welch test), and so is beneficial in applicable contexts.  
 
@@ -677,7 +684,7 @@ chisq.test(ailment_study)
 
 The $p$-value of the test is 0.0149, which implies we can reject the null at the 5\% level, and conclude that the strength of the ailment is not independent of blood type.  
 
-Note the above example involved performing several hypothesis tests *simultaneously*. We could also have tested each group (advanced ailment and minimal ailment) *separately* against the control group for dependence on blood type:
+Note the above example involved conducting multiple hypothesis tests *simultaneously*. We could also have tested each group (advanced ailment and minimal ailment) *separately* against the control group for dependence on blood type:
 
 ```{r, warning=FALSE}
 ## test advanced ailament group against control group
@@ -705,7 +712,7 @@ E.g. if you conducted 10 tests simultaneously at the 5\% level, the chance of *a
 
 $$1-(0.95)^{10} = 0.401$$
 
-which is clearly much larger than the chance of false rejection in a single test. This is the **multiple testing problem**---it becomes particularly problematic when conducting a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least one false rejection in multiple hypothesis tests is known as the **familywise error rate**, or FWER.   
+which is clearly much larger than the chance of false rejection in a single test. This is the **multiple testing problem**---it becomes particularly problematic when conducting a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. Note the probability of making at least one false rejection in a sequence of hypothesis tests is known as the **familywise error rate**, or FWER.   
 
 Of course, the easiest way to get around this problem is to do as few tests as necessary---this will ensure a small FWER. But in contexts where multiple testing is necessary, there are a number of methods for dealing with this problem. Below we will briefly discuss two: the **Bonferonni** method and the **Benjamini-Hochberg** method. 
 
