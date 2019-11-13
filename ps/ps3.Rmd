@@ -61,7 +61,9 @@ confidence_interval = function(data, conflevel) {
 ```{r}
 ## 95% confidence interval for mean rolling road emission
 confidence_interval(emissions$rolling_road, 0.95)
+```
 
+```{r}
 ## 95% confidence interval for mean open road emissions
 confidence_interval(emissions$open_road, 0.95)
 ```
