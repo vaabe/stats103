@@ -15,7 +15,7 @@ library(tidyverse)
 
 ```{r}
 ## read data
-emissions = read.csv('../data/emissions.csv')
+emissions = read.csv("https://stats103.org/data/emissions.csv")
 ```
 
 \ 

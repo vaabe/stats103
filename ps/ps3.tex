@@ -122,7 +122,7 @@ $$\bar X \longrightarrow \E[X] \hspace{1cm} n \longrightarrow \infty$$ \
 
 	\item[7.] Zenith then proposes a new system: that they should keep track of the {\it average} of the die scores, $\bar X_n$, where $\bar X_n = \sum_i^n  X_i$, and that Quasar should only do the dishes if the {\it average} is greater than 3. Now what is the long run value of $\E[\bar Q_n]$? What does this mean for Quasar? \\ 
 
-	\item[8.] Suppose you find yourself in a decadent game at a casino, where you bet some money $X$ then spin a wheel. If you win, you get $X$ dollars, and if not, you lose $X$ dollars. You decide the best strategy is to bet $X_1$ on the first round, and if you lose, to go double or nothing and bet $X_2 = 2X_1$ on the second round. Suppose you are somewhat the worse for drink, and keep repeating this strategy, doubling your bet each round, until you win (or go bankrupt). If you win on the first round, your payoff is $X_1$. If you win on the $n$th  round, your payoff is $2^n X_1$. Note this sequence of payoffs/losses doesn't satisfy the assumptions of the LLN. Which assumption(s) does it violate? \\ 
+	\item[8.] Suppose you find yourself in a decadent game at a casino, where you bet some money $X$ then spin a wheel. If you win, you get $X$ dollars, and if not, you lose $X$ dollars. You decide the best strategy is to bet $X_1$ on the first round, and if you lose, to go double or nothing and bet $X_2 = 2X_1$ on the second round. Suppose you are somewhat the worse for drink, and keep repeating this strategy, doubling your bet each round, until you win (if ever you do). If you win on the first round, your payoff is $X_1$. If you win on the $n$th  round, your payoff is $2^n X_1$. This sequence of payoffs/losses doesn't satisfy the assumptions of the LLN. Which assumption(s) does it violate? \\ 
 
 	\item[9.] Historically, a basketball player has tended to make one basket for every two shots taken. During a particular game there is a period when she makes five baskets in a row. The team then starts to send her the ball more often, to reap the rewards of this ``lucky streak". Is this a good strategy? Explain your reasoning.  
 
@@ -140,7 +140,7 @@ $$\bar X \sim \mathcal N \bigg( \E[X], \frac{\Var[X]}{n} \bigg)$$
 
 	\item[10.] This question is to help you understand the idea of a {\bf sampling distribution}. Let $X$ be a RV that follows a continuous uniform distribution between 0 and 1, i.e. $X \sim \mathcal U(0,1)$. Sketch the pdf of $X$. What is $\E[X]$ and $\Var[X]$? \\ 
 
-Suppose now you observe $n$ i.i.d instances of $X$, where $X_1, ..., X_n \sim \mathcal U(0,1)$. Let $\bar X_n = \sum_i^n X_i$. Since we are treating $\bar X_n$ as a random variable, it has a distribution---it's known as the {\it sampling distribution of the mean}. Using the CLT, can you think of a statement describing the distribution of $\bar X_n$? Simplify as much as you can. \\ 
+Suppose now you observe $n$ i.i.d instances of $X$, where $X_1, ..., X_n \sim \mathcal U(0,1)$. Let $\bar X_n = \frac 1n \sum_i^n X_i$. Since we're treating $\bar X_n$ as a random variable, it has a distribution---it's known as the {\it sampling distribution of the mean}. Using the CLT, can you think of a statement describing the distribution of $\bar X_n$? Simplify as much as you can. \\ 
 
 In R, simulate the distribution of $\bar X_n$ by drawing many random samples of $X$ and plotting the sampling distribution of $\bar X_n$. Use different sample sizes, $n = 1, 5, 15, 30, 100...$. For each sampling distribution, compute $\E[\bar X_n]$ and $\Var[\bar X_n]$, and check that the values agree with your theoretical calculations. What do you notice about the sampling distribution of $\bar X_n$ as $n$ increases? Note the $\texttt{runif()}$ function is useful for drawing random numbers from a uniform distribution. For tips on generating random numbers in R, check out \href{https://bookdown.org/ndphillips/YaRrr/generating-random-data.html}{this link} or the notes in chapter 10.  
 
@@ -162,7 +162,7 @@ For q10, you don't need to present your code or any of its output---just state a
 
 	\item[14$i$.] Suppose we have a factory that produces brake pads, and that there are on average 2 faulty brake pads per 400 produced. Suppose we sell 4000 brake pads. Use the CLT to approximate the probability that fewer than 20 of the brake pads sold are faulty. \\  
 
-	\item[15$i$.] On day 1 a stock price has a value of zero. Let $U$ be the RV for how much the stock price changes relative to the previous day. Suppose $U$ can only take two values: $U=1$ if the price increases by one dollar, and $U = -1$ if it decreases by one dollar. Suppose that $\P(U=1) = \P(U=-1) = \frac 12$. Now, let $X_n$ be the value of the stock on day $n$, i.e. $X_n = \sum_i^n U_i$. What is $\E[X_n]$ and $\Var[X_n]$? Note this is known as a {\bf random walk}. Simulate $X_n$ and plot $X_n$ versus $n$ for different values of $n$. If you have time, repeat the simulation several times---you'll notice that each run looks different, even though they were generated by the same underlying process. How do your theorized values for $\E[X_n]$ and $\Var[X_n]$ explain your observations? 
+	\item[15$i$.] On day 1 a stock price has a value of zero. Let $U$ be the RV for how much the stock price changes relative to the previous day. Suppose $U$ can only take two values: $U=1$ if the price increases by one dollar, and $U = -1$ if it decreases by one dollar. Suppose that $\P(U=1) = \P(U=-1) = \frac 12$. Now, let $X_n$ be the value of the stock on day $n$, i.e. $X_n = \sum_i^n U_i$. What is $\E[X_n]$ and $\Var[X_n]$? Note this is known as a {\bf random walk}. Simulate $X_n$ and plot $X_n$ versus $n$ for different values of $n$. If you have time, repeat the simulation several times---you'll notice that the runs looks different, even though they were generated by the same underlying process. How do your theorized values for $\E[X_n]$ and $\Var[X_n]$ explain your observations? 
 
 \end{itemize}
 
@@ -193,7 +193,7 @@ The following questions will get you to use this data to compute some confidence
 
 	\item[5.] Suppose you repeated the experiment after collecting a new sample of data, and you computed a new 95\% confidence interval for the mean difference. Which of the following might be different in this new experiment: (1) population means, (2) population variances, (3) sample means, (4) sample variances, (5) the center of the CI, (6) the length of the CI, (7) whether or not the CI contains zero, (8) whether or not the CI contains the difference in population means. \\
 
-	\item[6.] Suppose you want to perform a hypothesis test to determine whether there is a really a difference in emissions between the two groups. State the null and alternative hypotheses for testing equality in means between the two groups. Perform a two sample $t$-test. State and interpret the $p$-value. What do you conclude at the 5\% significance level? \\ 
+	\item[6.] Suppose now you want to perform a hypothesis test to determine whether there is a really a difference in emissions between the two groups. State the null and alternative hypotheses for testing equality in means between the two groups. Perform a two sample $t$-test (don't assume the observations are paired). State and interpret the $p$-value. What do you conclude at the 5\% significance level? \\ 
 
 	\item[7.] Now compute a 99\% confidence interval for the mean difference. Does this interval contain zero? If you had performed the test at the 1\% level, what would you have concluded?  
 
@@ -238,7 +238,7 @@ Test each of the four drugs versus the placebo at the 5\% level. Use the Chi-squ
 In a hypothesis test, the null is assumed until there is strong evidence to suggest we should reject it. Of course, the outcome of a single hypothesis test does not necessarily lead to the correct result---there are two kinds of error we can make: 
 
 \begin{itemize}	
-	\item {\bf Type 1 Error:} rejecting the null, when the null is {\it actually} true. The type 1 error should be no more than the significance level of a test.  
+	\item {\bf Type 1 Error:} rejecting the null, when the null is {\it actually} true. The type 1 error should be no more than the significance level of the test.  
 	\item {\bf Type 2 Error:} failing to reject the null, when the null is {\it actually} false. 
 \end{itemize} 
 
@@ -254,36 +254,36 @@ The secondary goal in hypothesis testing is to choose the most {\it powerful} te
 
 \begin{itemize}
 
-	\item[10.] Suppose we conduct a test and the probability we make a type 1 error  is 5\%. We then do the same test again using a new independent sample of data. What is the probability that both tests correctly fail to reject the null? \\ 
+	\item[10.] Suppose we conduct a test and the probability of type 1 error  is 5\%. We then do the same test again using a new independent sample of data. What is the probability that both tests correctly fail to reject the null? \\ 
 
 	\item[11.] Suppose we conduct the same test $n$ times, with a new sample of data each time. If each test has a 5\% probability of making a type 1 error, what is the probability that we make no type 1 errors in any of the $n$ independent tests? \\ 
 
-	\item[12.] What kind of random variable could we use to model the number of type 1 errors out of $n$ independent tests? \\ 
+	\item[12.] What kind of random variable could we use to model the number of type 1 errors in $n$ independent tests? \\ 
 
-	\item[13.] Suppose each of our $n$ tests has 60\% power, meaning that the probability of a type 2 error is 40\%. In the long run, the proportion of tests that correctly reject the null hypothesis converges to some value. Why? And: what is this value ? \\
+	\item[13.] Suppose each of our $n$ tests has 60\% power, meaning that the probability of a type 2 error is 40\%. In the long run, the proportion of tests that correctly reject the null hypothesis converges to some value. Why? What is this value ? \\
 
 \end{itemize}
 
 \newpage
 
-In the file $\texttt{ps3.Rmd}$, under the header ``exponential distribution", we have written a function that generates a sample of $n$ observations from the exponential distribution with true mean $\mu = 2$. The function then compares the sample against the null hypothesis that
+In the file $\texttt{ps3.Rmd}$, under the header ``exponential distribution", we have written a function that generates a sample of $n$ observations from the exponential distribution which has true mean $\mu = 2$. The function then compares the sample against the null hypothesis that
 $\mu = 1$, using a two-sample $t$-test for a difference. If the null is rejected it returns $\texttt{TRUE}$, and if not it returns $\texttt{FALSE}$.  
 
 \hfill 
 
 \begin{itemize}
 
-	\item[14.] Run the experiment once with $n = 30$ and true mean $\mu = 2$. What do you get? What does it mean? \\ 
+	\item[14.] Run the experiment once with $n = 30$ and $\mu = 2$. What do you get? What does it mean? \\ 
 
-	\item[15.] Now, repeat the experiment 1000 times and report the proportion of times the null is rejected. What does this value represent? \\ 
+	\item[15.] Now, repeat the experiment 1000 times and report the {\it proportion} of times the null is rejected. What does this value represent? \\ 
 
-	\item[16.] Do the same as in q15, but change the sample size to $n = 40$. Is the proportion of rejections different? Explain your results. \\ 
+	\item[16.] Do the same as in q15, but change the sample size to $n = 40$. Is the proportion of rejections different? Explain why or why not. \\ 
 
-	\item[17.] Change the parameters such that $n = 30$ and the true mean is $\mu = 1.5$. What do you notice? Explain your results. \\ 
+	\item[17.] Change the parameters such that $n = 30$ and the true mean is now $\mu = 1.5$. What do you notice? Explain your results. \\ 
 
 	\item[18.] Without running any more code, what do you expect the proportion to be if we changed the true mean $\mu$ to be 1? Why? \\ 
 
-	\item[19.] Set the parameters to $n=30$ and $\mu = 1.1$. Using trial and error, find the value of $n$ large enough so that the power of the test is 80\%. Comment on your findings. 
+	\item[19.] Set the parameters to $n=30$ and $\mu = 1.1$. Using trial and error, find the value of $n$ large enough so that the power of the test is 80\%. Comment on your findings. What is the relationship between power and the true mean?  
 
 \end{itemize}
 

@@ -199,7 +199,7 @@ $(document).ready(function () {
 <div id="the-flog" class="section level1">
 <h1>The Flog</h1>
 <pre class="r"><code>## read data
-emissions = read.csv('../data/emissions.csv')</code></pre>
+emissions = read.csv(&quot;https://stats103.org/data/emissions.csv&quot;)</code></pre>
 <p> </p>
 <pre class="r"><code>## compute mean and sd of each group
 
@@ -329,17 +329,17 @@ experiment(30,2) </code></pre>
 <pre class="r"><code>## repeat the experiment 1000 times and compute the proportion of rejections
 repeats = replicate(1000, experiment(30, 2))
 mean(repeats)</code></pre>
-<pre><code>## [1] 0.871</code></pre>
+<pre><code>## [1] 0.859</code></pre>
 <p> </p>
 <pre class="r"><code>## same as above, but change n to be 40
 repeats = replicate(1000, experiment(40, 2))
 mean(repeats)</code></pre>
-<pre><code>## [1] 0.955</code></pre>
+<pre><code>## [1] 0.958</code></pre>
 <p> </p>
 <pre class="r"><code>## make n = 30 and the true mean = 1.5
 repeats = replicate(1000, experiment(30, 1.5))
 mean(repeats)</code></pre>
-<pre><code>## [1] 0.388</code></pre>
+<pre><code>## [1] 0.419</code></pre>
 <p> </p>
 </div>
 
