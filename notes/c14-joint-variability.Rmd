@@ -46,6 +46,14 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 \newcommand{\sumin}{\sum_i^n}
 \newcommand{\Bias}{\text{Bias}}
 
+\renewcommand{\v}[1]{{\boldsymbol #1}}
+\renewcommand{\dv}[1]{\dot{\boldsymbol{#1}}}
+\newcommand{\ddv}[1]{\ddot{\boldsymbol{#1}}}
+\newcommand{\hv}[1]{\hat{\boldsymbol{#1}}}
+\newcommand{\m}[1]{[ #1 ]}
+\renewcommand{\t}[1]{\widetilde{\boldsymbol{#1}}}
+\newcommand{\bfit}[1]{\textbf{\textit{#1}}}
+
 ---
 
 # 14--1 Variance \& Covariance 
@@ -134,6 +142,7 @@ $$
 i.e. the variance of a sum of RVs has a *third* term that accounts for the *dependency* of the two variables. Naturally, if the variables are independent, they have zero covariance, and the expression for variance reduces to the simple two-term sum. 
 
 
+
 \ 
 
 # 14--2 Correlation 
@@ -176,6 +185,68 @@ knitr::include_graphics('./pics/m1c4_pic2.png')
 ```
 
 The bottom row shows examples of *nonlinear* associations. Though these variables are clearly associated, they have zero correlation.  
+
+
+
+\ 
+
+# 14--3 Multivariate Normal 
+
+We introduced the normal distribution in chapter 9, as the continuous probability distribution with the density function:  
+
+$$\text{pdf}(X) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-(X-\mu)^2/2\sigma^2}$$
+
+Sometimes this is known as the **univariate** normal distribution, since it's a function of one random variable, $X$. We've seen how useful the univariate normal is for modeling random variables and describing their asymptotic properties.  
+
+Often in statistics we must deal with a *combination* of random variables (e.g. in multiple regression). These situations often involve the **multivariate normal distribution**, or **joint normal**---this is a generalization of the simple normal distribution to higher dimensions.  
+
+Consider a random vector $\v X = (\v X_1, \v X_2, ..., \v X_k)$, which is a collection of $k$ random variables. This random vector is multivariate normal if every linear combination of its RVs is normally distributed, e.g. if
+
+$$a_1 \v X_1 + a_2 \v X_2 + ... + a_k \v X_k$$
+
+has a normal distribution for each of the constants $a_1, a_2, ...$ etc.  
+
+The random vector $\v X$ is said to have mean vector $\v \mu$ and covariance matrix $\v \Sigma$:
+
+$$\v \mu = \big[ \E[X_1], \E[X_2], ..., \E[X_k] \big]$$
+
+$$
+\v \Sigma = 
+\begin{bmatrix}
+  \sigma^2_{X_1} & \sigma_{X_1,X_2} & ... & \sigma_{X_1,X_k} \\ 
+  \sigma_{X_2,X_1} & \sigma^2_{X_2} & ... & \sigma_{X_2,X_k} \\ 
+  \vdots & \vdots & \ddots & \vdots \\ 
+  \sigma_{X_k, X_1} & \sigma_{X_k, X_2} & ... & \sigma^2_{X_k}
+\end{bmatrix}
+$$
+
+Its *joint* probability density function is:
+
+$$\frac{1}{\sqrt{(2\pi)^k | \v \Sigma |}} \exp\big(-\tfrac 12 (\v  X - \v \mu)^T \v \Sigma^{-1} (\v X -\v\mu) \big)$$
+
+Which can be expressed using the following shorthand:
+
+$$\v X \sim \mathcal N \big( \v \mu, \v \Sigma \big)$$
+
+\newenvironment{psmallmatrix}
+  {\left(\begin{smallmatrix}}
+  {\end{smallmatrix}\right)}
+
+Example---consider the random vector $\v X = (X_1, X_2)$, which is bivariate normal with mean vector $\v \mu = \big[\begin{smallmatrix} 2 \\ 1 \end{smallmatrix} \big]$ and covariance matrix $\v \Sigma = \big[ \begin{smallmatrix} 1 \\ 0 \end{smallmatrix} \begin{smallmatrix} 0 \\ 1.5 \end{smallmatrix} \big]$ (i.e. $X_1$ and $X_2$ are uncorrelated). Below is a plot showing the 3D bivariate normal for $X_1$ and $X_2$, overlaid on a heatmap:
+
+```{r, echo=FALSE, fig.align='center'}
+knitr::include_graphics('./pics/ch14-pic2.png')
+```
+
+Below is a plot showing the bivariate normal and heatmap for a random vector $\v X$ with mean vector $\v \mu = \big[\begin{smallmatrix} 2 \\ 1 \end{smallmatrix} \big]$ and covariance matrix $\v \Sigma = \big[ \begin{smallmatrix} 1 \\ 0.4 \end{smallmatrix} \begin{smallmatrix} 0.9 \\ 1.5 \end{smallmatrix} \big]$ (i.e. $X_1$ and $X_2$ are *correlated*):
+
+```{r, echo=FALSE, fig.align='center'}
+knitr::include_graphics('./pics/ch14-pic3.png')
+```
+
+
+
+
 
 \ 
 
