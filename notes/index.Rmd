@@ -64,22 +64,23 @@ library(tufte)
 - chapter 12 -- <a href="./notes/c12-intervals.html">Intervals</a></li>
 - chapter 13 -- <a href="./notes/c13-hyptests.html">Testing Significance</a></li>
 - chapter 14 -- <a href="./notes/c14-joint-variability.html">Joint Variability</a></li>
-- chapter 15 -- <a href="./notes/c15-regression-II.html">Regression Revisited</a></li>
-- chapter 16 -- Inference from Regression Models, Part I
+- chapter 15 -- <a href="./notes/c15-regression-II.html">A Little Regression Theory</a></li>
+- chapter 16 -- <a href="./notes/c16-regression-inference.html">Inference from Regression Models, Part I</a></li>
 
 ### PART III -- BIAS
 
 - chapter 17 -- <a href="./notes/c17-validity-bias.html">Validity and Bias</a></li>
-- chapter 18 -- Sampling Bias 
-- chapter 19 -- Omitted Variable Bias
-- chapter 20 -- Specification Bias
-- chapter 21 -- Measurement Error Bias 
+- chapter 18 -- The Bias-Variance Tradeoff
+- chapter 19 -- Causal Inference 
+- chapter 20 -- Bias in Regression Models 
+- chapter 21 -- Resampling Methods
 
-### PART IV -- MODEL SELECTION 
+### PART IV -- FURTHER TOPICS
 
-- chapter 22 -- The Bias-Variance Tradeoff
-- chapter 24 -- Model Selection Criteria 
-- chapter 25 -- Resampling Methods
+- chapter 22 -- Model Selection and Validation 
+- chapter 23 -- Classification with Logistic Regression
+- chapter 24 -- Time Series
+- chapter 25 -- Maximum Likelihood  
 
 \ 
 

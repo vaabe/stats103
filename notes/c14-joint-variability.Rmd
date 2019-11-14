@@ -196,9 +196,9 @@ We introduced the normal distribution in chapter 9, as the continuous probabilit
 
 $$\text{pdf}(X) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-(X-\mu)^2/2\sigma^2}$$
 
-Sometimes this is known as the **univariate** normal distribution, since it's a function of one random variable, $X$. We've seen how useful the univariate normal is for modeling random variables and describing their asymptotic properties.  
+Sometimes this is known as the **univariate** normal distribution, since it's a function of one random variable, $X$.  
 
-Often in statistics we must deal with a *combination* of random variables (e.g. in multiple regression). These situations often involve the **multivariate normal distribution**, or **joint normal**---this is a generalization of the simple normal distribution to higher dimensions.  
+Often in statistics we must deal with a *combination* of random variables (e.g. in multiple regression). In these situations we can generalize the simple normal distribution to higher dimensions---this is known as the **multivariate normal** or **joint normal** distribution.  
 
 Consider a random vector $\v X = (\v X_1, \v X_2, ..., \v X_k)$, which is a collection of $k$ random variables. This random vector is multivariate normal if every linear combination of its RVs is normally distributed, e.g. if
 
@@ -209,6 +209,7 @@ has a normal distribution for each of the constants $a_1, a_2, ...$ etc.
 The random vector $\v X$ is said to have mean vector $\v \mu$ and covariance matrix $\v \Sigma$:
 
 $$\v \mu = \big[ \E[X_1], \E[X_2], ..., \E[X_k] \big]$$
+\ 
 
 $$
 \v \Sigma = 
@@ -238,7 +239,7 @@ Example---consider the random vector $\v X = (X_1, X_2)$, which is bivariate nor
 knitr::include_graphics('./pics/ch14-pic2.png')
 ```
 
-Below is a plot showing the bivariate normal and heatmap for a random vector $\v X$ with mean vector $\v \mu = \big[\begin{smallmatrix} 2 \\ 1 \end{smallmatrix} \big]$ and covariance matrix $\v \Sigma = \big[ \begin{smallmatrix} 1 \\ 0.4 \end{smallmatrix} \begin{smallmatrix} 0.9 \\ 1.5 \end{smallmatrix} \big]$ (i.e. $X_1$ and $X_2$ are *correlated*):
+Below is an example with *correlated* RVs---consider the random vector $\v X$ with mean vector $\v \mu = \big[\begin{smallmatrix} 2 \\ 1 \end{smallmatrix} \big]$ and covariance matrix $\v \Sigma = \big[ \begin{smallmatrix} 1 \\ 0.4 \end{smallmatrix} \begin{smallmatrix} 0.9 \\ 1.5 \end{smallmatrix} \big]$: 
 
 ```{r, echo=FALSE, fig.align='center'}
 knitr::include_graphics('./pics/ch14-pic3.png')

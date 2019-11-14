@@ -1,5 +1,5 @@
 ---
-title: 'chapter 15 Regression Revisited'
+title: 'chapter 15 A Little Regression Theory'
 output:
   tufte::tufte_html:
     tufte_features: ['fonts','background','italics']
@@ -72,85 +72,6 @@ where $b_1, ..., b_k$ are the set of *estimated* regression coefficients, and $e
 
 Note since regression models provide a way of determining the the value of $y$ (the response variable) by *using* a predictor variable, $x$, we can use the terminology of expectation to realize the regression equation is simply another way of saying $\E[y | x]$, i.e. the *expected value* of $y$ given $x$. In the case of multiple predictors, we can say $\E[y | x_1, ..., x_k]$.   
 
-## Confidence intervals for regression coefficients
-
-Sample-derived regression coefficients are *point estimates* of the true regression coefficients. In the same way that we construct confidence intervals for means, we can also construct confidence intervals for regression coefficients, as *interval estimates* of the true regression coefficients.  
-
-Consider the simple regression model of temperature on building height from the NYC heatwave data:
-
-```{r}
-reg1 = lm(temperature ~ building_height, data = nycheat)
-summary(reg1)
-```
-
-The estimated coefficient for building height is 0.48. The column `Std. Error` gives the standard error of this estimate. Recall that using the standard error we can construct a 95\% confidence interval on a point estimate, with the lower and upper bounds approximately $2 \; \SE$ below and above the estimate.  
-
-In R you can use the `confint()` function to compute a confidence interval for the coefficients of a regression model:
-
-```{r}
-confint(reg1)
-```
-
-i.e. the lower bound of the interval is 0.39 and the upper bound is 0.58. To get a 99\% confidence interval:
-
-```{r}
-confint(reg1, level = 0.99)
-```
-
-## Generating a prediction interval 
-
-After we've specified a regression model (i.e. estimated values for the coefficients), we can use it to predict the value of the response variable for given values of the predictors. The predicted value of a regression model, denoted $\mhat y$, is a *point estimate* of the model's prediction. We can generate an *interval estimate* of the model's prediction using the **residual standard error**.  
-
-Consider the simple regression model of temperature on albedo, as depicted below, with the regression line overlaid in blue:
-
-```{r, fig.height=3.5, fig.width=5, fig.align='center', include=FALSE}
-ggplot(aes(x = albedo, y = temperature), data = nycheat) +
-  geom_point(size=0.5) +
-  stat_smooth(method='lm', se = FALSE) +           # overlay regression line
-  xlab('albedo (% solar reflectivity)') + ylab('temperature (farenheit)') +
-  theme_bw()
-
-ggsave('./pics/c15-pic2.png')
-```
-
-```{r, fig.height=3.5, fig.width=5, fig.align='center', echo=FALSE}
-knitr::include_graphics('./pics/c15-pic3.png')
-```
-
-
-As it turns out, the CLT allows us to model the error terms of a regression model as *normally distributed* with mean 0 and standard deviation equal to the *residual standard error*. The residual standard error is assumed to be constant (so at any point on the regression line, the error has the same distribution). In the above plot, the distribution of the residuals is depicted in red at two points in the data. Below is the regression output for temperature on albedo:
-
-```{r}
-reg2 = lm(temperature ~ albedo, data = nycheat)
-summary(reg2)
-```
-
-The third line from the bottom shows the residual standard error of this model: 3.984. Using this we can generate a 95\% *prediction interval* for the predicted value of temperature given albedo. You can either do this manually (using the standard expression for a confidence interval) or simply use the `predict()` function in R.  
-
-E.g. below is a 95\% prediction interval for the value of temperature when albedo = 10: 
-
-```{r}
-predict(reg2, newdata = data.frame(albedo=10), interval = 'predict', level = 0.95)
-```
-
-Note `fit` refers to the fitted value of the model (i.e. the point-estimate of the model prediction).  
-
-
-## Hypothesis tests on regression coefficients
-
-We can use the hypothesis testing framework to test whether the predictor variables in a given model are really significant. Consider the multiple regression model of temperature, using using vegetation, albedo, building height, and population density as predictors:
-
-```{r}
-reg3 = lm(temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
-summary(reg3)
-```
-
-Note that each estimated coefficient also has an associated $p$-value (the column `Pr(>|t|)`). In R (and other software) the regression coefficients are treated as hypothesis tests, with the null hypothesis that the true coefficient is zero, i.e. 
-
-$$H_0: \beta = 0$$ 
-$$H_1: \beta \neq 0$$
-
-The $p$-value represents the likelihood of getting a value as extreme as the observed coefficient if the null were true (i.e. if the coefficient were really zero). In the output above, the first three predictors have very low $p$-values, suggesting that the coefficients for those variables are significant. Note $p$-value for population density is larger than the others, at 0.02, and is thus significant only at the 5\% level.  
 
 \ 
 
@@ -220,7 +141,7 @@ where we have used the fact that $\sum_i^n x_i y_i - N \bar x \bar y = \sum_i^n 
 
 ## Multivariate derivation 
 
-
+`coming soon`
 
 
 
@@ -235,8 +156,33 @@ Note the variance of the regression coefficient is:
 
 $$\Var[b_1] = \frac{\sigma^2}{\sum_i^n (x_i - \bar x)^2}$$
 
-The Gauss-Markov theorem states the best linear unbiased estimator is given by the OLS estimator. Here best means lowest variance.  
+The Gauss-Markov theorem states the best linear unbiased estimator is given by the OLS estimator. Here best means lowest variance.
 
+
+
+\ 
+
+# 15--4 The Assumptions of LS Regression 
+
+`coming soon`
+
+## Linearity 
+
+\ 
+
+## No Multicollinearity 
+
+\   
+
+## Mean-Zero Errors
+
+\ 
+
+## Constant-Variance Errors 
+
+\ 
+
+## Normal Errors
 
 
 

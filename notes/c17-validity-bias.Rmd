@@ -2,7 +2,8 @@
 title: 'chapter 17 Validity and Bias'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
     toc_depth: 2
   tufte::tufte_handout:
@@ -47,7 +48,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# Validity 
+# 17--1 Validity 
 
 As you know, an **estimator** is a statistic used to infer/estimate the value of an unknown parameter in a model. The **reliability** of an estimator is a measure of its consistency across repititions of the experiment. The rest of this module will discuss validity and bias.  
 
@@ -82,9 +83,7 @@ Common factors that interfere with internal validity:
 
 \ 
 
---- 
-
-# Bias
+# 17--2 Bias
 
 Bias is when the expected value of a result differs from the true value of the parameter being estimated.  
 
@@ -167,9 +166,7 @@ which is clearly a much more accurate estimate of the true maximum.
 
 \ 
 
---- 
-
-# Bessel's Correction
+# 17--3 Bessel's Correction
 
 You know the formula for the variance of a population:
 
@@ -191,9 +188,7 @@ Note when $n$ is large, the difference between $\frac 1n$ and $\frac{1}{n-1}$ be
 
 \ 
 
---- 
-
-# Quantifying the Error of an Estimator
+# 17--4  Quantifying the Error of an Estimator
 
 The **variance** of an estimator gives the average squared distance of each estimate from the mean estimate:
 
@@ -257,7 +252,26 @@ mean(SEs)
 mean(JSSEs)
 ```
 
-The theme of trading off between bias and variance is something we’ll come back to later in the course.  
+The theme of trading off between bias and variance is something we’ll come back to later in the course.   
+
+
+\ 
+
+# 17--5 Sources of Bias
+
+`coming soon`
+
+## Sampling Bias 
+
+
+
+\ 
+
+\ 
+
+---
+
+\ 
 
 
 
