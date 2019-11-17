@@ -49,20 +49,103 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 14--3 Multivariate Normal 
+# 13--1 The Hypothesis Testing Framework
 
-We introduced the normal distribution in chapter 9, as the continuous probability distribution with the density function:
+A statistical hypothesis is an *assumption* about one or more population parameters. Our task is to use data to determine whether a given hypothesis should be retained or rejected.  
 
+To test a hypothesis we compare two competing models for the population parameter(s). The **null hypothesis** is the *proposed* model---this is the assumption we want to test. The null can be based on anything---the results of a previous experiment, a scientific status quo, or even just a hunch^[Although in general, statistically unfounded hunches are not advisable.] we might have about the population.  
 
-A single distribution of data can be modeled using the univariate normal distribution, as given in the equation above.  
+To test the null we compare it to a *competing* model for the population parameter(s), usually in the form of a (new) sample of data. If the competing model yields vastly different results to those predicted by the null, we have evidence to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
 
-When we consider the joint variability of two variables, we can think of them as giving rise to a multivariate normal, i.e. a 3d gaussian:
+- **the null hypothesis**, $H_0$: a proposed model for the population parameter(s)
+- **the alternative hypothesis**, $H_1$: that the null is not true  
 
+There are two possible outcomes from a hypothesis test: either we *reject* the null or we *fail to reject* it---there's no in-between. For this reason hypothesis testing is only appropriate for testing a *well-defined* hypothesis---in other cases estimation and confidence intervals are better tools.  
 
+Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give a framework for rejecting a given model, but not for uniquely specifying one.  
 
-The multivariate Gaussian has mean vector mu and correlation matrix Sigma.   
 
 \ 
+
+## A simple example
+
+Suppose we develop a hypothesis, using the pay gap data, that the *true* mean hourly wage gap is 12.36\%.^[In the pay gap dataset, the variable `DiffMeanHourlyPercent` has a sample mean $\bar X =$ 12.356.] The null and alternative hypotheses are: 
+
+$$H_0: \mu = 12.356$$
+$$H_1: \mu \neq 12.356$$
+
+Suppose that the following year we collect a new sample of data, which for the same variable yields a sample mean $\bar X = 9.42$. We can now use this new evidence to test our initial hypothesis and determine whether it should be rejected.   
+
+To make this determination we must quantify the *probability* of getting the observed value^[The observed value is the value proposed by the *competing* model.], if the null hypothesis were really true. If this probability is sufficiently low, there's a good chance the null hypothesis is not true.  
+
+The **significance level** ($\alpha$) of a test is the probability threshold below which we *definitively* reject the null. The most common significance level used is $\alpha = 0.05$---this would mean we must reject the null if the observed value lies in the most extreme 5\% of values under the null distribution. Sometimes a significance level of $\alpha = 0.01$ is also used.  
+
+The **rejection region** of a test is the range of values for which which we reject the null. The size of the rejection region is determined by the significance level we decide on. Below are two plots of the distribution of $\bar X$ under the null hypothesis (as defined above), with rejection regions for $\alpha = 0.05$ and $\alpha = 0.01$ shown: 
+
+
+
+# Confidence intervals for regression coefficients
+
+Sample-derived regression coefficients are *point estimates* of the true regression coefficients. In the same way that we construct confidence intervals for means, we can also construct confidence intervals for regression coefficients, as *interval estimates* of the true coefficients.  
+
+Consider the simple regression model of temperature on building height from the NYC heatwave data:
+
+```{r}
+reg1 = lm(temperature ~ building_height, data = nycheat)
+summary(reg1)
+```
+
+The estimated coefficient for building height is 0.48. The column `Std. Error` gives the standard error of this estimate. Recall that using the standard error we can construct a 95\% confidence interval on a point estimate, with the lower and upper bounds approximately $2 \; \SE$ below and above the estimate.  
+
+In R you can use the `confint()` function to compute a confidence interval for the coefficients of a regression model:
+
+```{r}
+confint(reg1)
+```
+
+i.e. the lower bound of the interval is 0.39 and the upper bound is 0.58. To get a 99\% confidence interval:
+
+```{r}
+confint(reg1, level = 0.99)
+```
+
+## Generating a prediction interval 
+
+After we've specified a regression model (i.e. estimated values for the coefficients), we can use it to predict the value of the response variable for given values of the predictors. The predicted value of a regression model, denoted $\mhat y$, is a *point estimate* of the model's prediction. We can generate an *interval estimate* of the model's prediction using the **residual standard error**.  
+
+Consider the simple regression model of temperature on albedo, as depicted below, with the regression line overlaid in blue:
+
+```{r, fig.height=3.5, fig.width=5, fig.align='center'}
+ggplot(aes(x = albedo, y = temperature), data = nycheat) +
+  geom_point(size=0.5) +
+  stat_smooth(method='lm', se = TRUE) +           # overlay regression line
+  xlab('albedo (% solar reflectivity)') + ylab('temperature (farenheit)') +
+  theme_bw()
+
+#ggsave('./pics/c15-pic2.png')
+```
+
+```{r, fig.height=3.5, fig.width=5, fig.align='center', echo=FALSE}
+knitr::include_graphics('./pics/c15-pic3.png')
+```
+
+
+As it turns out, the CLT allows us to model the error terms of a regression model as *normally distributed* with mean 0 and standard deviation equal to the *residual standard error*. The residual standard error is assumed to be constant (so at any point on the regression line, the error has the same distribution). In the above plot, the distribution of the residuals is depicted in red at two points in the data. Below is the regression output for temperature on albedo:
+
+```{r}
+reg2 = lm(temperature ~ albedo, data = nycheat)
+summary(reg2)
+```
+
+The third line from the bottom shows the residual standard error of this model: 3.984. Using this we can generate a 95\% *prediction interval* for the predicted value of temperature given albedo. You can either do this manually (using the standard expression for a confidence interval) or simply use the `predict()` function in R.  
+
+E.g. below is a 95\% prediction interval for the value of temperature when albedo = 10: 
+
+```{r}
+predict(reg2, newdata = data.frame(albedo=10), interval = 'predict', level = 0.95)
+```
+
+Note `fit` refers to the fitted value of the model (i.e. the point-estimate of the model prediction).  
 
 
 

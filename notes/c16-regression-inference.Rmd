@@ -1,5 +1,5 @@
 ---
-title: 'chapter 16 Inference from Regression Models'
+title: 'chapter 16 Inference from Regression Models, Part I'
 output:
   tufte::tufte_html:
     tufte_features: ['fonts','background','italics']
@@ -51,7 +51,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 # 16--1 Confidence intervals for regression coefficients
 
-Sample-derived regression coefficients are *point estimates* of the true regression coefficients. In the same way that we construct confidence intervals for means, we can also construct confidence intervals for regression coefficients, as *interval estimates* of the true regression coefficients.  
+Sample-derived regression coefficients are *point estimates* of the true regression coefficients. In the same way that we construct confidence intervals for means, we can also construct confidence intervals for regression coefficients, as *interval estimates* of the true coefficients.  
 
 Consider the simple regression model of temperature on building height from the NYC heatwave data:
 
@@ -118,7 +118,7 @@ Note `fit` refers to the fitted value of the model (i.e. the point-estimate of t
 
 # 16--2 Hypothesis tests on regression coefficients
 
-We can use the hypothesis testing framework to test whether the predictor variables in a given model are really significant. Consider the multiple regression model of temperature, using using vegetation, albedo, building height, and population density as predictors:
+We can use the hypothesis testing framework to test whether the predictor variables in a given model are really significant. Consider the multiple regression model of temperature, using vegetation, albedo, building height, and population density as predictors:
 
 ```{r}
 reg3 = lm(temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
