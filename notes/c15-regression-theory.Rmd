@@ -331,14 +331,14 @@ This is an example of **heteroscedasticity** (errors with non-constant variance)
 
 Multicollinearity is when two or more predictors are *highly* correlated with each other. It becomes difficult for LS regression to compute regression coefficients if predictors are strongly correlated.^[The technical reason is that the invertibility of the matrix $\v X^T \v X$ requires that it has <a href="https://stattrek.com/matrix-algebra/matrix-rank.aspx">full rank</a>. If predictors are highly correlated, this is equivalent to there being an exact (or near-exact) linear dependency in the data, which reduces the rank of the matrix.] You can test for multicollinearity by looking at a correlation matrix of the predictors---the best way to deal with multicollinearity is to simply remove the highly correlated predictors. 
 
-While LS regression can control for the effect of minor correlations between predictors, it becomes problematic if the correlation is very high. If you run a regression in R and get the error `prediction from a rank-deficient fit may be misleading` or `linear dependency in data`, this is a sign of multicollinearity.  
+While LS regression can control for the effect of minor correlations between predictors, it becomes problematic if the correlation is very high. If you run a regression in R and get the error `"prediction from a rank-deficient fit may be misleading"` or `"linear dependency in data"`, this is a sign there is multicollinearity in the data.  
 
 ## Normal Errors
 
 Another assumption is that the error terms are normally distributed with mean zero and variance $\sigma^2$:
 
 $$\varepsilon | X \sim \mathcal N (0, \sigma^2)$$
-But this assumption can be relaxed, since the CLT gives asymptotically normal errors even when they aren't normally distributed, provided $n$ is large enough. 
+But this assumption can generally be relaxed when $n$ is large, since the CLT gives asymptotically normal errors even if they aren't normally distributed, provided $n$ is large enough. 
 
 
 
@@ -377,7 +377,7 @@ The data shown on the right will give a more precise estimate of $b$.
 
 Provided all the regression assumptions are satisfied, the method of least squares gives unbiased estimates of the regression coefficients that have the *smallest variance* of any other estimator. The Gauss-Markov theorem is as follows:
 
-**In a linear model with homoscedastic errors, the LS estimator is Best Linear Unbiased Estimator**^[Or BLUE, as the cool kids say.].  
+**In a linear model with homoscedastic errors, the LS estimator is BLUE (the Best Linear Unbiased Estimator)**.  
 
 If errors are not homoscedastic, the LS estimator is stll unbiased, provided the errors are uncorrelated and have zero mean. But if this assumption isn't satisfied, i.e. $\E[\varepsilon | \v x] \neq 0$, LS is no longer the smallest variance estimator (see: <a href="https://en.wikipedia.org/wiki/Generalized_least_squares">Generalized Least Squares</a>).  
 

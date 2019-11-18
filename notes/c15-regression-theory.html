@@ -220,12 +220,12 @@ if (window.hljs) {
 <div id="no-multicollinearity" class="section level2">
 <h2>No Multicollinearity</h2>
 <p>Multicollinearity is when two or more predictors are <em>highly</em> correlated with each other. It becomes difficult for LS regression to compute regression coefficients if predictors are strongly correlated.<label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label><input type="checkbox" id="tufte-sn-1" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">1</span> The technical reason is that the invertibility of the matrix <span class="math inline">\({{\boldsymbol X}}^T {{\boldsymbol X}}\)</span> requires that it has <a href="https://stattrek.com/matrix-algebra/matrix-rank.aspx">full rank</a>. If predictors are highly correlated, this is equivalent to there being an exact (or near-exact) linear dependency in the data, which reduces the rank of the matrix.</span> You can test for multicollinearity by looking at a correlation matrix of the predictors—the best way to deal with multicollinearity is to simply remove the highly correlated predictors.</p>
-<p>While LS regression can control for the effect of minor correlations between predictors, it becomes problematic if the correlation is very high. If you run a regression in R and get the error <code>prediction from a rank-deficient fit may be misleading</code> or <code>linear dependency in data</code>, this is a sign of multicollinearity.</p>
+<p>While LS regression can control for the effect of minor correlations between predictors, it becomes problematic if the correlation is very high. If you run a regression in R and get the error <code>&quot;prediction from a rank-deficient fit may be misleading&quot;</code> or <code>&quot;linear dependency in data&quot;</code>, this is a sign there is multicollinearity in the data.</p>
 </div>
 <div id="normal-errors" class="section level2">
 <h2>Normal Errors</h2>
 <p>Another assumption is that the error terms are normally distributed with mean zero and variance <span class="math inline">\(\sigma^2\)</span>:</p>
-<p><span class="math display">\[\varepsilon | X \sim \mathcal N (0, \sigma^2)\]</span> But this assumption can be relaxed, since the CLT gives asymptotically normal errors even when they aren’t normally distributed, provided <span class="math inline">\(n\)</span> is large enough.</p>
+<p><span class="math display">\[\varepsilon | X \sim \mathcal N (0, \sigma^2)\]</span> But this assumption can generally be relaxed when <span class="math inline">\(n\)</span> is large, since the CLT gives asymptotically normal errors even if they aren’t normally distributed, provided <span class="math inline">\(n\)</span> is large enough.</p>
 <p> </p>
 </div>
 </div>
@@ -247,7 +247,7 @@ if (window.hljs) {
 <div id="the-gauss-markov-theorem" class="section level2">
 <h2>The Gauss-Markov theorem</h2>
 <p>Provided all the regression assumptions are satisfied, the method of least squares gives unbiased estimates of the regression coefficients that have the <em>smallest variance</em> of any other estimator. The Gauss-Markov theorem is as follows:</p>
-<p><strong>In a linear model with homoscedastic errors, the LS estimator is Best Linear Unbiased Estimator</strong><label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label><input type="checkbox" id="tufte-sn-2" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">2</span> Or BLUE, as the cool kids say.</span>.</p>
+<p><strong>In a linear model with homoscedastic errors, the LS estimator is BLUE (the Best Linear Unbiased Estimator)</strong>.</p>
 <p>If errors are not homoscedastic, the LS estimator is stll unbiased, provided the errors are uncorrelated and have zero mean. But if this assumption isn’t satisfied, i.e. <span class="math inline">\({\text{E}}[\varepsilon | {{\boldsymbol x}}] \neq 0\)</span>, LS is no longer the smallest variance estimator (see: <a href="https://en.wikipedia.org/wiki/Generalized_least_squares">Generalized Least Squares</a>).</p>
 <p> </p>
 <hr />
