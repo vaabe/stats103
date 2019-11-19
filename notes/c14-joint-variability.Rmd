@@ -133,7 +133,7 @@ $$
 \begin{aligned}
   \Var[X+Y] &=  \E \big[ (X+Y)^2 \big] - \E[X+Y]^2  \\ 
   &= \E \big[ X^2 + 2XY + Y^2 \big] - \big( \E[X]+\ \E[Y] \big)^2 \\ 
-  &= \E[X^2]+\E[2XY]+E[Y^2] - \E[X^2]  - 2\E[X]E[Y] - \E[Y^2] \\ 
+  &= \E[X^2]+\E[2XY]+E[Y^2] - \E[X]^2  - 2\E[X]E[Y] - \E[Y]^2 \\ 
   &= \big( \E[X^2] - \E[X]^2 \big) + \big( \E[Y^2] - \E[Y]^2 \big) + 2 \big(E[XY] - \E[X]\E[Y] \big) \\ 
   &= \Var[X] + \Var[Y] + 2\Cov[X,Y]
 \end{aligned}
