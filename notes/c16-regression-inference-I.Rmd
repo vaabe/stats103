@@ -155,7 +155,7 @@ $$R^2 = \frac{RSS}{TSS} = 1 - \frac{SSR}{TSS}$$
 
 i.e. the $R^2$ value is the regression sum of squares divided by the total sum of squares---or the *proportion* of variability in the response variable that is *explained* by the model (the predictor variables). This is why $R^2$ is often called a measure of a model's *goodness-of-fit*.  
 
-Adding more relevant predictors to a regression model can increase the model's overall goodness-of-fit. We saw above that in the simple regression of temperature on albedo, 37\% of the variability in the response variable is explained by the model. Now let's consider a multiple regression regression model for temperature, using the predictors vegetation, albedo, building height, and population density. Watch what happens to the $R^2$:
+Adding more relevant predictors to a regression model can increase the model's overall goodness-of-fit. We saw above that in the simple regression of temperature on albedo, 37\% of the variability in the response variable is explained by the model. Now let's consider a multiple regression model for temperature, using the predictors vegetation, albedo, building height, and population density. Watch what happens to the $R^2$:
 
 ```{r}
 reg3 = lm(temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
@@ -262,7 +262,7 @@ Here's what to look for in each of the plots:
 
 **Residuals vs Fitted Values** (top left)  
 
-- look for an even spread of points throughout the plot. If the points are more vertically spread certain areas (like a triangle pointing left or right), this indicates the model has heteroscedastic errors (the errors have non-constant variance)
+- look for an even spread of points throughout the plot. An uneven spread (like a triangle pointing left or right) indicates the model has heteroscedastic errors (the errors have non-constant variance)
 - look for patterns between the residuals and fitted values, which may indicate nonlinear relationships present in the model (a violation of the least squares assumptions) 
 
 **Normal Q-Q** (top right)  
