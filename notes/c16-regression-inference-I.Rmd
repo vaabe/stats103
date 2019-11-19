@@ -293,7 +293,7 @@ Here we run a simulation showing how multicollinearity in the data can affect th
 
 In the code below, the function `collinear_datagen()` generates a data for a regression model with the equation:
 
-$$y = x_1 +  2x_2 + 3x_3$$
+$$y = x_1 - 2x_2 + 3x_3$$
 
 where the variable $x_3$ is linearly dependent on $x_1$ and $x_2$ (more so with the $x_1$ than $x_2$---see the code). The constant `r` determines the extent of the multicollinearity---the smaller it is, the higher the multicollinearity between the variables.  
 
