@@ -56,15 +56,11 @@ The **validity** of an estimator is a measure of its accuracy, i.e. the extent t
 
 In an experimental setting, it is important to have a valid experiment design. There are two important kinds of experimental validity: internal and external.  
 
-\ 
-
 ## External validity
 
 External validity concerns the generalizability of an experiment's results, i.e. whether the results of an experiment still hold in different samples/settings. For a causal relationship to have external validity, it should be *portable* across samples, i.e. not depend on in-sample conditions.  
 
 A common threat to external validity is a non-representative sample, aka sampling bias.    
-
-\ 
 
 ## Internal validity  
 
@@ -83,7 +79,7 @@ Common factors that interfere with internal validity:
 
 \ 
 
-# 17--2 Bias
+# 17--2 Bias of an Estimator
 
 Bias is when the expected value of a result differs from the true value of the parameter being estimated.  
 
@@ -91,7 +87,7 @@ If $\hat\theta$ is an estimator for the true parameter $\theta$, the bias of the
 
 $$\Bias[\hat\theta] = E[\hat\theta] - \theta$$
 
-## Unbiased estimators -- the sample mean
+## Unbiased estimators --- the sample mean
 
 In the previous module you saw that the expected value of the sample mean converges to the true mean with enough samples: $E[\bar X] = \mu$. The bias of the sample mean is thus:
 
@@ -101,8 +97,7 @@ In other words, the *sample mean is an unbiased estimator* for the true mean. If
 
 Not all estimators are unbiased, as the next section will demonstrate.  
 
-
-## Biased estimators -- a demonstration
+## Biased estimators --- a demonstration
 
 As you know, the uniform distribution $\mathcal U[a,b]$ is a probability distribution where every real number between $a$ and $b$ has an equal probability. In the previous module you saw how the sample mean of a uniform distribution converged to its theoretical value with large enough $n$, which demonstrates how the sample mean is an unbiased estimator for the true mean.  
 
@@ -176,7 +171,7 @@ Yet when calculating the variance of a sample, you must divide by $n-1$ rather t
 
 $$s^2 = \frac{1}{n-1} \sum_i^n (X_i - \bar X)^2$$
 
-This is known as Bessel's correction. It turns out that calculating sample variance using $\frac 1n$ will consistently give underestimates of the true population variance -- see proof here. 
+This is known as Bessel's correction. It turns out that calculating sample variance using $\frac 1n$ will consistently give underestimates of the true population variance---see proof <a href="https://en.wikipedia.org/wiki/Bessel%27s_correction#Formula">here</a>. 
 
 $$E \bigg[ \frac 1n \sum_i^n (X_i - \bar X)^2 \bigg] = \frac{n-1}{n} \sigma^2$$
 
