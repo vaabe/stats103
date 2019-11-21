@@ -2,7 +2,8 @@
 title: 'chapter 2 Getting Started with Data in R'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
   tufte::tufte_handout:
     citation_package: natbib
@@ -36,7 +37,7 @@ library(tufte)
 
 --- 
 
-# Loading Data
+# 2--1 Loading Data
 
 There are many functions in R for loading data: 
 
@@ -68,9 +69,7 @@ Note the extra argument, `header = TRUE`, which specifies that the first row of 
 
 \ 
 
----
-
-# Viewing Data 
+# 2--2 Viewing Data 
 
 To view the entire dataset, use the `View()` command in the console. A table view of the dataset will open as a new tab. Don't use the `View()` command for large datasets as it is very memory intensive.  
 
@@ -96,11 +95,7 @@ dim(nycbnb)
 
 \ 
 
---- 
-
-# Basic Data Structures
-
-\ 
+# 2--3 Basic Data Structures
 
 ## Variables and observations
 
@@ -108,9 +103,7 @@ In statistics a **variable** usually refers to some characteristic that is measu
 
 - **Continuous data** can take on infinitely many values (real numbers). E.g. the variable `latitude` in the Airbnb data. 
 - **Discrete data** can take on countable values only (integer numbers). E.g. the variable `bedrooms` in the Airbnb data. 
-- **Categorical data** fall into a finite number of categories or distinct groups. E.g. the variable `neighborhood` in the Airbnb data. 
-
-\ 
+- **Categorical data** fall into a finite number of categories or distinct groups. E.g. the variable `neighborhood` in the Airbnb data.
 
 ## Data structures in R
 

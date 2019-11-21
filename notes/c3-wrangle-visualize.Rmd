@@ -2,7 +2,8 @@
 title: 'chapter 3 Wrangling and Visualizing Data'
 output:
   tufte::tufte_html:
-    tufte_features: ['fonts','background']
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
     toc: true
   tufte::tufte_handout:
     citation_package: natbib
@@ -44,13 +45,11 @@ nycbnb <- read.csv('./data/nyc-airbnb.csv', header = TRUE) %>%
 
 ---
 
-# Wrangling Data
+# 3--1 Wrangling Data
 
 Wrangling data refers to cleaning/manipulating/reorganizing raw data to make it more useful for analysis. The `dplyr` package has a host of functions specifically for this purpose. The following examples will demonstrate a few of them. Here is a dplyr <a href="./downloads/dplyr-cheatsheet.pdf" download>cheatsheet</a>. 
 
 `r margin_note("For more comprehensive notes on dplyr visit https://dplyr.tidyverse.org/.")`
-
-\ 
 
 ## Indexing
 
@@ -68,7 +67,7 @@ nycbnb[1,3]
 nycbnb[5:7,2:4]
 ```
 
-\ 
+
 
 ## Extracting
 
@@ -79,7 +78,7 @@ The extract operator, `$`, can extract a named element from a list. Since a data
 prices <- nycbnb$price
 ```
 
-\ 
+
 
 ## Selecting columns
 
@@ -92,7 +91,7 @@ prices_and_boroughs <- select(nycbnb, price, borough)
 
 The first argument in the `select()` function is the data frame you are selecting from, and subsequent arguments are variables you want to select.  
 
-\ 
+
 
 ## Renaming columns
 
@@ -105,7 +104,7 @@ Use `rename()`:
 nycbnb <- rename(nycbnb, priceUSD = price)
 ```
 
-\ 
+
 
 ## Adding/changing columns
 
@@ -121,7 +120,7 @@ nycbnb <- mutate(nycbnb, sqm = sqft / 10.764)
 nycbnb <- mutate(nycbnb, revenue = priceUSD*availability365)
 ```
 
-\ 
+
 
 ## Filtering data
 
@@ -134,7 +133,7 @@ Use `filter()`:
 nycbnb_bklyn <- filter(nycbnb, borough == 'Brooklyn')
 ```
 
-\ 
+
 
 ## Piping
 
@@ -181,7 +180,7 @@ This is much worse. It's slower and you had to write `nycbnb_manh` a billion tim
 
 Use pipes. 
 
-\ 
+
 
 ## Aggregating data
 
@@ -207,7 +206,7 @@ kable(prices_by_borough, caption = 'NYC Airbnb prices aggregated by borough.')
 ```
 
 
-\ 
+
 
 ## Dealing with missing data
 
@@ -229,9 +228,7 @@ mean(some_numbers, na.rm = TRUE)
 
 \ 
 
----
-
-# Visualizing Data
+# 3--2 Visualizing Data
 
 The package `ggplot2` is the main plotting library in R. Its main function call is `ggplot()`. To make a plot you must provide `ggplot()` with two arguments, `data` and `mapping`:
 
@@ -242,7 +239,7 @@ The following examples will demonstrate how to use `ggplot()`. Here is a ggplot 
 
 `r margin_note("For more comprehensive notes on ggplot2 visit https://ggplot2.tidyverse.org/.")`
 
-\ 
+
 
 ## Histograms
 
@@ -276,7 +273,7 @@ ggplot(data = nycbnb, mapping = aes(x = priceUSD)) +
   theme_light()
 ```
 
-\ 
+
 
 ## Scatterplots
 
@@ -304,7 +301,6 @@ ggplot(data = nycbnb, mapping = aes(x = longitude, y = latitude, color = borough
   theme_light()
 ```
 
-\ 
 
 ## Box & Whisker Plots 
 
@@ -322,7 +318,7 @@ ggplot(data = nycbnb, mapping = aes(x = borough, y = priceUSD)) +
   theme_light()
 ```
 
-\ 
+
 
 ## Tables
 
@@ -347,5 +343,8 @@ kable(prices_by_borough, caption = 'NYC Airbnb prices aggregated by borough.')
 ---
 
 \ 
+
+\ 
+
 
 

@@ -281,10 +281,6 @@ Here's what to look for in each of the plots:
 
 
 
-
-
-
-
 \ 
 
 # 16--5 The Problem of Multicollinearity 
