@@ -157,16 +157,38 @@ ggplot(aes(x = thetahat), data = as.data.frame(thetahat)) +
 <p><span class="math display">\[\sigma^2 = \frac 1n \sum_i^n (X_i - \mu)^2 \hspace{2cm} s^2 = \frac{1}{n-1} \sum_i^n (X_i - \bar X)^2\]</span></p>
 <p>i.e. the sample variance has a degrees-of-freedom adjustment (dividing by <span class="math inline">\(n-1\)</span> rather than <span class="math inline">\(n\)</span>). This is known as <strong>Bessel’s correction.</strong> It turns out that estimating variance using <span class="math inline">\(\frac 1n\)</span> will consistently <em>underestimate</em> the true variance by a factor <span class="math inline">\(\frac{n-1}{n}\)</span>. See the proof <a href="https://en.wikipedia.org/wiki/Bessel%27s_correction#Formula">here</a>.</p>
 <p><span class="math display">\[{\text{E}}\bigg[ \frac 1n \sum_i^n (X_i - \bar X)^2 \bigg] = \frac{n-1}{n} \sigma^2\]</span></p>
-<p>Applying Bessel’s correction remedies this bias. The non-bias-corrected formula will only work on population data.</p>
+<p>Applying Bessel’s correction remedies this bias.</p>
 <p>Note that when <span class="math inline">\(n\)</span> is large, the difference between <span class="math inline">\(\frac 1n\)</span> and <span class="math inline">\(\frac{1}{n-1}\)</span> becomes negligible. The difference between the two formulae is significant only for small samples. This is why we use the <span class="math inline">\(t\)</span>-distribution for small samples, since it uses the bias-corrected formula for sample variance, which produces a normal curve with fatter tails. This is also why the <span class="math inline">\(t\)</span>-distribution only has one parameter, DoF, since each <span class="math inline">\(n\)</span> produces a slightly different curve.</p>
 <p> </p>
 </div>
 </div>
 <div id="sampling-bias" class="section level1">
 <h1>17–3 Sampling Bias</h1>
-<p> </p>
+<p>To recap: a <strong>random sample</strong> is one where each observation is selected randomly from the population, and has an equal probability of being selected.</p>
+<p><strong>Sampling bias</strong> occurs when the observations in a sample are collected in a non-random way, where certain observations in the population have a higher/lower probability of being selected than others. It results in a <strong>biased sample</strong>, which is not representative of the population.</p>
+<p>Below are some examples of sampling bias:</p>
+<ul>
+<li><strong>response bias</strong> or <strong>self-selection bias</strong>—can occur if study participants self-select (i.e. have control over whether to participate). It could be that the people who voluntarily opt in to the study tend to represent a certain group in the population (e.g. with particularly strong opinions/characteristics), resulting in an overrepresentation of the characteristics of that group.
+<ul>
+<li>e.g. using responses from a voluntary survey—it could be that survey respondents tended to have stronger opinions on the issue than nonrespondents, resulting in an overrepresentation of extreme opinions.<br />
+</li>
+</ul></li>
+<li><strong>referral bias</strong> or <strong>Berkeson’s bias</strong>—can occur if the study population is selected from a certain environment that differs from the general population/control group.
+<ul>
+<li>e.g. in hospital studies, if the admissions rates to the hospital are different for certain ailments (e.g. admission rates of exposed cases and controls differ), the association between exposure and ailment can be distorted. This can result in spurious negative correlations between ailments.<br />
+</li>
+<li>e.g. a person may observe from experience that fast food restaurants in their area that serve good burgers tend to serve bad fries and vice versa; but if s/he doesn’t eat anywhere where <em>both</em> are bad, the (possibly) large number of restaurants in this category are ignored, which would have weakened or reversed the correlation.</li>
+</ul></li>
+<li><strong>survivorship bias</strong>—can occur if the study only focuses on observations that “survived” after some selection criteria. Ignoring/excluding “failures” can result in optimistic beliefs about the characteristics associated with “successes”.
+<ul>
+<li>e.g. communicating only with the “survivors” of a fatal incident—can result in underestimating how dangerous the incident really was, since the opinions of the “dead” are not excluded.<br />
+</li>
+<li>e.g. excluding firms that no longer exist in analyses of financial performance—can result in misleading beliefs about what makes a firm successful.</li>
+</ul></li>
+</ul>
 <p> </p>
 <hr />
+<p> </p>
 <p> </p>
 </div>
 

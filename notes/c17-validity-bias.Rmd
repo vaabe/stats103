@@ -185,7 +185,7 @@ i.e. the sample variance has a degrees-of-freedom adjustment (dividing by $n-1$ 
 
 $$\E \bigg[ \frac 1n \sum_i^n (X_i - \bar X)^2 \bigg] = \frac{n-1}{n} \sigma^2$$
 
-Applying Bessel's correction remedies this bias. The non-bias-corrected formula will only work on population data.  
+Applying Bessel's correction remedies this bias.   
 
 Note that when $n$ is large, the difference between $\frac 1n$ and $\frac{1}{n-1}$ becomes negligible. The difference between the two formulae is significant only for small samples. This is why we use the $t$-distribution for small samples, since it uses the bias-corrected formula for sample variance, which produces a normal curve with fatter tails. This is also why the $t$-distribution only has one parameter, DoF, since each $n$ produces a slightly different curve.  
 
@@ -195,17 +195,34 @@ Note that when $n$ is large, the difference between $\frac 1n$ and $\frac{1}{n-1
 
 # 17--3 Sampling Bias 
 
+To recap: a **random sample** is one where each observation is selected randomly from the population, and has an equal probability of being selected.  
+
+**Sampling bias** occurs when the observations in a sample are collected in a non-random way, where certain observations in the population have a higher/lower probability of being selected than others. It results in a **biased sample**, which is not representative of the population.  
+
+Below are some examples of sampling bias:
+
+- **response bias** or **self-selection bias**---can occur if study participants self-select (i.e. have control over whether to participate). It could be that the people who voluntarily opt in to the study tend to represent a certain group in the population (e.g. with particularly strong opinions/characteristics), resulting in an overrepresentation of the characteristics of that group. 
+    + e.g. using responses from a voluntary survey---it could be that survey respondents tended to have stronger opinions on the issue than nonrespondents, resulting in an overrepresentation of extreme opinions.   
+- **referral bias** or **Berkeson's bias**---can occur if the study population is selected from a certain environment that differs from the general population/control group.
+    + e.g. in hospital studies, if the admissions rates to the hospital are different for certain ailments (e.g. admission rates of exposed cases and controls differ), the association between exposure and ailment can be distorted. This can result in spurious negative correlations between ailments.    
+    + e.g. a person may observe from experience that fast food restaurants in their area that serve good burgers tend to serve bad fries and vice versa; but if s/he doesn't eat anywhere where *both* are bad, the (possibly) large number of restaurants in this category are ignored, which would have weakened or reversed the correlation. 
+- **survivorship bias**---can occur if the study only focuses on observations that "survived" after some selection criteria. Ignoring/excluding "failures" can result in optimistic beliefs about the characteristics associated with "successes". 
+    + e.g. communicating only with the "survivors" of a fatal incident---can result in underestimating how dangerous the incident really was, since the opinions of the "dead" are not excluded.     
+    + e.g. excluding firms that no longer exist in analyses of financial performance---can result in misleading beliefs about what makes a firm successful. 
 
 
 
 
 
 
-\ 
+
+
 
 \ 
 
 ---
+
+\ 
 
 \ 
 

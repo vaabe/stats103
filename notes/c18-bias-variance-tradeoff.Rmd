@@ -39,6 +39,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 \newcommand{\Var}{\text{Var}}
 \newcommand{\SD}{\text{SD}}
 \newcommand{\SE}{\text{SE}}
+\newcommand{\MSE}{\text{MSE}}
 \newcommand{\Cov}{\text{Cov}}
 \newcommand{\Cor}{\text{Cor}}
 \renewcommand{\P}{\text{P}}
@@ -48,42 +49,38 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 18--1 Two Sources of Error in an Estimator 
+# 18--1 The Mean Squared Error
 
-The **variance** of an estimator gives the average squared distance of each estimate from the mean estimate:
+How good is an estimator overall? We know that there are two sources of error in an estimator: the error due to *variance*, and the error due to *bias:*
 
-$$Var[\hat\theta] = E \big[ (\hat\theta - E[\hat\theta])^2 \big]$$
+The **variance** of an estimator gives the average squared deviation from the expected value:
 
-The **bias** of an estimator is how far the average estimate is from the true parameter:
+$$\Var[\hat\theta] = \E \big[ (\hat\theta - \E[\hat\theta])^2 \big]$$
 
-$$Bias[\hat\theta] = E[\hat\theta] - \theta$$
+The **bias** of an estimator is how far the expected value is from the true parameter:
 
-Note the difference between variance and bias. If an estimator has low variance, the data points are clustered close together. But if the cluster is far from the true parameter, there is bias. Conversely, an estimator can have low bias and high variance if the points surround the true parameter, but in general have high dispersion.   
+$$\Bias[\hat\theta] = \E[\hat\theta] - \theta$$
 
-```{r, echo=FALSE, out.width=400, out.height=400, fig.align='center', fig.cap="Source: http://scott.fortmann-roe.com/docs/BiasVariance.html"}
+Note the difference between variance and bias: variance is a measure of the *spread* of an estimate (how closely the data points are clustered), and bias is a measure of how far the cluster actually is from the true value. Below is a graphical illustration of different combinations of bias and variance:  
+
+```{r, echo=FALSE, out.height=400, out.width=400, fig.align='center'}
 knitr::include_graphics('./pics/c18-pic1.png')
 ```
 
+The **mean squared error** provides a way to quantify both sources of error. The MSE is defined as the expected value of the squared errors:
 
-## The Mean Squared Error
+$$\MSE[\hat\theta] = E\big[ (\hat\theta - \theta)^2 \big]$$
 
-In statistics we are often concerned with the relationship between bias and variance. A good way to quantify both is using the **mean squared error**: the expected value (probability-weighted average over all samples) of the squared errors:
+This gives a measure of how far, on average, a collection of estimates are from the true parameter being estimated.  
 
-$$MSE[\hat\theta] = E\big[ (\hat\theta - \theta)^2 \big]$$
+Note if we expand the formula for MSE we get:
 
-This gives a measure of how far, on average, a collection of estimates are from the true parameter being estimated. Note, if you expand the formula for MSE, you get:
+$$\MSE[\hat\theta] = (\E[\hat\theta] = \theta)^2 + \E \big[ (\hat\theta - \E[\hat\theta])^2 \big]$$
 
-$$MSE[\hat\theta] = (E[\hat\theta] = \theta)^2 + E \big[ (\hat\theta - E[\hat\theta])^2 \big]$$
+$$\MSE[\hat\theta] = \Bias[\hat\theta]^2 + \Var[\hat\theta]$$
 
-$$MSE[\hat\theta] = Bias[\hat\theta]^2 + Var[\hat\theta]$$
+i.e. mean squared error is equal to the bias squared plus the variance.  
 
-i.e. mean squared error is the bias squared plus the variance.  
-
-Thus an estimator that minimises bias does not necessarily minimise mean squared error, since the MSE is dependent on the variance of an estimator too.  
-
-Probability models don’t always have just one parameter, complicated situations may require more. Modern statistics often deals with high dimensional problems with many parameters. If have $p$ parameters, $\theta_1, ..., \theta_p$:
-
-$$MSE[\hat\theta] = \sum_i^p E\big[ (\hat\theta_i - \theta_i)^2 \big]$$
 
 
 
