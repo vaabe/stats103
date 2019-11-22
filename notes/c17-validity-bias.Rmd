@@ -48,31 +48,51 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 17--1 Validity
+# 17--1 Two Sources of Error in an Estimator 
 
-In statistics **validity** concerns the *accuracy* of an observed result. This is different from **reliability**, which concerns the *consistency* of an observed result across different samples. The reliability of a result is characterized by its variability---the *random* tendency to vary across different samples. A reliable result should have low variability, and vice versa. 
+To recap: in chapter 10 we mentioned the two sources of error in estimation problems:
 
-Validity represents whether a result reflects the *truth* about what is trying to be measured. Reliability does not imply validity---e.g. a scale can produce reliable (consistent) estimates of mass, but if incorrectly calibrated, its estimates will be *systematically* incorrect.   
+- **sampling error** or **variability**---the *random* tendency of a result to vary across different samples 
+- **bias**---the *systematic* tendency of a result to over/underestimate the true population parameter  
 
-Factors that interfere with validity are known as sources of **bias**. In this module we will focus on concepts related to bias.  
+Both of these factors can contribute to the value of an estimate differing from its underlying population value. In module 2 we focused on variability in estimation problems, and we introduced two convergence theorems that describe how variability decreases with sample size.  
 
-There are two major kinds of validity in experimental settings: *internal* validity and *external* validity.    
+Now we will examine *bias* as a source of error. The crucial difference between variability and bias is the former is *random*---owing to random fluctuations---while the latter is *systematic*, and cannot be reduced by increasing the sample size.  
+
+Formally, bias is defined as follows: if $\hat\theta$ is an estimator for the true parameter $\theta$, the *bias* of the estimator is:
+
+$$\Bias[\hat\theta] = \E[\hat\theta] - \theta$$
+
+i.e. bias is when the *expected value* differs from the true value of the parameter being estimated.  
+
+## Reliability vs. Validity 
+
+Two important concepts associated with variability and bias:
+
+- **reliability**---the *consistency* of a result, i.e. the extent to which it produces similar values in different samples
+- **validity**---the *accuracy* of a result, i.e. the extent to which it reflects what is actually trying to be measured
+
+Reliability is related to variability---a result is *reliable* if it has low variability, and vice versa. Reliability does not imply validity---e.g. a scale can produce reliable (consistent) estimates of mass, but if incorrectly calibrated, its estimates will be *systematically* incorrect.   
+
+Factors that interfere with validity are known as sources of **bias**. The presence of bias indicates there is something inherently wrong about the *design* of the experiment.  
+
+There are two major kinds of validity in experiments: *internal* validity and *external* validity.    
 
 ## External validity
 
-External validity concerns the *generalizability* of a result, i.e. whether it will hold in different samples/settings. For a result to have external validity, it should be *portable*, i.e. it shouldn't depend on in-sample conditions.  
+External validity concerns the *generalizability* of a result, i.e. whether it will hold in different samples/settings. For a result to have external validity, it should be *portable*, and it should not depend on in-sample conditions.  
 
 A common threat to external validity is a non-representative sample---this is known as **sampling bias.**    
 
 ## Internal validity  
 
-Internal validity concerns the correct identification of causal relationships in an experiment. For a result to have internal validity, confounding variables must be controlled for. Below are some common threats to internal validity: 
+Internal validity concerns the correct identification of causal relationships in an experiment. For an observed result to have internal validity, it must be controlled for by confounding variables, and it must be properly measured/identified. Below are some common threats to internal validity: 
 
 - confounding variables/events that are not controlled for---**omitted variable bias**
 - incorrectly identified variables and causal relationships---**specification bias**
 - poorly made/calibrated measurements---**measurement error bias**  
 
-In the remainder of this module we will examine sources of bias in experiments and estimation.  
+In the remainder of this module we will examine sources of bias in experiments and estimation problems.  
 
 
 
@@ -88,19 +108,17 @@ $$\Bias[\hat\theta] = \E[\hat\theta] - \theta$$
 
 ## Unbiased estimators---the sample mean
 
-The LLN gives that the expected value of the sample mean converges to the true mean with a large enough sample: $\E[\bar X] = \mu$. The bias of the sample mean is thus:
+From large sample theory we know that the expected value of the sample mean converges to the true mean with a large enough sample: $\E[\bar X] \longrightarrow \mu$. The bias of the sample mean is thus:
 
 $$\Bias[\bar X] = \E[\bar X] - \mu = \mu - \mu = 0$$
 
-In other words, the sample mean is an *unbiased estimator* for the true mean. If you want to estimate the mean of a population, using the sample mean should give you a valid result (provided the sample is random).  
+In other words, the sample mean is an *unbiased estimator* for the true mean. If you want to estimate the mean of a population, using the sample mean should give you an accurate result, provided the sample is random.    
 
 Not all estimators are unbiased, as the next section will demonstrate.  
 
-## Biased estimators---the sample max
+## Biased estimators---the sample maximum
 
-We know that the sample mean is an unbiaseed estimator for the true mean---the LLN and the CLT both demonstrate its convergence to the true value, with large enough $n$. 
-
-But suppose now we want to estimate the *maximum* value of the distribution. Is the sample maximum an unbiased estimator for the true maximum? To answer this question, let $X$ be a RV following a continuous uniform distribution from 0 to 10, i.e. $X \sim \mathcal U(0,10)$. The code below generates 100 random samples of $X$ and plots the histogram:
+Suppose now we want to estimate the *maximum* value of the distribution. Is the sample maximum an unbiased estimator for the true maximum? To answer this question, let $X$ be a RV following a continuous uniform distribution from 0 to 10, i.e. $X \sim \mathcal U(0,10)$. The following code generates 100 random samples of $X$ and plots the histogram:
 
 ```{r, echo=FALSE}
 set.seed(26)
@@ -110,8 +128,7 @@ set.seed(26)
 X = runif(n = 100, min = 0, max = 10)
 
 ggplot(aes(x = X), data = as.data.frame(X)) + 
-  geom_histogram(binwidth = 0.5) +
-  theme_bw()
+  geom_histogram(binwidth = 0.5) + theme_bw()
 ```
 
 If $\theta$ denotes the true maximum of the population distribution, we know that in this case $\theta = 10$. The sample maximum, $\hat\theta$, is:
@@ -126,9 +143,7 @@ If we repeat the process many times, we can construct a sampling distribution of
 thetahat = replicate(n = 1000, max(runif(n = 100, min = 1, max = 10)))
 
 ggplot(aes(x = thetahat), data = as.data.frame(thetahat)) + 
-  geom_histogram(bins = 50) +
-  ggtitle('sampling distribution of the maximum') + xlab(TeX('$\\hat{\\theta}$')) +
-  theme_bw()
+  geom_histogram(bins = 50) + ggtitle('sampling distribution of the maximum') + xlab(TeX('$\\hat{\\theta}$')) + theme_bw()
 ```
 
 The sampling distribution of $\hat\theta$ is neither bell-shaped, nor centered at the true maximum $\theta$. In fact, based on this sampling distribution, the expected value of the sample maximum is:
@@ -137,22 +152,22 @@ The sampling distribution of $\hat\theta$ is neither bell-shaped, nor centered a
 mean(thetahat)
 ```
 
-Clearly, the sample maximum underestimates the true maximum, since $\E[\hat\theta] - \theta =$ `r toString(round(mean(thetahat),3))` -10 $\neq 0$. The bias of the sample maximum in this example is:
+Clearly, the sample maximum underestimates the true maximum, since $\E[\hat\theta] - \theta =$ `r toString(round(mean(thetahat),3))` -10 $< 0$. The bias of the sample maximum in this example is:
 
 ```{r}
 mean(thetahat) - 10
 ```
 
-With a bit of calculus, you could show that, in fact, 
+With a bit of calculus it can be shown that:
 
 $$\E[\hat\theta] = \frac{n}{n+1} \theta$$
 
-i.e. that the sample maximum consistently *underestimates* the true maximum by a factor $\frac{n}{n+1}$. Using this, you could construct a bias-corrected estimator for the maximum:
+i.e. the sample maximum is a *biased* estimator for the true maximum, since it will consistently underestimate the true maximum by a factor $\frac{n}{n+1}$. Using this, we can construct a bias-corrected estimator for the maximum:
 
 $$\frac{n+1}{n} \hat\theta$$
 where $\hat\theta$ is the sample maximum. 
 
-In the above example, where $n=100$, the bias-corrected estimate of the true maximum is:
+For the above example, where $n=100$, the bias-corrected estimate of the true maximum is:
 
 ```{r}
 mean(thetahat)*((100+1)/100)
@@ -162,19 +177,17 @@ which is clearly a much more *accurate* estimate of the true maximum.
 
 ## Bessel's Correction
 
-Another example of a bias arises in estimating the population variance using a sample of data. We've mentioned that there are slightly different formulae for the population variance and sample variance:  
-
-You know the formula for the variance of a population:
+Another example of estimator bias arises when estimating the variance of a distribution. We've mentioned before that there are slightly different formulae for the population variance and sample variance:  
 
 $$\sigma^2 = \frac 1n \sum_i^n (X_i - \mu)^2 \hspace{2cm} s^2 = \frac{1}{n-1} \sum_i^n (X_i - \bar X)^2$$
 
-The degrees-of-freedom adjustment used in the formula for sample variance is known as **Bessel's correction.** It turns out that calculating sample variance using $\frac 1n$ will consistently *underestimate* the true population variance---see the proof <a href="https://en.wikipedia.org/wiki/Bessel%27s_correction#Formula">here</a>. 
+i.e. the sample variance has a degrees-of-freedom adjustment (dividing by $n-1$ rather than $n$). This is known as **Bessel's correction.** It turns out that estimating variance using $\frac 1n$ will consistently *underestimate* the true variance by a factor $\frac{n-1}{n}$. See the proof <a href="https://en.wikipedia.org/wiki/Bessel%27s_correction#Formula">here</a>. 
 
 $$\E \bigg[ \frac 1n \sum_i^n (X_i - \bar X)^2 \bigg] = \frac{n-1}{n} \sigma^2$$
 
-Applying Bessel's correction remedies this bias.  
+Applying Bessel's correction remedies this bias. The non-bias-corrected formula will only work on population data.  
 
-Note when $n$ is large, the difference between $\frac 1n$ and $\frac{1}{n-1}$ becomes negligible. The difference between the two formulae is significant only for small samples. This is why we use the $t$-distribution for small samples, since it uses the bias-corrected formula for sample variance, which produces a normal curve with fatter tails. Hence why the $t$-distribution only has one parameter, DoF, since each $n-1$ produces a slightly different curve.  
+Note that when $n$ is large, the difference between $\frac 1n$ and $\frac{1}{n-1}$ becomes negligible. The difference between the two formulae is significant only for small samples. This is why we use the $t$-distribution for small samples, since it uses the bias-corrected formula for sample variance, which produces a normal curve with fatter tails. This is also why the $t$-distribution only has one parameter, DoF, since each $n$ produces a slightly different curve.  
 
 
 
