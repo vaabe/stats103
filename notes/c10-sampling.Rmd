@@ -64,7 +64,7 @@ A **random sample** is one where each observation is chosen randomly from the po
 Below are the symbols typically used to denote sample and population parameters: 
 
 ```{r, echo=FALSE}
-parameters = data.frame("parameter" = c("mean","standard deviation","correlation coefficient"), "population" = c("$\\mu$","$\\sigma$","$\\rho$"), "sample" = c("$\\bar x$","$s$","$r$"))
+parameters = data.frame("parameter" = c("mean","standard deviation","correlation coefficient","regression coefficient"), "population" = c("$\\mu$","$\\sigma$","$\\rho$","$\\beta$"), "sample" = c("$\\bar x$","$s$","$r$","$b$"))
 knitr::kable(parameters, caption = "Standard notation for population and sample parameters.")
 ```
 
@@ -107,24 +107,24 @@ diceroll2
 mean(diceroll2)
 ```
 
-Compare these sample means to the theoretical mean of the population, in this case $\mu = 3.5$. Clearly, the error varies substantially across the two observed samples.^[Here error refers to the difference between the true and sample values of a parameter.]
+Compare these sample means to the theoretical mean of the population, in this case $\mu = 3.5$. Clearly, the error^[Error is the difference between the sample value and the true of a parameter.] in each estimate varies substantially across the two observed samples.  
 
-This a trivial example, since the RV in question follows a known distribution (discrete uniform), and we thus know the population mean exactly. In most experimental contexts the population distribution is unknown---all we have is a sample distribution, and whatever estimates it produces.   
+This a trivial example, since the RV in question follows a known distribution (discrete uniform), and we know the population mean exactly. In most experiments the population distribution is unknown---all we have is a sample distribution, and whatever estimates it produces.   
 
 ## Two sources of error in an estimator
 
-There are two main sources of error in sample-derived estimates:
+There are two sources of error in sample-derived estimates:
 
 - **sampling error**---the *random* tendency of an estimate to vary across different samples  
 - **bias**---the *systematic* tendency of an estimate to over/underestimate the true population parameter  
 
 The sampling error is a result of variability---the tendency of data to vary *randomly* across different samples. In the ensuing sections we introduce two convergence theorems---both crowning achivements in statistics---that describe how the variability of an estimate depends on sample size.  
 
-Bias is the result of *systematic* (i.e. nonrandom) processes interfering with observations---e.g. poor calibration or selective sampling. In module III we will look at sources of bias---for now we will focus on concepts related to variability.  
+Bias is the result of *systematic* (i.e. nonrandom) processes interfering with observations---e.g. poor calibration or selective sampling. In module 3 we will look at sources of bias---for now we will focus on concepts related to variability.  
 
 ## The reliability of an estimator 
 
-Reliability refers to the _consistency_ of an estimator across different samples. An estimator with high variability---e.g. the sample mean in the "diceroll" simulation above---is considered *unreliable*, as its value tends to change significantly across different samples.  
+Reliability refers to the _consistency_ of an estimator across different samples. The reliability of a result is closely related to its variability. An estimator with high variability---e.g. the sample mean in the "diceroll" simulation above---is considered *unreliable*, as its value tends to vary substantially across different samples.  
 
 
 
@@ -132,7 +132,9 @@ Reliability refers to the _consistency_ of an estimator across different samples
 
 # 10--3 The Law(s) of Large Numbers
 
-In the "diceroll" simulation above we used a sample size $n = 10$. Below we rerun the same simulation three times, but with sample sizes $n = \{ 30, 1000, 10000 \}$. The sample mean is computed for each value of $n$.  
+The law of large numbers is a theorem that describes how the variability of an estimate *decreases* with sample size.  
+
+Here's a simple demonstration of this: the following code runs the "diceroll" simulation three times, with sample sizes $n = \{ 30, 1000, 10000 \}$. The sample mean is computed for each value of $n$.  
 
 ```{r, echo=FALSE}
 set.seed(19)
@@ -140,12 +142,12 @@ set.seed(19)
 
 ```{r}
 for (i in c(30,100,10000)) {
-  dicetoss = sample(x = c(1,2,3,4,5,6), size = i, replace = TRUE)
-  cat(paste('sample mean when n =', i, ':', round(mean(dicetoss),3),'\n'))
+  diceroll = sample(x = c(1,2,3,4,5,6), size = i, replace = TRUE)
+  cat(paste('sample mean when n =', i, ':', round(mean(diceroll),3),'\n'))
 }
 ```
 
-Predictably, increasing sample size brings the sample mean closer to its theoretical value, $\mu=3.5$. This is, in essence, the **law of large numbers**---it describes how the sample mean converges to its true value as sample size gets large.  
+Predictably, increasing sample size brings the sample mean closer to its theoretical value, $\mu=3.5$. This is, in essence, the **law of large numbers**---it describes how the sample mean converges to its true value as the sample size becomes large.  
 
 Formally, there are two versions of the law of large numbers:  
 
@@ -164,9 +166,9 @@ By contrast, the strong LLN describes an *exact* convergence to the true mean---
 
 \ 
 
-# 10--4 Sampling Distributions --- a demonstration
+# 10--4 Sampling Distributions---a demonstration
 
-In the previous example we showed that repeating a random process with a new sample is bound to deliver different sample statistics. Below we show what happens when we do this repeatedly. In the following code, the same experiment (i.e. a die being rolled 30 times) is repeated *ten* times, each time with a new random sample. The 10 sample means are stored in a vector and printed:  
+In the "diceroll" simulation above we showed how repeating a random process with a new sample is bound to deliver different sample statistics. Below we show what happens when we do this repeatedly. In the following code, the same experiment (i.e. a die being rolled 30 times) is repeated *ten* times, each time with a new random sample. The 10 sample means are stored in a vector and printed:  
 
 ```{r}
 N = 10 #number of trials
@@ -184,13 +186,11 @@ If $X$ is the RV for the outcome of a dice roll, the above output is not 10 obse
 
 Each sample mean is calculated $\bar X = \frac 1n \sum_i^n X_i$, where $X_i$ denotes a single observation in one of the samples.   
 
-As it turns out, we can model the sample mean $\bar X$ as a random variable (provided we have a collection of sample means), which gives a **sampling distribution**. Below is the distribution of the 10 sample means computed above: 
+As it turns out, we can model the sample mean $\bar X$ as a random variable (provided we have a collection of sample means), which gives a **sampling distribution**. Below is a histogram of the 10 sample means computed above: 
 
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
 ggplot(data = as.data.frame(samplemeans), aes(x = samplemeans)) + 
-  geom_histogram(binwidth = 0.1) +
-  ggtitle(TeX('sampling distribution of $\\bar{X}$ (10 trials)')) +
-  theme_bw()
+  geom_histogram(binwidth = 0.1) + ggtitle(TeX('sampling distribution of $\\bar{X}$ (10 trials)')) + theme_bw()
 ```
 
 This is known as the **sampling distribution of the mean**: it shows the distribution of the sample mean, $\bar X$, across several samples. Each sample in this case has size $n=30$ (i.e. 30 independent observations of $X$).   
@@ -237,7 +237,7 @@ xbar_summary = data.frame('number of trials' = c('100','1000','10,000'),
 Below are the summary statistics for each of these distributions:
 
 ```{r, echo=FALSE}
-kable(xbar_summary, caption = 'Summary statistics for the three sampling distributions shown.')
+kable(xbar_summary)
 ```
 
 
@@ -259,7 +259,7 @@ _**3 --- the standard deviations of the sampling distributions tended to cluster
 
 Note how this is much smaller than the s.d. of the population distribution.  
 
-For reference, the s.d. of a discrete uniform distribution with values from 1 to $a$ is given by $\sigma = \sqrt{\frac{a^2-1}{12}}$. In this case, with values from 1 to 6, thee population s.d. is $\sigma = 1.708$. The s.d. of the *sampling* distribution is clearly much smaller.  
+For reference, the s.d. of a discrete uniform distribution with values from 1 to $a$ is given by $\sigma = \sqrt{\frac{a^2-1}{12}}$. In this case, with values from 1 to 6, the population s.d. is $\sigma = 1.708$. The s.d. of the *sampling* distribution is clearly much smaller.  
 
 It turns out the s.d. of a sampling distribution is scaled down from the population s.d. by a factor of $\sqrt n$:
 
@@ -271,7 +271,7 @@ This is another important result in statistics, and will be explained next.
 
 \ 
 
-# 10--5 Sampling Distributions -- some theory
+# 10--5 Sampling Distributions---some theory
 
 Let's start from the beginning: if $X$ is a random variable for the outcome of a random process, then $X_i$ is often used to denote a single value/outcome/observation of this process. If you have a sample of $n$ observations of this random process, you have a collection of RVs $X_1, X_2, ..., X_n$.  
 
@@ -299,14 +299,14 @@ Recall the following properties of expectation:
 * the expected value of a sum of RVs is equal to the sum of the expected values of the RVs, i.e. $\E \big[ \sum_i X_i \big] = \sum_i \E[X_i]$
 * expectation scales linearly: $\E[aX] = a \E[X]$
 
-It should follow intuitively that the expected value of a sample mean is simply the true mean of the population: $\E[\bar X] = \mu$.   
+It should follow intuitively that the expected value of a sample mean is simply the true mean: $\E[\bar X] = \mu$.   
 
 To see this algebraically, apply the expectation operator to the formula for the sample mean, and do some wrangling: 
 
 $$\E[\bar X] = \E \bigg[ \frac 1n \sum_i^n X_i \bigg] = \frac 1n \E \bigg[ \sum_i^n X_i \bigg] = \frac 1n \sum_i^n \E[X_i] = \frac 1n \sum_i^n \mu = \frac 1n \cdot n\mu = \mu$$
 $$\therefore \;\; \E[\bar X] = \mu$$
 
-You saw this result in the demonstration above: all three sampling distributions were centered around 3.5, the theoretical mean of the population distribution.    
+We saw this result in the demonstration above: all three sampling distributions were centered around 3.5, the theoretical mean of the population distribution.    
 
 ## The variance of the sample mean, $\Var[\bar X]$
 
@@ -314,7 +314,7 @@ Recall the following properties of variance:
 
 * the variance of any one RV is simply the true variance of the population, i.e. $\Var[X_i] = \sigma^2$
 * the variance of each RV is the same (since they are i.i.d.)
-* the variance of a sum of RVs is equal to the sum of the variances of the RVs, i.e. $\Var \big[ \sum_i X_i \big] = \sum_i \Var[X_i]$
+* the variance of a sum of independent RVs is equal to the sum of the variances of the RVs, i.e. $\Var \big[ \sum_i X_i \big] = \sum_i \Var[X_i]$
 * variance scales by a square law: $\Var[aX] = a^2 \Var[X]$
 
 The last property is what gives the variance of a sample mean its dependency on sample size: $\Var[\bar X] = \frac{\sigma^2}{n}$. 
@@ -366,7 +366,7 @@ The **law of large numbers** describes how the sample mean converges in *value* 
 
 The **central limit theorem** describes how the sample mean converges in *distribution* to a normal distribution for large $n$.   
 
-These theorems are immensely useful for characterizing sample variability, and they have many applications in the statistical methods we introduced in module I.  
+These theorems concern the behavior of a *sequence* of random variables---this part of probability theory is known as **large sample theory** or **asymptotic theory**. These theorems are immensely useful for characterizing sample variability, and they have many applications in the statistical methods we introduced in module I.  
 
 Below are two important caveats to these theorems you ought to be aware of:
 
@@ -380,7 +380,7 @@ Note that when $n$ is initially small, increasing the sample size makes a signif
 
 You can see this in the expression for standard error: $\SD[\bar X] = \frac{\sigma}{\sqrt n}$. The dispersion of the sampling distribution does not decrease linearly, but over the *square root* of sample size. 
 
-You can also see this in the plot above: the dispersion of the distribution reduces substantially when $n$ is increased from 10 to 50, but change is more marginal when $n$ is increased from 50 to 100.  
+You can also see this in the plot above: the dispersion of the distribution reduces substantially when $n$ is increased from 10 to 50, but the change is more marginal when $n$ is increased from 50 to 100.  
 
 \ 
 

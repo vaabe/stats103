@@ -48,8 +48,75 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 18--1 The Bias-Variance Tradeoff
+# 18--1 Two Sources of Error in an Estimator 
 
-`coming soon`
+The **variance** of an estimator gives the average squared distance of each estimate from the mean estimate:
+
+$$Var[\hat\theta] = E \big[ (\hat\theta - E[\hat\theta])^2 \big]$$
+
+The **bias** of an estimator is how far the average estimate is from the true parameter:
+
+$$Bias[\hat\theta] = E[\hat\theta] - \theta$$
+
+Note the difference between variance and bias. If an estimator has low variance, the data points are clustered close together. But if the cluster is far from the true parameter, there is bias. Conversely, an estimator can have low bias and high variance if the points surround the true parameter, but in general have high dispersion.   
+
+```{r, echo=FALSE, out.width=400, out.height=400, fig.align='center', fig.cap="Source: http://scott.fortmann-roe.com/docs/BiasVariance.html"}
+knitr::include_graphics('./pics/c18-pic1.png')
+```
 
 
+## The Mean Squared Error
+
+In statistics we are often concerned with the relationship between bias and variance. A good way to quantify both is using the **mean squared error**: the expected value (probability-weighted average over all samples) of the squared errors:
+
+$$MSE[\hat\theta] = E\big[ (\hat\theta - \theta)^2 \big]$$
+
+This gives a measure of how far, on average, a collection of estimates are from the true parameter being estimated. Note, if you expand the formula for MSE, you get:
+
+$$MSE[\hat\theta] = (E[\hat\theta] = \theta)^2 + E \big[ (\hat\theta - E[\hat\theta])^2 \big]$$
+
+$$MSE[\hat\theta] = Bias[\hat\theta]^2 + Var[\hat\theta]$$
+
+i.e. mean squared error is the bias squared plus the variance.  
+
+Thus an estimator that minimises bias does not necessarily minimise mean squared error, since the MSE is dependent on the variance of an estimator too.  
+
+Probability models don’t always have just one parameter, complicated situations may require more. Modern statistics often deals with high dimensional problems with many parameters. If have $p$ parameters, $\theta_1, ..., \theta_p$:
+
+$$MSE[\hat\theta] = \sum_i^p E\big[ (\hat\theta_i - \theta_i)^2 \big]$$
+
+
+
+\ 
+
+# 18--2 Normal means and Stein's paradox
+
+Suppose the parameters of interest are the mean of a multivariate normal $\theta = \mu = (\mu_1, ..., \mu_p)$.  
+
+Suppose $X$ is multivariate normal with mean $\mu$. Thus $E[X] = \mu$ is unbiased. What about MSE?
+
+If $p=1$ or $p=2$, $X$ has the lowest MSE.  
+
+If $p \geq 3$ then $X$ no longer has the lowest MSE.  
+
+This is sometimes called Stein’s paradox after Charles Stein.
+
+In high dimensions, it’s usually better to be biased. 
+
+If you find this very interesting there is a classic example about baseball you can read about. Summary: when estimating many players’ batting averages in the next season, instead of using each players’ average from this season as their own estimate it’s better to make all the estimates biased toward the overall average of the players.  
+
+```{r}
+p = 100
+JS <- function(x) max((1 - (p-2)/sum(x^2)),0) * x
+mu = sample(c(1:5), p, replace = TRUE)
+```
+
+```{r}
+SEs <- replicate(10000, sum(((rnorm(p) + mu) - mu)^2))
+JSSEs <- replicate(10000, sum(((JS(rnorm(p) + mu)) - mu)^2))
+mean(SEs)
+```
+
+```{r}
+mean(JSSEs)
+```
