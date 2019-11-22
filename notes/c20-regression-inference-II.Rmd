@@ -1,5 +1,5 @@
 ---
-title: 'chapter 20 Bias in Regression Models '
+title: 'chapter 20 Inference from Regression Models, Part II'
 output:
   tufte::tufte_html:
     tufte_features: ['fonts','background','italics']

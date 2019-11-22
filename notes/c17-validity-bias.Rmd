@@ -50,7 +50,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 # 17--1 Validity 
 
-As you know, an **estimator** is a statistic used to infer/estimate the value of an unknown parameter in a model. The **reliability** of an estimator is a measure of its consistency across repititions of the experiment. The rest of this module will discuss validity and bias.  
+As you know, an **estimator** is a statistic used to infer/estimate the value of an unknown parameter in a model. The **reliability** of an estimator is a measure of its consistency across repetitions of the experiment. The rest of this module will discuss validity and bias.  
 
 The **validity** of an estimator is a measure of its accuracy, i.e. the extent to which it represents the *true* value of the unknown parameter being estimated. Reliability does not imply validity -- a scale can produce reliable (consistent) estimates of mass, but if incorrectly calibrated, its estimates will be systematically incorrect.  
 
