@@ -63,7 +63,7 @@ $$\Bias[\hat\theta] = \E[\hat\theta] - \theta$$
 
 Note the difference between variance and bias: variance is a measure of the *spread* of an estimate (how closely the data points are clustered), and bias is a measure of how far the cluster actually is from the true value. Below is a graphical illustration of different combinations of bias and variance:  
 
-```{r, echo=FALSE, out.height=400, out.width=400, fig.align='center'}
+```{r, echo=FALSE, out.height=400, out.width=400, fig.align='center', fig.cap="Source: http://scott.fortmann-roe.com/docs/BiasVariance.html"}
 knitr::include_graphics('./pics/c18-pic1.png')
 ```
 
@@ -86,7 +86,7 @@ i.e. mean squared error is equal to the bias squared plus the variance.
 
 \ 
 
-# 18--2 Normal means and Stein's paradox
+# 18--2 Normal Means and Stein's Paradox
 
 Suppose the parameters of interest are the mean of a multivariate normal $\theta = \mu = (\mu_1, ..., \mu_p)$.  
 
