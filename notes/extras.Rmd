@@ -88,6 +88,20 @@ where $C_m = 1$ if the $p$-values are independent, and if not, then $C_m = \sum_
 
 
 
+## Proof of minimum variance
+
+In a simple regression the variance of the LS estimator for $\beta_1$ is given (from <a href="https://stats103.org/notes/c15-regression-theory.html#variance-of-the-ls-estimator">chapter 15</a>):
+
+$$\Var[b_1] = \frac{1}{\sum_i(x_i - \bar x)^2}$$
+
+We can define another linear estimator $\tilde b_1 = \sum_i c_i y_i$. If this estimator is unbiased it must follow that:
+
+$$\E [\tilde b_1] = \sum_i c_i \E[y_i] = \sum_i c_i (\beta_0 + \beta_1 x_i)$$
+$$= \beta_0 \sum_i c_i + \beta_1 \sum_i c_i x_i = \beta_1$$
+
+For the above equation to be true, it must follow that $\sum_i c_i = 0$ and $\sum_i c_i x_i = 1$. 
+
+
 
 \ 
 

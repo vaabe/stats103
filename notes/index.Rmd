@@ -70,10 +70,10 @@ library(tufte)
 ### PART III -- BIAS
 
 - chapter 17 -- <a href="./notes/c17-validity-bias.html">Validity and Bias</a></li>
-- chapter 18 -- <a href="./notes/c18-bias-variance-tradeoff">The Bias-Variance Tradeoff</a></li>
-- chapter 19 -- Causal Inference 
-- chapter 20 -- Inference from Regression Models, Part II
-- chapter 21 -- Resampling Methods
+- chapter 18 -- <a href="./notes/c18-error-of-an-estimator.html">Quantifying the Error of an Estimator</a></li>
+- chapter 19 -- <a href="./notes/c19-regression-inference-II.html">Inference from Regression Models, Part II</a></li>
+- chapter 20 -- <a href="./notes/c20-causal-inference.html">Causal Inference</a></li>
+- chapter 21 -- The Bias-Variance Tradeoff
 
 ### PART IV -- FURTHER TOPICS
 

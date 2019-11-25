@@ -1,5 +1,5 @@
 ---
-title: 'chapter 18 The Bias-Variance Tradeoff'
+title: 'chapter 18 Quantifying the Error of an Estimator'
 output:
   tufte::tufte_html:
     tufte_features: ['fonts','background','italics']
@@ -48,9 +48,17 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 \newcommand{\sumin}{\sum_i^n}
 \newcommand{\Bias}{\text{Bias}}
 
+\renewcommand{\v}[1]{{\boldsymbol #1}}
+\renewcommand{\dv}[1]{\dot{\boldsymbol{#1}}}
+\newcommand{\ddv}[1]{\ddot{\boldsymbol{#1}}}
+\newcommand{\hv}[1]{\hat{\boldsymbol{#1}}}
+\newcommand{\m}[1]{[ #1 ]}
+\renewcommand{\t}[1]{\widetilde{\boldsymbol{#1}}}
+\newcommand{\bfit}[1]{\textbf{\textit{#1}}}
+
 ---
 
-# 18--1 The Error of an Estimator 
+# 18--1 The Total Error of an Estimator 
 
 How good is an estimator overall? If $\hat\theta$ is an estimator for $\theta$, one way to quantify the *overall* discrepancy between $\hat\theta$ and $\theta$ is using a **loss function**, $L(\theta, \hat\theta)$. Two examples of loss functions:
 
@@ -103,10 +111,52 @@ Choosing the ideal estimator is part of **statistical decision theory**.
 
 
 
+\ 
+
+# 18--2 The Gauss-Markov Theorem 
+
+The Gauss-Markov theorem says that in a regression model with homoscedastic errors, the least squares estimator is BLUE (the Best Linear Unbiased Estimator). It's dubbed the "best" estimator since it's *unbiased* and also has the smallest possible variance (among all other unbiased estimators).   
+
+## Proof of unbiasedness
+
+The multivariate LS coefficient vector is given (from <a href="https://stats103.org/notes/c15-regression-theory.html#multivariate-derivation">chapter 15</a>):
+
+$$\v b = (\v X^T \v X)^{-1} \v X^T \v y$$
+
+Substituting $\v y = \v X \v \beta + \v \varepsilon$:
+
+$$
+\begin{aligned}
+  \v b &= (\v X^T \v X)^{-1} \v X^T (\v X \v \beta + \v \varepsilon) \\ 
+  &= \v \beta + (\v X^T \v X)^{-1} \v X^T \v \varepsilon
+\end{aligned}
+$$
+
+Thus:
+
+$$\E[\v b | \v X] = \v \beta + \E \big[ (\v X^T \v X)^{-1} \v X^T \v \varepsilon | \v X \big]$$
+
+But one of the assumptions of least squares regression is that the residuals are uncorrelated with the predictors, i.e. $\v \varepsilon | \v X = 0$, which makes the second term go to zero, leaving
+
+$$\E[\v b | \v X] = \v \beta$$
+
+i.e. the LS estimator $\v b$ is an unbiased estimate of $\v \beta$.  
+
+**Caveat:** the LS estimator gives unbiased estimates of the true regression coefficients *in theory*, but the unbiasedness is not so obvious if the data is a single sample of a population. You also have to look at the sampling strategy and the experiment design---if the sample is biased then the estimates will be biased by default.  
+
+## Proof of minimum variance
+
+See <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem#Proof">this link</a>. It shows that the LS estimator is has the lowest possible variance among all linear unbiased estimators.  
+
+However the LS estimator is not the minimum variance estimator in general---it turns out there is a *biased* estimator with an even smaller variance, known as the **James-Stein estimator** (next).  
+
+
+
+
 
 \ 
 
-# 18--2 Normal Means and Stein's Paradox
+# 18--3 Stein's Paradox
 
 Suppose the parameters of interest are the mean of a multivariate normal $\theta = \mu = (\mu_1, ..., \mu_p)$.  
 

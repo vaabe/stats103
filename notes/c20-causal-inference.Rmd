@@ -1,0 +1,139 @@
+---
+title: 'chapter 20 Causal Inference'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
+
+# 20--1 Treatment Effects 
+
+Suppose $X$ is a binary treatment where $X_i=1$ means subject $i$ was "treated" and $X_i=0$ means subject $i$ was "not treated". Treatment refers to any kind of stimulus (e.g. a medication) that some members of a sample are subjected to. Let $Y_i$ be an outcome variable, which is some measurable post-treatment quantity observed for all subjects in the sample (e.g. presence/absence of ailment). We're interested in finding whether $X$ has a causal effect on $Y$.    
+
+Now let $Y_{i1}$ be the outcome if subject $i$ received the treatment, and $Y_{i0}$ be the outcome if subject $i$ didn't receive the treatment. We can call $\beta_i = Y_{i1}-Y_{i0}$ the **treatment effect**.  
+
+Immediately there are two problems:
+
+- heterogeneity---all subjects have different treatment effects
+- missing data problem---we don't actually observe any one subject's treatment effect (for any one subject either they got the treatment or they didn't)
+
+We can define the **average treatment effect** (ATE):
+
+$$\text{ATE} = \E[\beta_i] = \E[Y_{i1} - Y_{i0}]$$
+
+The ATE is the average difference the treatment has on the outcome variable, averaging over all the subjects in the sample. This is what we observe in the data.  
+
+We can also define the **average treatment effect on the treated** (ATT):
+
+$$\text{ATT} = \E[\beta_i | X_i = 1] = \E[Y_{i1}-Y_{i0} | X_i = 1]$$
+
+$$= \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 1]$$
+
+Note the second term in the above expression is not observed in the study.  
+
+Also define the **average treatment effect on the control** (ATC):
+
+$$\text{ATC} = \E[\beta_i | X_i = 0] = \E[Y_{i1}-Y_{i0} | X_i = 0]$$
+
+$$= \E[Y_{i1} | X_i = 0] - \E[Y_{i0} | X_i = 0]$$
+
+where the first term in the above expression is not observed.  
+
+Note how the difference we *do* observe in the study (the ATE) can be expressed:
+
+$$\E[\beta_i] = \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 0]$$
+
+$$= \bigg\{ \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 1] \bigg\} + \bigg\{ \E[Y_{i1} | X_i = 0] - \E[Y_{i0} | X_i = 0] \bigg\}$$
+
+The first term in the curly brackets is the ATT---this is the quantity of interest as it gives how much the treatment affected the outcome for subjects that received the treatment.  
+
+The second term gives how much the treatment and control groups differ, even in the *absence* of treatment. This is known as **selection bias**.   
+
+## Selection bias and randomization 
+
+The observed average treatment effect can be summarized as follows: 
+
+$$\text{ATE} = \text{ATT} + \text{selection bias}$$
+
+i.e. the effect we observe (ATE) is equal to the quantity we want (ATT) plus another term representing selection bias in the sample. The ideal study would have no selection bias, meaning the observed average treatment effect is a valid measure of how much on average the treatment affects a subject. But if there is selection bias then the observed effect will be optimistic.   
+
+The solution: **randomization**. 
+
+If the treatment is assigned *randomly*, then $Y_{i0}$ and $X_i$ will be independent:
+
+$$\E[Y_{i0} | X_i = 1] = \E[Y_{i0} | X_i =  0]$$
+
+This is because of $Y_{i0}$ and $X_i$ are independent, then $\E[Y_{i0} | X_i] = \E[Y_{i0}]$.  
+
+Thus randomization eliminates selection bias and ensures that ATE = ATT.  
+
+
+
+
+
+\ 
+
+# 20--2 Observational Studies and Confounding Variables
+
+`coming soon`
+
+
+
+
+\ 
+
+# 20--3 Simpson's Paradox 
+
+`coming soon`
+
+
+\ 
+
+---
+
+\ 
+
+\ 
+
