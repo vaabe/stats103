@@ -48,13 +48,13 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 20--1 Omitted Variable Bias
+# 20--1 Specification Bias 
 
 `coming soon`
 
 \ 
 
-# 20--2 Specification Bias
+# 20--2 Omitted Variable Bias 
 
 \ 
 

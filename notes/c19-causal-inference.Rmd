@@ -48,7 +48,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 19--1 Observational Studies and Confounding
+# 19--1 Treatment Effects 
 
 
 
@@ -56,14 +56,17 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 
 
+\ 
 
-# 19--2 Treatment Effects 
-
-
-
+# 19--2 Observational Studies and Confounding Variablees
 
 
-# 19--3 Gender Bias---Simpson's Paradox 
+
+
+
+\ 
+
+# 19--3 Gender Bias? Simpson's Paradox 
 
 
 

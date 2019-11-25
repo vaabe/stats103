@@ -26,6 +26,7 @@ library(latex2exp)
 library(moments)
 library(bookdown)
 library(rsconnect)
+library(tufte)
 ```
 
 ```{r, include=FALSE}
@@ -49,37 +50,56 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 18--1 The Mean Squared Error
+# 18--1 The Error of an Estimator 
 
-How good is an estimator overall? We know that there are two sources of error in an estimator: the error due to *variance*, and the error due to *bias:*
+How good is an estimator overall? If $\hat\theta$ is an estimator for $\theta$, one way to quantify the *overall* discrepancy between $\hat\theta$ and $\theta$ is using a **loss function**, $L(\theta, \hat\theta)$. Two examples of loss functions:
 
-The **variance** of an estimator gives the average squared deviation from the expected value:
+$$L(\theta, \hat\theta) = | \hat\theta - \theta | \hspace{2cm} \text{absolute error loss}$$
+$$L(\theta, \hat\theta) = ( \hat\theta - \theta )^2 \hspace{2cm} \text{squared error loss}$$
 
-$$\Var[\hat\theta] = \E \big[ (\hat\theta - \E[\hat\theta])^2 \big]$$
+To assess an estimator we can compute the *average* loss, which we denote the **risk** of an estimator: 
 
-The **bias** of an estimator is how far the expected value is from the true parameter:
+$$R(\theta,\hat\theta) = \E \big[ L(\theta,\hat\theta) \big]$$
 
-$$\Bias[\hat\theta] = \E[\hat\theta] - \theta$$
+## The mean squared error
 
-Note the difference between variance and bias: variance is a measure of the *spread* of an estimate (how closely the data points are clustered), and bias is a measure of how far the cluster actually is from the true value. Below is a graphical illustration of different combinations of bias and variance:  
+A common measure of an estimator's overall quality is the mean quared error, MSE, defined:
+
+$$\MSE(\hat\theta) = \E \big[ (\hat\theta - \theta)^2 \big]$$
+
+i.e. the MSE is the expected value of the estimator's squared error loss---it's a measure of the average squared distance between the estimator and the true value.  
+
+We know that bias and variance both contribute to the overall error of an estimator. By expanding the form given above, it's possible to show that the MSE is a combination of both:
+
+$$
+\begin{aligned}
+  \MSE(\hat\theta) &= \E \big[ (\hat\theta - \theta)^2 \big] \\ 
+  &= \E \big[ (\hat\theta - \E[\hat\theta] + \E[\hat\theta] - \theta)^2] \\ 
+  &\; \; \vdots \\ 
+  &= \E \big[(\hat\theta - \E[\hat\theta])^2] + \big( \E[\hat\theta]-\theta \big)^2 \\ 
+  &= \Var[\hat\theta] + \Bias[\hat\theta]^2
+\end{aligned}
+$$
+
+`r margin_note("See the full proof of the Bias-Variance decomposition of MSE <a href='https://en.wikipedia.org/wiki/Mean_squared_error#Proof_of_variance_and_bias_relationship'>here</a>.")`
+
+i.e. the MSE can be expressed as the sum of the variance and squared bias of the estimator. If an estimator is unbiased, its MSE is simply equal to its variance.  
+
+## Trading between bias and variance
+
+Note the difference between bias and variance:
+
+$$\Var[\hat\theta] = \E \big[ (\hat\theta - \E[\hat\theta])^2 \big] \hspace{1cm} \Bias[\hat\theta] = \E[\hat\theta] - \theta$$
+
+i.e. variance is a measure of the *spread* of an estimate (how closely the data points are clustered), and bias is a measure of how far the cluster actually is from the true value. Below is an illustration of different combinations of bias and variance:  
 
 ```{r, echo=FALSE, out.height=400, out.width=400, fig.align='center', fig.cap="Source: http://scott.fortmann-roe.com/docs/BiasVariance.html"}
 knitr::include_graphics('./pics/c18-pic1.png')
 ```
 
-The **mean squared error** provides a way to quantify both sources of error. The MSE is defined as the expected value of the squared errors:
+The *ideal* estimator would have low bias and low variance. It turns out though that it's not always possible to minimize both---there are many cases where an estimator with low variance has high bias, and vice versa. You'll come to see how sometimes it's more optimal to introduce a little bias, as this can result in a better overall estimator.   
 
-$$\MSE[\hat\theta] = E\big[ (\hat\theta - \theta)^2 \big]$$
-
-This gives a measure of how far, on average, a collection of estimates are from the true parameter being estimated.  
-
-Note if we expand the formula for MSE we get:
-
-$$\MSE[\hat\theta] = (\E[\hat\theta] = \theta)^2 + \E \big[ (\hat\theta - \E[\hat\theta])^2 \big]$$
-
-$$\MSE[\hat\theta] = \Bias[\hat\theta]^2 + \Var[\hat\theta]$$
-
-i.e. mean squared error is equal to the bias squared plus the variance.  
+Choosing the ideal estimator is part of **statistical decision theory**.  
 
 
 
@@ -98,7 +118,7 @@ If $p \geq 3$ then $X$ no longer has the lowest MSE.
 
 This is sometimes called Stein’s paradox after Charles Stein.
 
-In high dimensions, it’s usually better to be biased. 
+In high dimensions, it’s usually better to be biased.  
 
 If you find this very interesting there is a classic example about baseball you can read about. Summary: when estimating many players’ batting averages in the next season, instead of using each players’ average from this season as their own estimate it’s better to make all the estimates biased toward the overall average of the players.  
 
