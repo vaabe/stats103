@@ -81,6 +81,59 @@ Delete this sentence and replace with your answer: which estimator has more vari
 
 # Discrimination? 
 
+```{r}
+calidata = read.csv("../data/calidata.csv")
+```
+
+
+```{r}
+library(car)
+
+summary(aov(funding ~ ethnicity, data = calidata))
+```
+
+
+```{r}
+pairwise.t.test(calidata$funding, calidata$ethnicity,
+                 p.adjust.method = "BH", pool.sd = FALSE)
+```
+
+
+```{r}
+reg1 = lm(funding ~ ethnicity, data = calidata)
+summary(reg1)
+```
+
+
+
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

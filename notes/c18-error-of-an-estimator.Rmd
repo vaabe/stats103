@@ -58,7 +58,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# 18--1 The Total Error of an Estimator 
+# 18--1 The Quality of an Estimator 
 
 How good is an estimator overall? If $\hat\theta$ is an estimator for $\theta$, one way to quantify the *overall* discrepancy between $\hat\theta$ and $\theta$ is using a **loss function**, $L(\theta, \hat\theta)$. Two examples of loss functions:
 

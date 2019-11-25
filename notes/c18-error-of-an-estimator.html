@@ -52,7 +52,7 @@ if (window.hljs) {
 
 <div id="TOC">
 <ul>
-<li><a href="#the-total-error-of-an-estimator">18–1 The Total Error of an Estimator</a><ul>
+<li><a href="#the-quality-of-an-estimator">18–1 The Quality of an Estimator</a><ul>
 <li><a href="#the-mean-squared-error">The mean squared error</a></li>
 <li><a href="#trading-between-bias-and-variance">Trading between bias and variance</a></li>
 </ul></li>
@@ -65,8 +65,8 @@ if (window.hljs) {
 </div>
 
 <hr />
-<div id="the-total-error-of-an-estimator" class="section level1">
-<h1>18–1 The Total Error of an Estimator</h1>
+<div id="the-quality-of-an-estimator" class="section level1">
+<h1>18–1 The Quality of an Estimator</h1>
 <p>How good is an estimator overall? If <span class="math inline">\(\hat\theta\)</span> is an estimator for <span class="math inline">\(\theta\)</span>, one way to quantify the <em>overall</em> discrepancy between <span class="math inline">\(\hat\theta\)</span> and <span class="math inline">\(\theta\)</span> is using a <strong>loss function</strong>, <span class="math inline">\(L(\theta, \hat\theta)\)</span>. Two examples of loss functions:</p>
 <p><span class="math display">\[L(\theta, \hat\theta) = | \hat\theta - \theta | \hspace{2cm} \text{absolute error loss}\]</span> <span class="math display">\[L(\theta, \hat\theta) = ( \hat\theta - \theta )^2 \hspace{2cm} \text{squared error loss}\]</span></p>
 <p>To assess an estimator we can compute the <em>average</em> loss, which we denote the <strong>risk</strong> of an estimator:</p>
@@ -148,9 +148,9 @@ mu = sample(c(1:5), p, replace = TRUE)</code></pre>
 <pre class="r"><code>SEs &lt;- replicate(10000, sum(((rnorm(p) + mu) - mu)^2))
 JSSEs &lt;- replicate(10000, sum(((JS(rnorm(p) + mu)) - mu)^2))
 mean(SEs)</code></pre>
-<pre><code>## [1] 100.0546</code></pre>
+<pre><code>## [1] 100.1096</code></pre>
 <pre class="r"><code>mean(JSSEs)</code></pre>
-<pre><code>## [1] 92.25634</code></pre>
+<pre><code>## [1] 92.7644</code></pre>
 </div>
 
 
