@@ -105,7 +105,7 @@ If the treatment is assigned *randomly*, then $Y_{i0}$ and $X_i$ will be indepen
 
 $$\E[Y_{i0} | X_i = 1] = \E[Y_{i0} | X_i =  0]$$
 
-This is because of $Y_{i0}$ and $X_i$ are independent, then $\E[Y_{i0} | X_i] = \E[Y_{i0}]$.  
+This is because if $Y_{i0}$ and $X_i$ are independent, then $\E[Y_{i0} | X_i] = \E[Y_{i0}]$.  
 
 Thus randomization eliminates selection bias and ensures that ATE = ATT.  
 
