@@ -211,14 +211,14 @@ ggplot(aes(x = thetahat), data = as.data.frame(thetahat)) +
 </div>
 <div id="some-consequences-of-bias" class="section level1">
 <h1>17–4 Some Consequences of Bias</h1>
-<p>Suppose we have a random sample of data from a population which has a true mean <span class="math inline">\(\mu\)</span>. If we randomly sample from the population, and we define <span class="math inline">\(X\)</span> be the RV for the observed outcomes, then we should expect that <span class="math inline">\({\text{E}}[X]=\mu\)</span>, and that the larger the sample, the better the approximation.</p>
-<p>But suppose that, unbeknownst to us, our sampling method is biased, causing us to exclude/underrepresent certain segments of the population. Now the expected value of <span class="math inline">\(X\)</span> is no longer the population mean, but rather the mean of the biased subset, i.e. <span class="math inline">\({\text{E}}[X] = c \neq \mu\)</span>. If we continue sampling this way, increasing <span class="math inline">\(n\)</span> will make <span class="math inline">\(\bar X\)</span> converge to <span class="math inline">\(c\)</span>, not <span class="math inline">\(\mu\)</span>.</p>
+<p>If we have a random unbiased sample from a population with true mean <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(X\)</span> is a RV for the observed outcomes in the sample, then we should expect that <span class="math inline">\({\text{E}}[X]=\mu\)</span>, and that the larger the sample, the better the approximation.</p>
+<p>But if the sampling method is biased, and certain segments of the population are excluded/underrepresented, the expected value of <span class="math inline">\(X\)</span> is no longer the population mean, but rather the mean of the biased subset, i.e. <span class="math inline">\({\text{E}}[X] = c \neq \mu\)</span>. In this case increasing <span class="math inline">\(n\)</span> will make <span class="math inline">\(\bar X\)</span> converge to <span class="math inline">\(c\)</span>, not <span class="math inline">\(\mu\)</span>.</p>
 <div id="the-lln-and-clt" class="section level2">
 <h2>The LLN and CLT</h2>
 <p>Convergence in paramater estimates is only to expected value of the (sub)population represented in the sample.</p>
 <p>The general statement of the law of large numbers:</p>
 <p><span class="math display">\[\bar X \longrightarrow {\text{E}}[X]\]</span></p>
-<p>i.e. when <span class="math inline">\(n\)</span> is large, the sample mean will converge to its expected value. Convergence to the true mean <span class="math inline">\(\mu\)</span> requires that <span class="math inline">\({\text{E}}[X]=\mu\)</span>, which is only possible if the sampling method is unbiased and the sample is representative.</p>
+<p>i.e. when <span class="math inline">\(n\)</span> is large, the sample mean will converge to its <em>expected value</em>. Convergence to the true mean <span class="math inline">\(\mu\)</span> requires that <span class="math inline">\({\text{E}}[X]=\mu\)</span>, which is only possible if the sampling method is unbiased and the sample is representative.</p>
 <p>Similarly, the CLT can be stated generally:</p>
 <p><span class="math display">\[\bar X \sim \mathcal N \bigg( {\text{E}}[X], \frac{{\text{Var}}[X]}{n} \bigg)\]</span></p>
 <p> </p>

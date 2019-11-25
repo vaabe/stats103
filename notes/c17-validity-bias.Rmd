@@ -248,9 +248,9 @@ E.g. if a population is known to have 50\% females and 50\% males, but a sample 
 
 # 17--4 Some Consequences of Bias  
 
-Suppose we have a random sample of data from a population which has a true mean $\mu$. If we randomly sample from the population, and we define $X$ be the RV for the observed outcomes, then we should expect that $\E[X]=\mu$, and that the larger the sample, the better the approximation.  
+If we have a random unbiased sample from a population with true mean $\mu$, and $X$ is a RV for the observed outcomes in the sample, then we should expect that $\E[X]=\mu$, and that the larger the sample, the better the approximation.  
 
-But suppose that, unbeknownst to us, our sampling method is biased, causing us to exclude/underrepresent certain segments of the population. Now the expected value of $X$ is no longer the population mean, but rather the mean of the biased subset, i.e. $\E[X] = c \neq \mu$. If we continue sampling this way, increasing $n$ will make $\bar X$ converge to $c$, not $\mu$.  
+But if the sampling method is biased, and certain segments of the population are excluded/underrepresented, the expected value of $X$ is no longer the population mean, but rather the mean of the biased subset, i.e. $\E[X] = c \neq \mu$. In this case increasing $n$ will make $\bar X$ converge to $c$, not $\mu$.  
 
 ## The LLN and CLT
 
@@ -260,7 +260,7 @@ The general statement of the law of large numbers:
 
 $$\bar X \longrightarrow \E[X]$$
 
-i.e. when $n$ is large, the sample mean will converge to its expected value. Convergence to the true mean $\mu$ requires that $\E[X]=\mu$, which is only possible if the sampling method is unbiased and the sample is representative.  
+i.e. when $n$ is large, the sample mean will converge to its *expected value*. Convergence to the true mean $\mu$ requires that $\E[X]=\mu$, which is only possible if the sampling method is unbiased and the sample is representative.  
 
 Similarly, the CLT can be stated generally:
 
