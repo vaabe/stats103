@@ -73,7 +73,7 @@ if (window.hljs) {
 <p><span class="math display">\[R(\theta,\hat\theta) = {\text{E}}\big[ L(\theta,\hat\theta) \big]\]</span></p>
 <div id="the-mean-squared-error" class="section level2">
 <h2>The mean squared error</h2>
-<p>A common measure of an estimator’s overall quality is the mean quared error, MSE, defined:</p>
+<p>A common measure of an estimator’s overall quality is the mean squared error, MSE, defined:</p>
 <p><span class="math display">\[{\text{MSE}}(\hat\theta) = {\text{E}}\big[ (\hat\theta - \theta)^2 \big]\]</span></p>
 <p>i.e. the MSE is the expected value of the estimator’s squared error loss—it’s a measure of the average squared distance between the estimator and the true value.</p>
 <p>We know that bias and variance both contribute to the overall error of an estimator. By expanding the form given above, it’s possible to show that the MSE is a combination of both:</p>
@@ -148,9 +148,9 @@ mu = sample(c(1:5), p, replace = TRUE)</code></pre>
 <pre class="r"><code>SEs &lt;- replicate(10000, sum(((rnorm(p) + mu) - mu)^2))
 JSSEs &lt;- replicate(10000, sum(((JS(rnorm(p) + mu)) - mu)^2))
 mean(SEs)</code></pre>
-<pre><code>## [1] 100.1096</code></pre>
+<pre><code>## [1] 100.0351</code></pre>
 <pre class="r"><code>mean(JSSEs)</code></pre>
-<pre><code>## [1] 92.7644</code></pre>
+<pre><code>## [1] 92.39564</code></pre>
 </div>
 
 

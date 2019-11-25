@@ -71,7 +71,7 @@ $$R(\theta,\hat\theta) = \E \big[ L(\theta,\hat\theta) \big]$$
 
 ## The mean squared error
 
-A common measure of an estimator's overall quality is the mean quared error, MSE, defined:
+A common measure of an estimator's overall quality is the mean squared error, MSE, defined:
 
 $$\MSE(\hat\theta) = \E \big[ (\hat\theta - \theta)^2 \big]$$
 
