@@ -115,7 +115,7 @@ The objects you have defined in a session will appear in the Environment pane (t
 some_numbers
 ```
 
-## 1--4 R functions
+## R functions
 
 Just like mathematical functions, R functions perform operations on objects. R has many inbuilt functions--e.g. the `c()` function which takes a series of values and returns a vector array, or the `mean()` function which takes a vector array of numbers and returns its average value. 
 
@@ -164,7 +164,7 @@ If an error message has rendered you clueless, check out this great reference on
 
 \ 
 
-# 1--5 R Packages
+# 1--4 R Packages
 
 A package is essentially a bundle of R functions. These are functions that have been written by other people and posted to CRAN. `r margin_note("You too, could write your own functions and submit a package to CRAN.")` These packages are not included in Base R, and must be installed separately. Some common R packages you will encounter:
 
@@ -196,7 +196,7 @@ It is common practice to load whichever packages you need at the beginning of yo
 
 \ 
 
-# 1--6 R Markdown
+# 1--5 R Markdown
 
 R Markdown is a format for creating unified documents with R. Unlike the R script format introduced above, R Markdown allows you to combine code, its output, and text annotations in a single document.  
 
