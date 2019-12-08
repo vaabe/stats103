@@ -610,8 +610,8 @@ ggplot(data = df1, mapping = aes(x = x, y = y)) +
   geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
   geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
   geom_segment(x = Xbar_bias, xend = Xbar_bias, y = 0, yend = 0.5, color = 'darkcyan', linetype = 'dotted') +
-  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 2.5, color = 'black') +
-  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 2.5, color = 'darkcyan') +
+  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 5, color = 'black') +
+  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 5, color = 'darkcyan') +
   geom_text(label = 'Type I Error', x = 8.8, y = -0.005, size = 2.5, color = 'black') +
   geom_text(label = 'Type I Error', x = 15.7, y = -0.005, size = 2.5, color = 'black') +
   geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
@@ -641,8 +641,8 @@ ggplot(data = df1, mapping = aes(x = x, y = y)) +
   geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
   geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
   geom_segment(x = Xbar_bias, xend = Xbar_bias, y = 0, yend = 0.5, color = 'darkcyan', linetype = 'dotted') +
-  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 2.5, color = 'black') +
-  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 2.5, color = 'darkcyan') +
+  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 5, color = 'black') +
+  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 5, color = 'darkcyan') +
   geom_text(label = 'Type I Error', x = 8.8, y = -0.005, size = 2.5, color = 'black') +
   geom_text(label = 'Type I Error', x = 15.7, y = -0.005, size = 2.5, color = 'black') +
   geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
