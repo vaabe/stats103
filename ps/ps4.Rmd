@@ -1,137 +1,163 @@
 ---
 title: "ps4"
 author: "whomsoever"
-date: "24/11/2019"
-output: html_document
+date: "07/12/2019"
+---
+---
+title: "ps4"
+author: "whomsoever"
+date: "07/12/2019"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(gapminder)
+library(ggfortify)
 ```
 
-# Estimator Bias
+\ 
 
-This question will guide you through a *simulation study* in `R` to understand the bias of a certain estimator.
+# Estimator Bias 
 
 ```{r}
-# This creates a function that calculates sample variance
-# but using n in the denominator instead of n-1
-# you don't need to change anything here
-varn <- function(x) mean((x - mean(x))^2)
+## generate a random sample
+n = 15
+data = sample(1:6, n, replace = TRUE)
 ```
 
-## Part a.
+```{r}
+## a function that calculates sample variance
+## but using n in the denominator instead of n-1
+varn = function(x) mean((x - mean(x))^2)
+```
 
-The code below generates a sample of size n and calculates both the sample variance and the biased version of sample version (the one that has n in the denominator instead of n-1). Modify the code to change n from 10 to some other value between 10 and 50. 
+\ 
 
 ```{r}
-# Create a sample of data by rolling a 6-sided die n times
-n <- 10000
-data <- sample(1:6, n, replace = TRUE)
-data
-# True variance
-35/12
-# Unbiased estimate of variance
+## two estimates of variance
+
+# use the R function 
 var(data)
-# Biased estimate of variance
+
+# use the population formula  
 varn(data)
 ```
 
-## Part b.
-Repeat the previous experiment many times and find the expected value of each variance estimator.
+\ 
 
 ```{r}
-# Unbiased estimator
-mean(replicate(10000, var(sample(1:6, 100, replace = TRUE))))
-# Biased estimator
-mean(replicate(10000, varn(sample(1:6, 1000, replace = TRUE))))
-```
+## repeat the experiment and find the expected value of each estimator
 
-## Part c.
-After running the previous code, which estimator's average value in the simulation is closer to the true value (roughly 2.9167)? 
+# sample formula
+mean(replicate(10000, var(sample(1:6, n, replace = TRUE))))
+
+# population formula 
+mean(replicate(10000, varn(sample(1:6, n, replace = TRUE))))
+```
 
 \ 
 
-Delete this line and type your answer here.
+```{r}
+## repeat the experiment and find the standard deviation value of each estimator
+
+# sample formula
+sd(replicate(10000, var(sample(1:6, n, replace = TRUE))))
+
+# population formula 
+sd(replicate(10000, varn(sample(1:6, n, replace = TRUE))))
+```
 
 
-## Part d.
-Now go back and change n to another, larger value, and rerun all of the code. Do you notice anything about the average of the biased estimator?
 
 \ 
 
-Delete this line and type your answer here.
+# Confounding 
 
-## Part e.
-Copy the code from part (b) and paste it below here, then change the `mean` function to be `sd` instead.
 
-```{r}
-sd(replicate(10000, var(sample(1:6, 300, replace = TRUE))))
-# Biased estimator
-sd(replicate(10000, varn(sample(1:6, 300, replace = TRUE))))
-```
-
-Delete this sentence and replace with your answer: which estimator has more variability, the biased or unbiased one?
 
 
 
 
 \ 
 
-# Discrimination? 
+# Predicting Life Expectancy 
+
+We will use data from the most recent year:
 
 ```{r}
-calidata = read.csv("../data/calidata.csv")
+gm2007 <- gapminder %>% filter(year == "2007")
 ```
 
 
-```{r}
-library(car)
+### Fit a linear model predicting life expectancy from GDP per capita
 
-summary(aov(funding ~ ethnicity, data = calidata))
+```{r}
+reg1 <- lm(lifeExp ~ gdpPercap, data = gm2007)
 ```
 
+### Summary of the model
 
 ```{r}
-pairwise.t.test(calidata$funding, calidata$ethnicity,
-                 p.adjust.method = "BH", pool.sd = FALSE)
-```
-
-
-```{r}
-reg1 = lm(funding ~ ethnicity, data = calidata)
 summary(reg1)
 ```
 
 
+### Diagnostic plots
+
+Use the `autoplot()` function to show diagnostics below.
+
+```{r}
+autoplot(reg1)
+```
+
+\ 
+
+Is there a pattern in the residuals? Do the residuals seem approximately normally distributed?
+
+```
+certainly looks like a pattern; not exactly normally distributed; suggests heteroscedastic errors
+```
+
+### Transforming to log(GDP per capita)
+
+- Fit a model with `log10(gdpPercap)` as the predictor variable instead of `gdpPercap`
+- Compute its summary, compare the value of R-squared to the one for the previous model
 
 
 ```{r}
+reg2 <- lm(lifeExp ~ log10(gdpPercap), data = gm2007)
 
+summary(reg2)
 ```
 
+\ 
 
+Does the model (1) with `gdpPercap` or model (2) with `log10(gdpPercap)` do better at explaining the variance in life expectancy?
 
+```
+yes
+```
 
+The coefficient for `log10(gdpPercap)` shows the increase in predicted life expectancy if gdpPercap increases by...
 
+```
+life exp increases by 16.6 if log10 gdp increases by 1
+```
 
+- Show diagnostic plots for this model.
 
+```{r}
+autoplot(reg2)
+```
 
+\ 
+ 
+Do the residuals have any more or less of an obvious pattern in them? Do they seem any more or less normally distributed?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
+yes, less of an obvious pattern; more normally distributed but still not fully 
+```
 
 
 

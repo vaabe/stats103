@@ -248,13 +248,13 @@ E.g. if a population is known to have 50\% females and 50\% males, but a sample 
 
 # 17--4 Some Consequences of Bias  
 
-If we have a random unbiased sample from a population with true mean $\mu$, and $X$ is a RV for the observed outcomes in the sample, then we should expect that $\E[X]=\mu$, and that the larger the sample, the better the approximation.  
+If $X$ is a RV for the observed outcomes in a random unbiased sample, then we should expect that $\E[X] = \mu$,  and that the larger the sample, the better the approximation (the LLN).  
 
-But if the sampling method is biased, and certain segments of the population are excluded/underrepresented, the expected value of $X$ is no longer the population mean, but rather the mean of the biased subset, i.e. $\E[X] = c \neq \mu$. In this case increasing $n$ will make $\bar X$ converge to $c$, not $\mu$.  
+But if the sampling method is biased, and certain segments of the population are excluded/underrepresented, the expected value of $X$ is no longer the population mean, but rather the mean of the biased subset, i.e. $\E[X] = c$ where $c \neq \mu$. In this case increasing $n$ will make $\bar X$ converge to $c$, not $\mu$.  
 
 ## The LLN and CLT
 
-Convergence in paramater estimates is only to expected value of the (sub)population represented in the sample. 
+In general, paramater estimates will converge to expected value of the (sub)population represented in the sample.  
 
 The general statement of the law of large numbers:
 
@@ -268,9 +268,9 @@ $$\bar X \sim \mathcal N \bigg( \E[X], \frac{\Var[X]}{n} \bigg)$$
 
 ## Effects on intervals   
 
-Since confidence intervals are centered on the sample mean, $\bar X$, the probability that a given confidence interval "captures" the true mean depends on how close $\bar X$ is to $\mu$. If the sample is biased, confidence intervals will be centered somewhere other than $\mu$, and the probability of capturing the true mean will converge to zero as $n$ increases.  
+Since confidence intervals are centered on the sample mean, $\bar X$, the probability that a given interval contains the true mean depends on how close $\bar X$ is to $\mu$. If the sample is biased, confidence intervals will be centered somewhere other than $\mu$, and the probability of capturing the true mean will converge to zero as $n$ increases.  
 
-E.g. suppose a population has true mean $\mu = 10$. If our sample is biased, such that $\E[X] = 12 \neq \mu$, a 95\% confidence interval computed on $\bar X$ will be centered at 12, not 10. With $s = 6$ and $n=20$, a 95\% confidence interval covers the following region:
+E.g. suppose a population has true mean $\mu = 10$. If our sample is biased, such that $\E[X] = 12 \neq \mu$, a 95\% confidence interval computed on $\bar X$ will be centered at 12, not 10. With $s = 6$ and $n=20$, a 95\% confidence interval will asymptotically cover the following region:
 
 ```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center'}
 Xbar = 12; s = 5; n = 20
@@ -306,7 +306,7 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
   theme_light()
 ```
 
-i.e. with $n=20$ the asymptotic 95\% confidence interval contains $\mu$, but only just. 
+i.e. with $n=20$ it contains $\mu$, but only just. 
 
 If the sample had $n=60$, the 95\% confidence interval no longer contains $\mu$:
 
@@ -383,17 +383,17 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
 ```
 
 
-The takeaway---while increasing $n$ reduces the variability of an estimate, if the sample is biased it will decrease the "coverage" probability of the interval. As $n$ gets large, the probability the interval contains $\mu$ will asymptotically converge to zero---we will narrow in on a range of values that no longer contains the true parameter value.   
+The takeaway---while increasing $n$ reduces the variability of an estimate, if the sample is biased it will also decrease the probability that the interval contains the true value. As $n$ gets large the "coverage" probability of the interval will converge to zero---i.e. we will narrow in on a range of values that no longer contains the true parameter value.   
 
 The theme of trading between bias and variance is an important one in statistics---often it's not possible to minimize both simultaneously.  
 
-## Effects on tests 
+## Effects on power 
 
 Recall the **power** of a test is the probability of correctly rejecting a false null. 
 
-E.g. if a null hypothesis has $H_0: \mu = 12$ but the true mean is $\mu = 9$, the power of the test can be visualized as the following region: 
+E.g. if a null hypothesis has $H_0: \mu = 12$ but the true mean is $\mu = 9$, the power of the test can be visualized as the following region:  
 
-```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center'}
+```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center', fig.cap="The black line represents the distribution under the null; the pink line reperesents the true distribution."}
 Xbar = 12   #sample mean
 s = 6   #sample s.d.
 n = 20   #sample size
@@ -431,17 +431,17 @@ ggplot(data = df1, mapping = aes(x = x, y = y)) +
   geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
   geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
   geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
-  geom_text(label = TeX('$H_0: \\; \\mu = 12$'), x = Xbar, y = 0.12, size = 5, color = 'black') +
+  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 5, color = 'black') +
   geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
-  geom_text(label = TeX('$\\mu = 9$'), x = mu, y = 0.2, size = 5, color = 'violetred') +
-  geom_text(label = TeX('$\\bar{X}$'), x = Xbar, y = 0.2, size = 5, color = 'black') +
+  geom_text(label = TeX('$\\mu$'), x = mu, y = 0.2, size = 5, color = 'violetred') +
+  #geom_text(label = TeX('$\\bar{X}$'), x = Xbar, y = 0.2, size = 5, color = 'black') +
   theme_bw()
 ```
 
 
-But suppose now our sample is biased, such that $\E[X] = 10.5$, i.e. the bias makes the sample mean *closer* to the null:
+But if the sample is biased, such that $\E[X] = 10.5$, the power of the test is now:
 
-```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center'}
+```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center', fig.cap="The green line represents the distribution of the biased sample."}
 Xbar = 12   #sample mean
 s = 6   #sample s.d.
 n = 20   #sample size
@@ -484,17 +484,17 @@ ggplot(data = df2, mapping = aes(x = x, y = y)) +
   geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
   geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
   geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
-  geom_text(label = TeX('$H_0: \\; \\mu = 12$'), x = Xbar, y = 0.12, size = 5, color = 'black') +
+  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 5, color = 'black') +
   geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
   geom_segment(x = Xbar_bias, xend = Xbar_bias, y = 0, yend = 0.5, color = 'darkcyan', linetype = 'dotted') +
-  geom_text(label = TeX('$\\mu = 9$'), x = mu, y = 0.2, size = 5, color = 'violetred') +
-  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.25, size = 5, color = 'darkcyan') +
+  geom_text(label = TeX('$\\mu$'), x = mu, y = 0.2, size = 5, color = 'violetred') +
+  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 5, color = 'darkcyan') +
   theme_bw()
 ```
 
-In this case the bias makes the sample mean closer to the null, which *reduces* the power of the test.  
+Here the bias brings the sample mean closer to the null, which *reduces* the power of the test.   
 
-Conversely, if the sample bias is such that $\E[X] = 7.5$, i.e. the bias makes the sample mean further from the null:
+Conversely, if the sample bias is such that $\E[X] = 7.5$, the power of the test is:
 
 ```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center'}
 Xbar = 12   #sample mean
@@ -534,25 +534,121 @@ ggplot(data = df2, mapping = aes(x = x, y = y)) +
   geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='blue', alpha=0.4) +
   geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
   geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
-  geom_text(label = 'Type II Error', x = 11, y = -0.005, size = 5, color = 'darkcyan') +
-  geom_text(label = 'Power', x = 7.1, y = -0.005, size = 5, color = 'blue') +
+  geom_text(label = 'Type II Error', x = 11, y = -0.005, size = 3, color = 'darkcyan') +
+  geom_text(label = 'Power', x = 7.1, y = -0.005, size = 3, color = 'blue') +
   geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
   geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
   geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
-  geom_text(label = TeX('$H_0: \\; \\mu = 12$'), x = Xbar, y = 0.12, size = 5, color = 'black') +
+  geom_text(label = TeX('$\\mu_{H_0}'), x = Xbar, y = 0.2, size = 5, color = 'black') +
   geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
   geom_segment(x = Xbar_bias, xend = Xbar_bias, y = 0, yend = 0.5, color = 'darkcyan', linetype = 'dotted') +
-  geom_text(label = TeX('$\\mu = 9$'), x = mu, y = 0.2, size = 5, color = 'violetred') +
-  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.25, size = 5, color = 'darkcyan') +
+  geom_text(label = TeX('$\\mu$'), x = mu, y = 0.2, size = 5, color = 'violetred') +
+  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 5, color = 'darkcyan') +
   theme_bw()
 ```
 
-In this case the bias makes the sample mean further to the null, which *increases* the power of the test.   
+Here the bias brings the sample mean further away from the null, which *increases* the power of the test.   
 
-The takeaway---a biased sample can increase or decrease the power of the test, depending on whether the bias brings the sample mean nearer or further to the true mean.  
+The takeaway---a biased sample can increase or decrease the power of the test, depending on whether the bias brings the sample mean closer/further from the true mean.   
 
+## Effects on Type I Error
 
+If the null hypothesis is true, a biased sample can make us lose control of the type I error.  
 
+E.g. if a null hypothesis has $H_0: \mu = 12$, and if the null is true, then under an *unbiased* sample the type I error is:
+
+```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center'}
+Xbar = 12
+s = 6   #sample s.d.
+n = 20   #sample size
+SE = s / sqrt(n)   #standard error
+mu = 10
+
+x = seq(-10, 10, length = 1000) * SE + Xbar
+y = dnorm(x, Xbar, SE)
+
+df = data.frame(x = x, y = y)
+
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(' ') +
+  ggtitle(TeX('Type I Error if $\\mu = 12$ ($H_0$ true)')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.15, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 8.8, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 15.7, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  theme_bw()
+```
+
+But if the sample is biased, such that $\E[X] = 14$, the type I error is:
+
+```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center'}
+Xbar_bias = 14
+
+y1 = dnorm(x, Xbar_bias, SE)
+
+df1 = data.frame(x = x, y = y1)
+
+ggplot(data = df1, mapping = aes(x = x, y = y)) +
+  geom_line(color = 'darkcyan') +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+5*SE)) +
+  geom_line(data = df, aes(x = x, y = y)) +
+  ylab('probability') + xlab(' ') +
+  ggtitle(TeX('Type I Error if $\\mu = 12$ ($H_0$ true) under bias')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_segment(x = Xbar_bias, xend = Xbar_bias, y = 0, yend = 0.5, color = 'darkcyan', linetype = 'dotted') +
+  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 2.5, color = 'black') +
+  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 2.5, color = 'darkcyan') +
+  geom_text(label = 'Type I Error', x = 8.8, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 15.7, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  theme_bw()
+```
+
+If the test is two-tailed, then bias in the other direction will also increase the type I error: 
+
+```{r, warning=FALSE, echo=FALSE, fig.width = 5, fig.height=3.5, fig.align='center'}
+Xbar_bias = 10
+
+y1 = dnorm(x, Xbar_bias, SE)
+
+df1 = data.frame(x = x, y = y1)
+
+ggplot(data = df1, mapping = aes(x = x, y = y)) +
+  geom_line(color = 'darkcyan') +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-5*SE, Xbar+4*SE)) +
+  geom_line(data = df, aes(x = x, y = y)) +
+  ylab('probability') + xlab(' ') +
+  ggtitle(TeX('Type I Error if $\\mu = 12$ ($H_0$ true) under bias')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_segment(x = Xbar_bias, xend = Xbar_bias, y = 0, yend = 0.5, color = 'darkcyan', linetype = 'dotted') +
+  geom_text(label = TeX('$\\mu_{H_0}$'), x = Xbar, y = 0.2, size = 2.5, color = 'black') +
+  geom_text(label = TeX('$\\bar{X}$'), x = Xbar_bias, y = 0.2, size = 2.5, color = 'darkcyan') +
+  geom_text(label = 'Type I Error', x = 8.8, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 15.7, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  theme_bw()
+```
 
 
 
