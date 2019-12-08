@@ -383,7 +383,7 @@ ggplot(data = df, mapping = aes(x = x, y = y)) +
 ```
 
 
-The takeaway---while increasing $n$ reduces the variability of an estimate, if the sample is biased it will also decrease the probability that the interval contains the true value. As $n$ gets large the "coverage" probability of the interval will converge to zero---i.e. we will narrow in on a range of values that no longer contains the true parameter value.   
+The takeaway---while increasing $n$ reduces the variability of an estimate, if the sample is biased it will also decrease the probability that the interval contains the true value. As $n$ gets large the "coverage" probability of the interval will converge to zero---eventually none of the intervals will contain the true parameter, even if some initially did.  
 
 The theme of trading between bias and variance is an important one in statistics---often it's not possible to minimize both simultaneously.  
 
