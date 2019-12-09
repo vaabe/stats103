@@ -147,9 +147,9 @@ This puzzling discrepancy can be resolved by looking at the relationship between
 ggplot(data = carexpenses, aes(x = as.factor(age), y = mileage)) + geom_boxplot() + theme_light()
 ```
 
-Clearly, in this dataset, the newer cars have higher mileage than the older ones. Strange though this may be, this vital piece of missing information explains the aberrant relationship between maintenance expenses and mileage observed in the simple regression---we had *omitted* an important confounding variable, age, which turned out change the interpretation of the problem completely.       
+Clearly, in this dataset, the newer cars have higher mileage than the older ones. Strange though this may be, this vital piece of missing information explains the aberrant relationship between maintenance expenses and mileage observed in the simple regression---we had *omitted* an important confounding variable, age, which turned out changes the interpretation of the problem completely.       
 
-You can see how omitting variables that are correlated with the predictors can result in a vital loss of relevant information to the problem---it can result in strongly biased regression coefficients, and severe misunderstandings about the nature of the relationship between two variables.  
+You can see how omitting variables that are correlated with the predictors can result in a loss of relevant information to the problem---it can result in strongly biased regression coefficients, and severe misunderstandings about the nature of the relationship between two variables.  
 
 Omitted variables are also known as **confounding variables**, as they *confound* the problem with additional complexity, often unbenknown to the experimenter.  
 
