@@ -73,14 +73,13 @@ library(tufte)
 - chapter 18 -- <a href="./notes/c18-error-of-an-estimator.html">Quantifying the Error of an Estimator</a></li>
 - chapter 19 -- <a href="./notes/c19-regression-inference-II.html">Inference from Regression Models, Part II</a></li>
 - chapter 20 -- <a href="./notes/c20-causal-inference.html">Causal Inference</a></li>
-- chapter 21 -- <a href="./notes/c21-bias-variance.html">The Bias-Variance Tradeoff</a></li>
+- chapter 21 -- <a href="./notes/c21-bias-variance.html">Model Selection \& The Bias-Variance Tradeoff</a></li>
 
 ### PART IV -- FURTHER TOPICS
 
-- chapter 22 -- Model Selection and Validation 
-- chapter 23 -- Classification with Logistic Regression
-- chapter 24 -- Time Series
-- chapter 25 -- Maximum Likelihood  
+- chapter 22 -- Classification with Logistic Regression
+- chapter 23 -- Time Series
+- chapter 24 -- Maximum Likelihood  
 
 \ 
 
