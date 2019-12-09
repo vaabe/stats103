@@ -1,5 +1,5 @@
 ---
-title: 'chapter 21 Model Selection \& The Bias/Variance Tradeoff'
+title: 'chapter 21 Model Selection \& The Bias-Variance Tradeoff'
 output:
   tufte::tufte_html:
     tufte_features: ['fonts','background','italics']
@@ -93,7 +93,7 @@ where $p$ is the number of predictors in the model.
 
 __*AIC*__
 
-AIC (Akaike Information Criterion) is a measure of model quality---it can be thought of as goodness-of-fit minus  model complexity. AIC can deal with both the risk of overfitting and underfitting.  
+AIC (Akaike Information Criterion) is a measure of model quality---it can be thought of as goodness-of-fit minus  model complexity. AIC can deal with the risks of overfitting and underfitting.  
 
 Formally:
 
@@ -112,7 +112,7 @@ Formally:
 
 $$\text{BIC}(p) = \ln \bigg( \frac{\text{SSR}(p)}{N} \bigg) + (p+1) \frac{\ln  N}{N}$$
 
-BIC also rewards goodness-of-fit and penalizes complexity (BIC penalizes complexity more harshly).  
+BIC also rewards goodness-of-fit and penalizes complexity (BIC penalizes complexity more harshly than AIC).  
 
 Among a set of models, the preferred one is the one that minimizes the BIC score.  
 
@@ -125,22 +125,22 @@ In the next section we'll show you a simple way to conduct a model search using 
 
 # 21--3 Forward and Backward Stepwise Regression 
 
-Suppose we have $p$ predictors to choose among. Performing a model search involves searching through all 2$p$ possible models and selecting the one with the best score. If $p$ is relatively small, we can do a complete search over all possible models.  
+Suppose we have $p$ predictors to choose among. Performing a model search involves searching through all $2^p$ possible models and selecting the one with the best score. If $p$ is relatively small, we can do a complete search over all the possible models.  
 
-Two common methods are **forward stepwise regression** and **backward stepwise regression**.  
+Two common methods are *forward stepwise regression* and *backward stepwise regression*.  
 
-- **forward stepwise regression** --- start with no predictors, then add the variable that leads to the best score, and repeat the process---keep adding variables one by one until the score does not improve
-- **backward stepwise regression** --- start with the full model (all predictors), then remove the variable that laeds to the best score, and repeat  
+- **forward stepwise regression** --- start with no predictors, then add the variable that leads to the best score, and repeat the process---keep adding variables one by one until the score no longer improves
+- **backward stepwise regression** --- start with the full model (all predictors), then remove the variable that leads to the best score, and repeat  
 
 The following code uses applies backward stepwise regression to the crime data using AIC: 
 
-```{r}
+```{r, warning=FALSE}
 library(MASS)
 
 # full model
 reg2 = lm(crime_rate ~ ., data = uscrime)
 
-# backward stepwise reegression
+# backward stepwise regression
 reg3 = stepAIC(reg2, direction = "backward")
 
 summary(reg3)

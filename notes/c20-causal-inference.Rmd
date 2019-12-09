@@ -143,11 +143,11 @@ Below is a mathematical treatment of the problem:
 
 Suppose $X$ is a binary treatment, $Y$ is a binary outcome, and $Z$ is some categorical variable like gender. Suppose the joint distribution of $X$, $Y$, and $Z$ is:
 
-$\hspace{3cm}\overbrace{\hspace{3cm}}^{Z=1 \; \text{(women)}} \hspace{1cm} \overbrace{\hspace{3cm}}^{Z=0 \; \text{(men)}}$
 ```{r, echo=FALSE}
 simpsons = as.table(rbind(c(0.150,0.225,0.100,0.025), c(0.0375,0.0875,0.2625,0.1125)))
 dimnames(simpsons) = list(treatment = c('$X=1$','$X=0$'),outcome = c('$Y=1$','$Y=0$','$Y=1$','$Y=0$'))
-kable(simpsons)
+kable(simpsons) %>%
+  add_header_above(c(" ", "$Z=1$ (women)" = 2, "$Z=0$ (men)" = 2))
 ```
 
 The marginal distribution for $X,Y$ (i.e. looking at the distribution as a whole) is:
