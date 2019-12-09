@@ -77,7 +77,7 @@ library(tufte)
 
 ### PART IV -- FURTHER TOPICS
 
-- chapter 22 -- Classification with Logistic Regression
+- chapter 22 -- <a href="./notes/c22-logit.html">Classification with Logistic Regression
 - chapter 23 -- Time Series
 - chapter 24 -- Maximum Likelihood  
 

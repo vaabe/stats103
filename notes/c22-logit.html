@@ -62,17 +62,17 @@ if (window.hljs) {
 <h1>22–1 Logistic Regression</h1>
 <p>Logistic regression (or logit) is a regression technique for when the outcome variable is binary.</p>
 <p>In logistic regression the goal is to predict <span class="math inline">\({\text{P}}(Y=1|X=x)\)</span>, where <span class="math inline">\(X\)</span> is the predictor. Although the outcome variable is either 0 or 1, the <em>predicted</em> outcome will be a probability, so it can be anything between 0 and 1.</p>
-<p>Complication: to get a linear model, we need to first do a non-linear transformation of <span class="math inline">\({\text{P}}(Y=1|X=x)\)</span>, using what’s known as a “logit” or “log-odds” function.</p>
+<p>Complication: to get a linear model, we need to do a non-linear transformation of <span class="math inline">\({\text{P}}(Y=1|X=x)\)</span>, using what’s known as a “logit” or “log-odds” function.</p>
 <p>If we let <span class="math inline">\(p(x) = {\text{P}}(Y=1|X=x)\)</span>, then the logistic regression model has the following functional form:</p>
 <p><span class="math display">\[\ln \bigg(  \frac{p(x_i)}{1-p(x_i)} \bigg) = \beta_0 + \beta_1 x_{i1} + ... + \beta_k x_{ik} + \varepsilon_i\]</span></p>
 <p>where the LHS is the logit function, and the RHS is a linear function of the predictors, just like in OLS regression.</p>
-<p>In logit models the regression coefficients represent a log-odds ratio. If we <em>exponentiate</em> the coefficients, we get an odds-ratio, which represents</p>
+<p>Another complication: the regression coefficients. In logit models the regression coefficients represent <em>log-odds</em> ratios. If we exponentiate the coefficients (which we usually do), we get an <em>odds-ratio</em>, which represents the likelihood of outcome variable being a success (<span class="math inline">\(Y=1\)</span>) given the predictor.</p>
+<p>If you’re interested, the next section gives an example of a logit model used in a real study on the effects of language on economic decision-making.</p>
 <p> </p>
 </div>
 <div id="linguistic-determinism-a-study" class="section level1">
 <h1>22–2 Linguistic Determinism? A Study</h1>
-<p>This is a real-world example of a logit model.</p>
-<p>A study by Keith Chen in 2013 tested a “linguistic-savings hypothesis”, whether grammatical differences in languages affect intertemporal choice and economic decision-making. Chen investigated whether Strong FTR languages (i.e. ones that grammatically ‘mark’ the future) cause speakers to discount the future more than Weak FTR languages (i.e. ones that do not grammatically mark the future), and whether this behavioural difference is manifest in individual savings behaviour. His study concluded that the distancing mechanism inherent in Strong FTR languages does indeed significantly lower the probability that an individual will take future-oriented actions.</p>
+<p>A study by Keith Chen in 2013 tested a “linguistic-savings hypothesis”, whether grammatical differences in languages affect intertemporal choice and economic decision-making.<label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label><input type="checkbox" id="tufte-sn-1" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">1</span> Read the original study <a href="./downloads/chen-language.pdf" download>here</a>.</span> Chen investigated whether Strong FTR languages (i.e. ones that grammatically ‘mark’ the future) cause speakers to discount the future more than Weak FTR languages (i.e. ones that do not grammatically mark the future), and whether this behavioural difference is manifest in individual savings behaviour. His study concluded that the distancing mechanism inherent in Strong FTR languages does indeed significantly lower the probability that an individual will take future-oriented actions.</p>
 <p>First, a quick note on language:</p>
 <p>A Strong FTR language is one that grammatically ‘marks’ the future (with a word, or a set of words, etc.). English and French are two such examples:</p>
 <ul>
@@ -87,10 +87,107 @@ if (window.hljs) {
 <li>Finnish: “Huomenna sataa” (tomorrow rains)</li>
 </ul>
 <p>Since saving money is a future-oriented activity, Chen claimed the distancing mechanism in Strong FTR languages causes people to (unwittingly) save less money. In his study, Chen found a significant difference in savings behaviour between speakers of Strong FTR and Weak FTR languages, even when controlling for a number of individual and country variables.</p>
-<p>Chen used a logit models to estimate the probability than an individual will save money, based on whether they speak a Strong or Weak FTR language:</p>
-<p><span class="math display">\[{\text{P}}(\text{save}_{it}) = \frac{\exp(z_{it})}{1 + \exp(z_{it})}\]</span></p>
-<p>where:</p>
-<p><span class="math display">\[z_{it} = \beta_{0} + \beta_{1} \text{StrongFTR} + \beta_{2} X_{it} + \beta_{3} X_{t} + \beta_{4} F_{it}^{ex} + \beta_{5} F_{t}^{c}\]</span></p>
+<p>Chen used a logit model to estimate the probability than an individual will save money, based on whether they speak a Strong or Weak FTR language:</p>
+<p><span class="math display">\[{\text{P}}(\text{save}_{it}) = \frac{\exp(Z_{it})}{1 + \exp(Z_{it})}\]</span></p>
+<p>where <span class="math inline">\(\text{save}_{it}\)</span> is a binary outcome variable (either the individual saved money (1) or did not save money (0) during a particular year). The logit model is:</p>
+<p><span class="math display">\[Z_{it} = \beta_{0} + \beta_{1} \text{StrongFTR} + \beta_{2} X_{it} + \beta_{3} X_{t} + \beta_{4} F_{it}^{ex} + \beta_{5} F_{t}^{c}\]</span></p>
+<p>where <span class="math inline">\(\text{StrongFTR}\)</span> is the variable of interest, and the other predictors serve as various individual and country-level control variables.</p>
+<p>Below is a crude reimplementation of the main logit model in the study.<label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label><input type="checkbox" id="tufte-sn-2" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">2</span> Download the data <a href="./data/chen-language.csv" download>here</a>.</span> We can use the <code>glm()</code> function from the <code>stats</code> package to perform logistic regression.</p>
+<pre class="r"><code>library(stats)
+library(alpaca)
+
+## simple logit regression
+reg1 = glm(SavedThisYr ~ StrongFTR,
+             data = ccdata, family = binomial(link = 'logit'))
+
+## model summary
+summary(reg1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = SavedThisYr ~ StrongFTR, family = binomial(link = &quot;logit&quot;), 
+##     data = ccdata)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.9504  -0.6797  -0.6797  -0.6797   1.7769  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.56054    0.01471  -38.11   &lt;2e-16 ***
+## StrongFTR   -0.78711    0.01623  -48.50   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 160446  on 149692  degrees of freedom
+## Residual deviance: 158225  on 149691  degrees of freedom
+##   (14928 observations deleted due to missingness)
+## AIC: 158229
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>The code above performs a simple logistic regression of the binary outcome, <code>SavedThisYr</code>, on the main predictor of interest, <code>StrongFTR</code> (also a binary variable, coded 1 if the language is classified Strong FTR, 0 if the language is classified Weak FTR). The coefficient on StrongFTR is -0.7871. This is the log-odds ratio. To make this number more meaningful, we exponentiate the model coefficients, as follows:</p>
+<pre class="r"><code>## odds-ratio 
+exp(coef(reg1))</code></pre>
+<pre><code>## (Intercept)   StrongFTR 
+##   0.5709008   0.4551603</code></pre>
+<p>These numbers are odds-ratios. They say that, based on the data in the study, people who speak Strong FTR languages are on average only 45% as likely to save money that year than people who speak Weak FTR languages. This was indeed Chen’s main conclusion in the study.</p>
+<p>It’s a bold claim. Many have contested the validity of Chen’s study, claiming (with good reason) that he did not properly isolate (or even identify) the causal effect in his study. Read a critical response to Chen’s study here: <a href="https://dlc.hypotheses.org/360" class="uri">https://dlc.hypotheses.org/360</a>.</p>
+<p>Nevertheless, it’s still an interesting result. Chen managed to show that the coefficient on <code>StrongFTR</code> manages to hold even after using a number of individual and country-level control variables.</p>
+<p>The following model adds control variables for a country’s legal system, its log GDP per capita, the log GDP growth rate, the unemployment and interest rates, and a number of individual (age, gender) and regional (country, continent) variables:</p>
+<pre class="r"><code>## logistic regression with controls
+reg6 = feglm(SavedThisYr ~ StrongFTR + LegalFr + LegalGe + LegalSc + logPCGDP
+              + Growth_PCGDP + Unemployed + RealIntRate + LegalRightsIndex + TrustMostPpl + 
+                FamilyImp + AvgTrust + AvgFamilyImp + LanguageShare + FTRShare | 
+                AgeCat + Sex + Continent, data = ccdata, family = binomial(link = 'logit'))
+
+## model summary
+summary(reg6)</code></pre>
+<pre><code>## binomial 
+## 
+## SavedThisYr ~ StrongFTR + LegalFr + LegalGe + LegalSc + logPCGDP + 
+##     Growth_PCGDP + Unemployed + RealIntRate + LegalRightsIndex + 
+##     TrustMostPpl + FamilyImp + AvgTrust + AvgFamilyImp + LanguageShare + 
+##     FTRShare | AgeCat + Sex + Continent
+## 
+## l= [9, 2, 6], n= 130623, deviance= 134284.7
+## 
+## Structural parameter(s):
+## 
+##                    Estimate Std. error z value Pr(&gt; |z|)    
+## StrongFTR        -0.7291403  0.0247283 -29.486   &lt; 2e-16 ***
+## LegalFr          -0.5459611  0.0279293 -19.548   &lt; 2e-16 ***
+## LegalGe          -0.7240986  0.0382698 -18.921   &lt; 2e-16 ***
+## LegalSc          -0.3028061  0.0615508  -4.920  8.67e-07 ***
+## logPCGDP          0.1404443  0.0074360  18.887   &lt; 2e-16 ***
+## Growth_PCGDP     -0.8701121  0.1600799  -5.435  5.46e-08 ***
+## Unemployed       -0.6530556  0.0262043 -24.922   &lt; 2e-16 ***
+## RealIntRate      -0.0030567  0.0004945  -6.181  6.36e-10 ***
+## LegalRightsIndex  0.0321659  0.0050492   6.370  1.88e-10 ***
+## TrustMostPpl     -0.2055092  0.0157110 -13.081   &lt; 2e-16 ***
+## FamilyImp        -0.1196940  0.0204598  -5.850  4.91e-09 ***
+## AvgTrust          0.1055689  0.0762300   1.385    0.1661    
+## AvgFamilyImp      0.2907947  0.1121252   2.593    0.0095 ** 
+## LanguageShare    -0.1227765  0.0275766  -4.452  8.50e-06 ***
+## FTRShare         -0.2613427  0.0657343  -3.976  7.02e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## ( 33998 observation(s) deleted due to missingness )</code></pre>
+<pre class="r"><code>## log-odds ratios
+exp(coef(reg6))</code></pre>
+<pre><code>##        StrongFTR          LegalFr          LegalGe          LegalSc 
+##        0.4823235        0.5792848        0.4847613        0.7387424 
+##         logPCGDP     Growth_PCGDP       Unemployed      RealIntRate 
+##        1.1507850        0.4189046        0.5204531        0.9969479 
+## LegalRightsIndex     TrustMostPpl        FamilyImp         AvgTrust 
+##        1.0326888        0.8142326        0.8871918        1.1113426 
+##     AvgFamilyImp    LanguageShare         FTRShare 
+##        1.3374899        0.8844613        0.7700170</code></pre>
+<p>As you can see, the coefficient on StrongFTR maintains its value, even after adding these controls.</p>
+<p> </p>
+<hr />
+<p> </p>
+<p> </p>
 </div>
 
 
