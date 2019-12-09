@@ -26,6 +26,7 @@ library(latex2exp)
 library(moments)
 library(bookdown)
 library(rsconnect)
+library(ggfortify)
 ```
 
 ```{r, include=FALSE}
@@ -64,15 +65,15 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 Now we'll examine validity and sources of bias in regression models.  
 
-*__External Validity__*---that the observed causal effect holds true in other settings; that it depends on non-modeled conditions. Questions to ask: is the sample representative? Are the assumptions portable? 
+*__External Validity__*---that the observed effect holds true in other settings; that it depends on non-modeled conditions. Questions to ask: is the sample representative? Are the assumptions portable? 
 
-*__Internal Validity__*---that the observed causal effect is properly identified; that the assumptions of least squares regression are met.  
+*__Internal Validity__*---that the observed effect is properly identified; that the assumptions of least squares regression are met.  
 
 The most important assumption for regression validity is that the errors are uncorrelated with the predictors:
 
 $$\E[\v \varepsilon | \v X] = 0$$
 
-Violations of this assumption will cause LS estimates to become biased. To see this, recall that the regression function $\v y = \v X \v \beta$ can be expressed: 
+Violations of this assumption will cause LS estimates to become biased. To see this, recall that the regression function $\v y = \v X \v \beta + \v \varepsilon$ can be expressed: 
 
 $$
 \begin{aligned}
@@ -120,7 +121,40 @@ where the second term on the right represents the bias in the estimate of $b_1$ 
 
 **The solution:** include any variables that are correlated with the predictors. These are confounding variables that should be controlled for.  
 
-`R example: coming soon`
+Here's a very rudimentary example: the dataset carexpenses.csv^[Download <a href="./carexpenses.csv" download>here</a>.] has three variables, recording the mileage, age, and maintenence expenses of some cars. First, let's run a simple regression predicting maintenance expenses from mileage: 
+
+```{r, include=FALSE}
+carexpenses = read.csv("./data/carexpenses.csv")
+```
+
+```{r}
+lm(expenses ~ mileage, data = carexpenses)
+```
+
+Strangely, the coefficient on mileage is negative, suggesting that cars with higher mileage somehow have lower maintenance expenses.   
+
+But when we add age as a predictor, watch what happens:
+
+```{r}
+lm(expenses ~ mileage + age, data = carexpenses)
+```
+
+i.e. after controlling for age, the coefficients show more reasonable results---that maintenance expenses increase with mileage and age.  
+
+This puzzling discrepancy can be resolved by looking at the relationship between mileage and age:   
+
+```{r,echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5}
+ggplot(data = carexpenses, aes(x = as.factor(age), y = mileage)) + geom_boxplot() + theme_light()
+```
+
+Clearly, in this dataset, the newer cars have higher mileage than the older ones. Strange though this may be, this vital piece of missing information explains the aberrant relationship between maintenance expenses and mileage observed in the simple regression---we had *omitted* an important confounding variable, age, which turned out change the interpretation of the problem completely.       
+
+You can see how omitting variables that are correlated with the predictors can result in a vital loss of relevant information to the problem---it can result in strongly biased regression coefficients, and severe misunderstandings about the nature of the relationship between two variables.  
+
+Omitted variables are also known as **confounding variables**, as they *confound* the problem with additional complexity, often unbenknown to the experimenter.  
+
+This is another example of the danger of assuming causality. It's important to remember that in general, nonzero regression coefficients only demonstrate association, *not* causation, unless all sources of confounding variables have been controlled for (which in many problems is very hard to do). For more on causal inference and various paradoxes that can arise from wrongly assuming causality, see <a href="http://stats103.org/notes/c20-causal-inference.html">chapter 20</a>.   
+
 
 
 
@@ -138,7 +172,33 @@ The linearity assumption requires that each predictor is linear *in parameter* t
 - include interaction terms (if the issue is that $\beta$ varies)
 - do model selection to avoid overfitting 
 
-`R example: coming soon`
+E.g. below is a scatterplot of life expectancy vs GDP per capita from the gapminder dataset:
+
+```{r, include=FALSE}
+library(gapminder)
+```
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5}
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = .5) + 
+  theme_light()
+```
+
+The relationship doesn't look very linear.  
+
+However by log-transforming the predictor and outcome variables we can make the relationship more linear. Here's a scatterplot of the log-transformed variables:  
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5}
+ggplot(gapminder, aes(x = log(gdpPercap), y = log(lifeExp))) +
+  geom_point(alpha = .5) + 
+  theme_light()
+```
+
+The log-transformed relationship between life expectancy and GDP per capita is clearly much more linear. For linear regression it is thus more appropriate to use the log-transformed variables, as they will give a better linear fit. You can see this for yourself by comparing the $R^2$ between the log-transformed regression and the base model.  
+
+In general, variables involving money (e.g. GDP) tend to be skewed (due to extreme inequality they often have exponential forms) and so log-transformed variables are often used.  
+
+
 
 
 

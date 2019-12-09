@@ -55,8 +55,9 @@ if (window.hljs) {
 <li><a href="#treatment-effects">20–1 Treatment Effects</a><ul>
 <li><a href="#selection-bias-and-randomization">Selection bias and randomization</a></li>
 </ul></li>
-<li><a href="#observational-studies-and-confounding-variables">20–2 Observational Studies and Confounding Variables</a></li>
-<li><a href="#simpsons-paradox">20–3 Simpson’s Paradox</a></li>
+<li><a href="#ecological-correlation">20–2 Ecological Correlation</a><ul>
+<li><a href="#simpsons-paradox">Simpson’s paradox</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -74,12 +75,22 @@ if (window.hljs) {
 <p><span class="math display">\[\text{ATE} = {\text{E}}[\beta_i] = {\text{E}}[Y_{i1} - Y_{i0}]\]</span></p>
 <p>The ATE is the average difference the treatment has on the outcome variable, averaging over all the subjects in the sample. This is what we observe in the data.</p>
 <p>We can also define the <strong>average treatment effect on the treated</strong> (ATT):</p>
-<p><span class="math display">\[\text{ATT} = {\text{E}}[\beta_i | X_i = 1] = {\text{E}}[Y_{i1}-Y_{i0} | X_i = 1]\]</span></p>
-<p><span class="math display">\[= {\text{E}}[Y_{i1} | X_i = 1] - {\text{E}}[Y_{i0} | X_i = 1]\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+  \text{ATT} &amp;= {\text{E}}[\beta_i | X_i = 1] \\ 
+  &amp;= {\text{E}}[Y_{i1}-Y_{i0} | X_i = 1] \\ 
+  &amp;= {\text{E}}[Y_{i1} | X_i = 1] - {\text{E}}[Y_{i0} | X_i = 1]
+\end{aligned}
+\]</span></p>
 <p>Note the second term in the above expression is not observed in the study.</p>
 <p>Also define the <strong>average treatment effect on the control</strong> (ATC):</p>
-<p><span class="math display">\[\text{ATC} = {\text{E}}[\beta_i | X_i = 0] = {\text{E}}[Y_{i1}-Y_{i0} | X_i = 0]\]</span></p>
-<p><span class="math display">\[= {\text{E}}[Y_{i1} | X_i = 0] - {\text{E}}[Y_{i0} | X_i = 0]\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+  \text{ATC} &amp;= {\text{E}}[\beta_i | X_i = 0] \\ 
+  &amp;= {\text{E}}[Y_{i1}-Y_{i0} | X_i = 0] \\ 
+  &amp;= {\text{E}}[Y_{i1} | X_i = 0] - {\text{E}}[Y_{i0} | X_i = 0]
+\end{aligned}
+\]</span></p>
 <p>where the first term in the above expression is not observed.</p>
 <p>Note how the difference we <em>do</em> observe in the study (the ATE) can be expressed:</p>
 <p><span class="math display">\[{\text{E}}[\beta_i] = {\text{E}}[Y_{i1} | X_i = 1] - {\text{E}}[Y_{i0} | X_i = 0]\]</span></p>
@@ -94,23 +105,141 @@ if (window.hljs) {
 <p>The solution: <strong>randomization</strong>.</p>
 <p>If the treatment is assigned <em>randomly</em>, then <span class="math inline">\(Y_{i0}\)</span> and <span class="math inline">\(X_i\)</span> will be independent:</p>
 <p><span class="math display">\[{\text{E}}[Y_{i0} | X_i = 1] = {\text{E}}[Y_{i0} | X_i =  0]\]</span></p>
-<p>This is because if <span class="math inline">\(Y_{i0}\)</span> and <span class="math inline">\(X_i\)</span> are independent, then <span class="math inline">\({\text{E}}[Y_{i0} | X_i] = {\text{E}}[Y_{i0}]\)</span>.</p>
+<p>This is because if <span class="math inline">\(Y_{i0}\)</span> and <span class="math inline">\(X_i\)</span> are independent, then <span class="math inline">\({\text{E}}[Y_{i0} | X_i] = {\text{E}}[Y_{i0}]\)</span>. If this condition is met, the selection bias term vanishes.</p>
 <p>Thus randomization eliminates selection bias and ensures that ATE = ATT.</p>
 <p> </p>
 </div>
 </div>
-<div id="observational-studies-and-confounding-variables" class="section level1">
-<h1>20–2 Observational Studies and Confounding Variables</h1>
-<p><code>coming soon</code></p>
-<p> </p>
-</div>
-<div id="simpsons-paradox" class="section level1">
-<h1>20–3 Simpson’s Paradox</h1>
-<p><code>coming soon</code></p>
+<div id="ecological-correlation" class="section level1">
+<h1>20–2 Ecological Correlation</h1>
+<p>ecological correlation (also spatial correlation) is a correlation between two variables that are group means, in contrast to a correlation between two variables that describe individuals. For example, one might study the correlation between physical activity and weight among sixth-grade children. A study at the individual level might make use of 100 children, then measure both physical activity and weight; the correlation between the two variables would be at the individual level. By contrast, another study might make use of 100 classes of sixth-grade students, then measure the mean physical activity and the mean weight of each of the 100 classes. A correlation between these group means would be an example of an ecological correlation.</p>
+<p>Because a correlation describes the measured strength of a relationship, correlations at the group level can be much higher than those at the individual level. Thinking both are equal is an example of ecological fallacy.</p>
+<div id="simpsons-paradox" class="section level2">
+<h2>Simpson’s paradox</h2>
+<p>Simpson’s paradox occurs when a trend is observable within certain groups of data, but vanishes or changes direction when the data is looked at as a whole (when the groups are combined).</p>
+<p><em>A classic example:</em> in 1973 the UC Berkeley Graduate Division admitted 44% of its male applicants and 35% of its female applicants, prompting controversy over the apparent gender bias against women. But when examining the admissions rates of individual departments, it was found that that six departments were biased against men, and only four weree biased against women. The paradox was later explained by the discovery that women tended to apply in larger numbers to more competitive departments (where <em>both</em> genders were admitted in small numbers).</p>
+<p>Below is a mathematical treatment of the problem:</p>
+<p>Suppose <span class="math inline">\(X\)</span> is a binary treatment, <span class="math inline">\(Y\)</span> is a binary outcome, and <span class="math inline">\(Z\)</span> is some categorical variable like gender. Suppose the joint distribution of <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Z\)</span> is:</p>
+<span class="math inline">\(\hspace{3cm}\overbrace{\hspace{3cm}}^{Z=1 \; \text{(women)}} \hspace{1cm} \overbrace{\hspace{3cm}}^{Z=0 \; \text{(men)}}\)</span>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=1\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=0\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=1\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=0\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(X=1\)</span>
+</td>
+<td style="text-align:right;">
+0.1500
+</td>
+<td style="text-align:right;">
+0.2250
+</td>
+<td style="text-align:right;">
+0.1000
+</td>
+<td style="text-align:right;">
+0.0250
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(X=0\)</span>
+</td>
+<td style="text-align:right;">
+0.0375
+</td>
+<td style="text-align:right;">
+0.0875
+</td>
+<td style="text-align:right;">
+0.2625
+</td>
+<td style="text-align:right;">
+0.1125
+</td>
+</tr>
+</tbody>
+</table>
+<p>The marginal distribution for <span class="math inline">\(X,Y\)</span> (i.e. looking at the distribution as a whole) is:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=1\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=0\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(X=1\)</span>
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(X=0\)</span>
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+</tr>
+</tbody>
+</table>
+<p>From the second table (the combined data), we have the following:</p>
+<p><span class="math display">\[{\text{P}}(Y=1|X=1) &lt; {\text{P}}(Y=1|X=0)\]</span></p>
+<p>which seems to say the treatment is <em>harmful</em> overall.</p>
+<p>Yet, when taking the group variable (gender) into account we have:</p>
+<p><span class="math display">\[{\text{P}}(Y=1|X=1,Z=1) &gt; {\text{P}}(Y=1|X=0,Z=1)\]</span></p>
+<p><span class="math display">\[{\text{P}}(Y=1|X=1,Z=0) &gt; {\text{P}}(Y=1|X=0,Z=0)\]</span></p>
+<p>which seem to say the treat is <em>beneficial</em> to women (<span class="math inline">\(Z=1\)</span>) and men (<span class="math inline">\(Z=0\)</span>).</p>
+<p>This is a clear example of Simpson’s paradox—these three mathematical statements seeem to imply contradictory things about the nature of the treatment effect.</p>
+<p>The reality is that these mathematical statements are not actually contradictory at all—what is wrong is our interpretation. We have assumed causality without first proving it.</p>
+<p>To see this, let’s define association:</p>
+<p><span class="math display">\[\alpha = {\text{E}}[Y|X=1] - {\text{E}}[Y|X=0]\]</span></p>
+<p>i.e. this is the <em>association</em> between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. However this is not the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. From section 20–1, we know the causal effect, or <em>average treatment effect</em>, is:</p>
+<p><span class="math display">\[\beta = \bigg\{ {\text{E}}[Y_{i1} | X_i = 1] - {\text{E}}[Y_{i0} | X_i = 1] \bigg\} + \bigg\{ {\text{E}}[Y_{i1} | X_i = 0] - {\text{E}}[Y_{i0} | X_i = 0] \bigg\}\]</span></p>
+<p><span class="math display">\[= \text{ATT} + \text{selection bias}\]</span></p>
+<p>i.e. the observed association only demonstrates causality if there is no selection bias. Selection bias could include any number of confounding variables that have not been accounted for, but which contain relevant information to the problem.</p>
+<p>The three mathematical statements from above are in fact not paradoxical at all—the paradox arises only in our assumption that <span class="math inline">\({\text{P}}(Y=1|X=1) &lt; {\text{P}}(Y=1|X=0)\)</span> <em>means</em> the treatment is harmful overall, which it does not. It only describes an association, not a causal effect. Similarly, the statement <span class="math inline">\({\text{P}}(Y=1|X=1,Z=1) &gt; {\text{P}}(Y=1|X=0,Z=1)\)</span> does not <em>mean</em> the treatment is beneficial to women—it describes an association only.</p>
+<p>The takeaway:</p>
+<p><span class="math display">\[\bf{\text{Association is not causation.}}\]</span></p>
+<p>Is it ever possible to estimate the causal effect? The answer is sometimes. Randomized assignment of subjects to treatment will allow us estimate the causal effect. But without randomization, there may be any number of confounders that change the interpretation of the problem.</p>
 <p> </p>
 <hr />
 <p> </p>
 <p> </p>
+</div>
 </div>
 
 

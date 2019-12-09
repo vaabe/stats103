@@ -67,17 +67,25 @@ The ATE is the average difference the treatment has on the outcome variable, ave
 
 We can also define the **average treatment effect on the treated** (ATT):
 
-$$\text{ATT} = \E[\beta_i | X_i = 1] = \E[Y_{i1}-Y_{i0} | X_i = 1]$$
-
-$$= \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 1]$$
+$$
+\begin{aligned}
+  \text{ATT} &= \E[\beta_i | X_i = 1] \\ 
+  &= \E[Y_{i1}-Y_{i0} | X_i = 1] \\ 
+  &= \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 1]
+\end{aligned}
+$$
 
 Note the second term in the above expression is not observed in the study.  
 
 Also define the **average treatment effect on the control** (ATC):
 
-$$\text{ATC} = \E[\beta_i | X_i = 0] = \E[Y_{i1}-Y_{i0} | X_i = 0]$$
-
-$$= \E[Y_{i1} | X_i = 0] - \E[Y_{i0} | X_i = 0]$$
+$$
+\begin{aligned}
+  \text{ATC} &= \E[\beta_i | X_i = 0] \\ 
+  &= \E[Y_{i1}-Y_{i0} | X_i = 0] \\ 
+  &= \E[Y_{i1} | X_i = 0] - \E[Y_{i0} | X_i = 0]
+\end{aligned}
+$$
 
 where the first term in the above expression is not observed.  
 
@@ -87,7 +95,7 @@ $$\E[\beta_i] = \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 0]$$
 
 $$= \bigg\{ \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 1] \bigg\} + \bigg\{ \E[Y_{i1} | X_i = 0] - \E[Y_{i0} | X_i = 0] \bigg\}$$
 
-The first term in the curly brackets is the ATT---this is the quantity of interest as it gives how much the treatment affected the outcome for subjects that received the treatment.  
+The first term in the curly brackets is the ATT---this is the quantity of interest as it gives how much the treatment affected the outcome for subjects that received the treatment. 
 
 The second term gives how much the treatment and control groups differ, even in the *absence* of treatment. This is known as **selection bias**.   
 
@@ -105,7 +113,7 @@ If the treatment is assigned *randomly*, then $Y_{i0}$ and $X_i$ will be indepen
 
 $$\E[Y_{i0} | X_i = 1] = \E[Y_{i0} | X_i =  0]$$
 
-This is because if $Y_{i0}$ and $X_i$ are independent, then $\E[Y_{i0} | X_i] = \E[Y_{i0}]$.  
+This is because if $Y_{i0}$ and $X_i$ are independent, then $\E[Y_{i0} | X_i] = \E[Y_{i0}]$. If this condition is met, the selection bias term vanishes.  
 
 Thus randomization eliminates selection bias and ensures that ATE = ATT.  
 
@@ -115,18 +123,74 @@ Thus randomization eliminates selection bias and ensures that ATE = ATT.
 
 \ 
 
-# 20--2 Observational Studies and Confounding Variables
+# 20--2 Ecological Correlation 
 
-`coming soon`
+ecological correlation (also spatial correlation) is a correlation between two variables that are group means, in contrast to a correlation between two variables that describe individuals. For example, one might study the correlation between physical activity and weight among sixth-grade children. A study at the individual level might make use of 100 children, then measure both physical activity and weight; the correlation between the two variables would be at the individual level. By contrast, another study might make use of 100 classes of sixth-grade students, then measure the mean physical activity and the mean weight of each of the 100 classes. A correlation between these group means would be an example of an ecological correlation.
 
+Because a correlation describes the measured strength of a relationship, correlations at the group level can be much higher than those at the individual level. Thinking both are equal is an example of ecological fallacy.   
 
+## Simpson's paradox 
 
+Simpson's paradox occurs when a trend is observable within certain groups of data, but vanishes or changes direction when the data is looked at as a whole (when the groups are combined).    
 
-\ 
+*A classic example:* in 1973 the UC Berkeley Graduate Division admitted 44\% of its male applicants and 35\% of its female applicants, prompting controversy over the apparent gender bias against women. But when examining the admissions rates of individual departments, it was found that that six departments were biased against men, and only four weree biased against women. The paradox was later explained by the discovery that women tended to apply in larger numbers to more competitive departments (where *both* genders were admitted in small numbers).  
 
-# 20--3 Simpson's Paradox 
+Below is a mathematical treatment of the problem: 
 
-`coming soon`
+Suppose $X$ is a binary treatment, $Y$ is a binary outcome, and $Z$ is some categorical variable like gender. Suppose the joint distribution of $X$, $Y$, and $Z$ is:
+
+$\hspace{3cm}\overbrace{\hspace{3cm}}^{Z=1 \; \text{(women)}} \hspace{1cm} \overbrace{\hspace{3cm}}^{Z=0 \; \text{(men)}}$
+```{r, echo=FALSE}
+simpsons = as.table(rbind(c(0.150,0.225,0.100,0.025), c(0.0375,0.0875,0.2625,0.1125)))
+dimnames(simpsons) = list(treatment = c('$X=1$','$X=0$'),outcome = c('$Y=1$','$Y=0$','$Y=1$','$Y=0$'))
+kable(simpsons)
+```
+
+The marginal distribution for $X,Y$ (i.e. looking at the distribution as a whole) is:
+
+```{r, echo=FALSE}
+simpsons2 = as.table(rbind(c(0.25,0.25), c(0.30,0.20)))
+dimnames(simpsons2) = list(treatment = c('$X=1$','$X=0$'),outcome = c('$Y=1$','$Y=0$'))
+kable(simpsons2)
+```
+
+From the second table (the combined data), we have the following:
+
+$$\P(Y=1|X=1) < \P(Y=1|X=0)$$
+
+which seems to say the treatment is *harmful* overall.   
+
+Yet, when taking the group variable (gender) into account we have:
+
+$$\P(Y=1|X=1,Z=1) > \P(Y=1|X=0,Z=1)$$
+
+$$\P(Y=1|X=1,Z=0) > \P(Y=1|X=0,Z=0)$$
+
+which seem to say the treat is *beneficial* to women ($Z=1$) and men ($Z=0$).  
+
+This is a clear example of Simpson's paradox---these three mathematical statements seeem to imply contradictory things about the nature of the treatment effect.  
+
+The reality is that these mathematical statements are not actually contradictory at all---what is wrong is our interpretation. We have assumed causality without first proving it.  
+
+To see this, let's define association:
+
+$$\alpha = \E[Y|X=1] - \E[Y|X=0]$$
+
+i.e. this is the *association* between $X$ and $Y$. However this is not the causal effect of $X$ on $Y$. From section 20--1, we know the causal effect, or *average treatment effect*, is:
+
+$$\beta = \bigg\{ \E[Y_{i1} | X_i = 1] - \E[Y_{i0} | X_i = 1] \bigg\} + \bigg\{ \E[Y_{i1} | X_i = 0] - \E[Y_{i0} | X_i = 0] \bigg\}$$
+
+$$= \text{ATT} + \text{selection bias}$$
+
+i.e. the observed association only demonstrates causality if there is no selection bias. Selection bias could include any number of confounding variables that have not been accounted for, but which contain relevant information to the problem.  
+
+The three mathematical statements from above are in fact not paradoxical at all---the paradox arises only in our assumption that $\P(Y=1|X=1) < \P(Y=1|X=0)$ *means* the treatment is harmful overall, which it does not. It only describes an association, not a causal effect. Similarly, the statement $\P(Y=1|X=1,Z=1) > \P(Y=1|X=0,Z=1)$ does not *mean* the treatment is beneficial to women---it describes an association only.  
+
+The takeaway:
+
+$$\bf{\text{Association is not causation.}}$$
+
+Is it ever possible to estimate the causal effect? The answer is sometimes. Randomized assignment of subjects to treatment will allow us estimate the causal effect. But without randomization, there may be any number of confounders that change the interpretation of the problem.   
 
 
 \ 
