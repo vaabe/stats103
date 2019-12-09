@@ -125,9 +125,13 @@ Thus randomization eliminates selection bias and ensures that ATE = ATT.
 
 # 20--2 Ecological Correlation 
 
-ecological correlation (also spatial correlation) is a correlation between two variables that are group means, in contrast to a correlation between two variables that describe individuals. For example, one might study the correlation between physical activity and weight among sixth-grade children. A study at the individual level might make use of 100 children, then measure both physical activity and weight; the correlation between the two variables would be at the individual level. By contrast, another study might make use of 100 classes of sixth-grade students, then measure the mean physical activity and the mean weight of each of the 100 classes. A correlation between these group means would be an example of an ecological correlation.
+Ecological correlation refers to correlations observed at the *group level* rather than the individual level.  
 
-Because a correlation describes the measured strength of a relationship, correlations at the group level can be much higher than those at the individual level. Thinking both are equal is an example of ecological fallacy.   
+E.g. suppose we are examining the relationship between parental funding and student academic performance.^[Read more on this <a href="https://journals.sagepub.com/doi/abs/10.1177/0003122412472680">here</a>.] A correlation observed at the individual level would use observations on individual students, comparing their individual values for funding and academic performance. A correlation observed at the group level would use *average* values for funding and academic performance, aggregated across certain groups in the data---e.g. gender or ethnicity.   
+
+It turns out that correlations observed at the group level can be vastly different to correlations observed at the individual level---even if they are observed on the same data. It is a common mistake to assume that correlations observed across one level of aggregation will hold in another---this is called **ecological fallacy**.  
+
+Simpson's paradox is an insightful example of ecological fallacy.   
 
 ## Simpson's paradox 
 
