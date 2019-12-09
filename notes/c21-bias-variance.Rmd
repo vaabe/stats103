@@ -71,7 +71,7 @@ We want to avoid the two extremes:
 
 A good model achieves the right balance between bias and variance: 
 
-```{r, width=5, height=3.5,echo=FALSE, fig.align='center', fig.cap="Source: http://scott.fortmann-roe.com/docs/BiasVariance.html"}
+```{r,echo=FALSE, fig.align='center', out.width=600, out.height=250, fig.cap="Source: http://scott.fortmann-roe.com/docs/BiasVariance.html"}
 knitr::include_graphics("./pics/c21-pic1.png")
 ```
 

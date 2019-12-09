@@ -178,7 +178,7 @@ E.g. below is a scatterplot of life expectancy vs GDP per capita from the gapmin
 library(gapminder)
 ```
 
-```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5}
+```{r, warning=FALSE, fig.width=5, fig.height=3.5,fig.align='center'}
 ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
   geom_point(alpha = .5) + 
   theme_light()
@@ -188,7 +188,7 @@ The relationship doesn't look very linear.
 
 However by log-transforming the predictor and outcome variables we can make the relationship more linear. Here's a scatterplot of the log-transformed variables:  
 
-```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5}
+```{r, warning=FALSE, fig.width=5, fig.height=3.5,fig.align='center'}
 ggplot(gapminder, aes(x = log(gdpPercap), y = log(lifeExp))) +
   geom_point(alpha = .5) + 
   theme_light()
@@ -217,7 +217,7 @@ where $\v x^*$ represents a noisy measurement of $\v x$. Noise could arise becau
 
 Below: "true" data is on the left, "noisy" data is on the right---note how noise dampens the estimated slope.  
 
-```{r, echo=FALSE, out.width=400, out.height=200}
+```{r, echo=FALSE, fig.align='center',out.width=600, out.height=250}
 knitr::include_graphics("./pics/c20-pic1.png")
 ```
 
