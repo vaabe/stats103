@@ -26,6 +26,12 @@ library(tufte)
 
 ---
 
+
+Data: <a href="./data/funding-bias.csv" download>funding-bias.csv</a>
+
+\ 
+
+
 Problem Set 3---due **Friday 22nd November**. Responses will be graded both for correctness and clarity of reasoning.   
 
 <a href="./ps/ps3.pdf" download>ps3.pdf</a>

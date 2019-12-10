@@ -1,12 +1,10 @@
 ---
 title: "ps4"
 author: "whomsoever"
-date: "07/12/2019"
 ---
 ---
 title: "ps4"
 author: "whomsoever"
-date: "07/12/2019"
 ---
 
 ```{r setup, include=FALSE}
@@ -14,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(gapminder)
 library(ggfortify)
+library(fivethirtyeight)
 ```
 
 \ 
@@ -26,9 +25,11 @@ n = 15
 data = sample(1:6, n, replace = TRUE)
 ```
 
+\ 
+
 ```{r}
 ## a function that calculates sample variance
-## but using n in the denominator instead of n-1
+## but using n in the denominator instead of n-1 (population formula)
 varn = function(x) mean((x - mean(x))^2)
 ```
 
@@ -37,7 +38,7 @@ varn = function(x) mean((x - mean(x))^2)
 ```{r}
 ## two estimates of variance
 
-# use the R function 
+# use the R function (uses the n-1 denominator)
 var(data)
 
 # use the population formula  
