@@ -203,7 +203,7 @@ $(document).ready(function () {
 <p>To compile your R Markdown file (i.e. create the output document), click ‘Knit’. The template we’ve provided will produce a document in HTML format, since this is probably the easiest to work with. If you rather a pdf format (like this document) check out the course notes (chapter 1) on rendering pdf output files.</p>
 <p>In general, for tips on R Markdown formatting and syntax, check out the course notes or the cheatsheet we’ve provided.</p>
 <p>We encourage you to use R Markdown for this problem set—our instructions assume you do—but if you’d rather use a different environment, e.g. Jupyter notebooks (etc), you are welcome to. Just make sure your final report is presentable, code and all.</p>
-<p>Any time you are confused about a command in R, use <code>help()</code> to bring up its documentation. If you get an error message you don’t understand, use google—it’s very likely someone else has encountered the same error and written about it on Stack Overflow or the like.</p>
+<p>Any time you’re confused about a command in R, use <code>help()</code> to bring up its documentation. If you get an error message you don’t understand, use google—it’s very likely someone else has encountered the same error and written about it on Stack Overflow or the like.</p>
 <p>The packages used in this problem set are:</p>
 <ul>
 <li><code>tidyverse</code> (is a set of eight packages)</li>
@@ -266,7 +266,7 @@ $(document).ready(function () {
 <li><code>data</code> – a data frame whose variables you want to plot</li>
 <li><code>mapping</code> – an aesthetic mapping for which variable(s) go on which axes</li>
 </ul>
-<p>You’ll also need to specify a geometric mapping, in the form <code>+ geom_XXX()</code>, to specify which variable(s) go on which axes (i.e. to geometrically map the data onto the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axes). The following examples will demonstrate how to use <code>ggplot()</code>.</p>
+<p>You’ll also need to specify a geometric mapping, in the form <code>+ geom_XXX()</code>, to specify the kind of plot you want (i.e. to geometrically map the data onto the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axes). The following examples will demonstrate how to use <code>ggplot()</code>.</p>
 <p> </p>
 <ol start="2" style="list-style-type: decimal">
 <li>Let’s now visualize the distribution of economic freedom scores in 2017 by plotting a histogram. Below is some sample code to help you do this. Note histograms only require an aesthetic mapping for the <span class="math inline">\(x\)</span>-axis (since the <span class="math inline">\(y\)</span>-axis is simply frequency).</li>
@@ -395,7 +395,7 @@ $(document).ready(function () {
 <li>the <strong>null hypothesis</strong>, <span class="math inline">\(H_0\)</span>, a proposed model for the true value of something</li>
 <li>the <strong>alternative hypothesis</strong>, <span class="math inline">\(H_1\)</span>, that the proposed model is not true</li>
 </ul>
-<p>We say the test is <strong>statistically significant</strong> if the new data gives strong evidence to support the alternative hypothesis—i.e. if the data is an unlikely realization of the null hypothesis.</p>
+<p>We say the test is <strong>statistically significant</strong> if the new data is an <em>unlikely</em> realization of the null hypothesis (i.e. if it gives strong evidence to support the alternative hypothesis).</p>
 <p>Let’s suppose that before you saw any of the economic freedom data, you hypothesized that the true mean economic freedom score in 2017 was 4.5. You now want to use the data you have to test this hypothesis.<br />
  </p>
 <ol style="list-style-type: decimal">
@@ -447,7 +447,7 @@ $(document).ready(function () {
 <li>Make a scatterplot of <code>economic_freedom</code> on <code>business_regulation</code>. Use <code>geom_point()</code>. What do you see? Are the variables associated? If so, what kind of relationship do they have?</li>
 </ol>
 <p> </p>
-<p><strong>Correlation</strong> is a measure of the <em>linear</em> association between two variables. A common measure of correlation is Pearson’s correlation coefficient, denoted <span class="math inline">\(r\)</span>, which takes a value between -1 and 1.</p>
+<p><strong>Correlation</strong> describes the <em>linear</em> association between two variables. A common measure of correlation is Pearson’s correlation coefficient, denoted <span class="math inline">\(r\)</span>, which takes a value between -1 and 1.</p>
 <p>In R you can use <code>cor()</code> to compute Pearson’s correlation coefficient between two variables.</p>
 <p> </p>
 <ol start="2" style="list-style-type: decimal">
@@ -522,11 +522,11 @@ $(document).ready(function () {
 <p>In a multiple regression model the coefficient on any one predictor describes its effect on the response variable <em>while holding the other predictors constant</em>.</p>
 <p> </p>
 <ol start="8" style="list-style-type: decimal">
-<li>Is the coefficient on your original predictor (the one in the simple model above) different in the multiple model? If so, can you think of a reason why?</li>
+<li>Is the coefficient on your original predictor (the one in the simple model from q4) different in the multiple model? If so, can you think of a reason why?</li>
 </ol>
 <p> </p>
 <ol start="9" style="list-style-type: decimal">
-<li>Add a categorical variable to your multiply regression model and show the results (don’t use country—try to choose one with relatively few categories, like continent). You’ll see that R treats each category as a separate predictor with its own coefficient.</li>
+<li>Add a categorical variable to your multiple regression model and show the results (don’t use country—try to choose one with relatively few categories, like continent). You’ll see that R treats each category as a separate predictor with its own coefficient.</li>
 </ol>
 <p> </p>
 </div>

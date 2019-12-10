@@ -157,5 +157,63 @@ summary(reg4)
 
 \ 
 
+# Logistic Regression 
+
+```{r}
+## logistic model with two predictors
+mod1 = glm(won_primary ~ percentage_endorsement_points + percentage_of_money,
+             family = binomial, data = endorsements)
+summary(mod1)
+```
+
+\ 
+
+```{r}
+## exponentiate coefficients
+exp(coef(mod1))
+```
+
+\ 
+
+```{r}
+## more complex logistic model that includes party and interaction terms
+mod2 = glm(won_primary ~ percentage_endorsement_points : party +
+               percentage_of_money : party +
+               percentage_endorsement_points * percentage_of_money,
+             family = binomial, data = endorsements)
+summary(mod2)
+```
+
+\ 
+
+```{r}
+## compare interaction model to simpler model
+anova(mod1, mod2, test = "LRT")
+```
+
+\ 
+
+```{r}
+ends = endorsements %>%
+  mutate(yhat = predict(mod1, type = "response"),
+         predicted_win = yhat > mean(won_primary))
+
+ggplot(ends, aes(x = percentage_of_money, y = percentage_endorsement_points,
+                 color = yhat,shape = won_primary)) +
+  geom_point(alpha = .8)
+```
+
+\ 
+
+```{r}
+ends %>% group_by(won_primary, predicted_win) %>%
+  summarize(count = n())
+
+table(ends$won_primary, ends$predicted_win)
+```
+
+\ 
+
+
 
 
