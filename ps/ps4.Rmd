@@ -73,95 +73,89 @@ sd(replicate(10000, varn(sample(1:6, n, replace = TRUE))))
 
 \ 
 
-# Confounding 
+# Confounding Variables 
 
+```{r}
+## read in funding data 
+funding = read.csv("https://stats103.org/data/funding-bias.csv")
+funding = read.csv("../data/funding-bias.csv")
 
-
-
-
+```
 
 \ 
 
-# Predicting Life Expectancy 
-
-We will use data from the most recent year:
-
 ```{r}
-gm2007 <- gapminder %>% filter(year == "2007")
+## two-sample t test for mean funding between regional groups
+t.test(funding ~ origin, data = funding)
 ```
 
-
-### Fit a linear model predicting life expectancy from GDP per capita
-
-```{r}
-reg1 <- lm(lifeExp ~ gdpPercap, data = gm2007)
-```
-
-### Summary of the model
+\ 
 
 ```{r}
+## simple regression
+reg1 = lm(funding ~ origin, data = funding)
 summary(reg1)
 ```
 
-
-### Diagnostic plots
-
-Use the `autoplot()` function to show diagnostics below.
-
-```{r}
-autoplot(reg1)
-```
-
 \ 
 
-Is there a pattern in the residuals? Do the residuals seem approximately normally distributed?
-
-```
-certainly looks like a pattern; not exactly normally distributed; suggests heteroscedastic errors
-```
-
-### Transforming to log(GDP per capita)
-
-- Fit a model with `log10(gdpPercap)` as the predictor variable instead of `gdpPercap`
-- Compute its summary, compare the value of R-squared to the one for the previous model
-
-
 ```{r}
-reg2 <- lm(lifeExp ~ log10(gdpPercap), data = gm2007)
-
+## multiple regression
+reg2 = lm(funding ~ origin + gender + age, data = funding)
 summary(reg2)
 ```
 
+
+
+
+
 \ 
 
-Does the model (1) with `gdpPercap` or model (2) with `log10(gdpPercap)` do better at explaining the variance in life expectancy?
-
-```
-yes
-```
-
-The coefficient for `log10(gdpPercap)` shows the increase in predicted life expectancy if gdpPercap increases by...
-
-```
-life exp increases by 16.6 if log10 gdp increases by 1
-```
-
-- Show diagnostic plots for this model.
+# Log Models
 
 ```{r}
-autoplot(reg2)
+## use data from 2007
+gm2007 = gapminder %>% filter(year == "2007")
 ```
 
 \ 
- 
-Do the residuals have any more or less of an obvious pattern in them? Do they seem any more or less normally distributed?
 
+```{r}
+## linear model predicting life expectancy from GDP per capita
+reg3 = lm(lifeExp ~ gdpPercap, data = gm2007)
+summary(reg3)
 ```
-yes, less of an obvious pattern; more normally distributed but still not fully 
+
+\ 
+
+```{r}
+## diagnostic plots
+autoplot(reg3)
 ```
 
+\ 
 
+```{r}
+## scatterplot of life expectancy on GDP per capita
+ggplot(data = gm2007, aes(x = gdpPercap, y = lifeExp)) + geom_point()
+```
 
+\ 
+
+```{r}
+## scatterplot of life expectancy on log GDP per capita
+ggplot(data = gm2007, aes(x = log(gdpPercap), y = lifeExp)) + geom_point()
+```
+
+\ 
+
+```{r}
+## linear model predicting life expectancy from log GDP per capita
+reg4 = lm(lifeExp ~ log(gdpPercap), data = gm2007)
+summary(reg4)
+```
+
+\ 
 
 
 
