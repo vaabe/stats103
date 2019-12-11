@@ -26,8 +26,11 @@ library(tufte)
 
 ---
 
+Problem Set 4---due **Wednesday 18th December**. Responses will be graded both for correctness and clarity of reasoning.   
 
-Data: <a href="./data/funding-bias.csv" download>funding-bias.csv</a>
+<a href="./ps/ps4.pdf" download>ps4.pdf</a>
+
+Code:  <a href="./ps/ps4.Rmd" download>ps4.Rmd</a>. Data: <a href="./data/funding-bias.csv" download>funding-bias.csv</a>
 
 \ 
 

@@ -78,8 +78,6 @@ sd(replicate(10000, varn(sample(1:6, n, replace = TRUE))))
 ```{r}
 ## read in funding data 
 funding = read.csv("https://stats103.org/data/funding-bias.csv")
-funding = read.csv("../data/funding-bias.csv")
-
 ```
 
 \ 
