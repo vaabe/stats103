@@ -132,7 +132,7 @@ Two common methods are *forward stepwise regression* and *backward stepwise regr
 - **forward stepwise regression** --- start with no predictors, then add the variable that leads to the best score, and repeat the process---keep adding variables one by one until the score no longer improves
 - **backward stepwise regression** --- start with the full model (all predictors), then remove the variable that leads to the best score, and repeat  
 
-The following code uses applies backward stepwise regression to the crime data using AIC: 
+The following code applies backward stepwise regression to the crime data using AIC: 
 
 ```{r, warning=FALSE}
 library(MASS)
