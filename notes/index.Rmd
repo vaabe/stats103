@@ -39,7 +39,6 @@ library(tufte)
 --- 
 
 <a href="./about.html">about</a>  
-<a href="./problemsets.html">problem sets</a>  
 <a href="./datasets.html">data</a>  
 <a href="./addenda.html">addenda</a>
 
