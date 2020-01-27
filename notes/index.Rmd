@@ -16,9 +16,9 @@ link-citations: yes
 knitr::opts_chunk$set(collapse = FALSE)
 library(tidyverse)
 library(knitr)
-library(gridExtra)
-library(extraDistr)
-library(moments)
+#library(gridExtra)
+#library(extraDistr)
+#library(moments)
 library(latex2exp)
 library(tufte)
 ```
