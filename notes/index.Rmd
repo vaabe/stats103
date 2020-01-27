@@ -16,9 +16,9 @@ link-citations: yes
 knitr::opts_chunk$set(collapse = FALSE)
 library(tidyverse)
 library(knitr)
-library(gridExtra)
-library(extraDistr)
-library(moments)
+#library(gridExtra)
+#library(extraDistr)
+#library(moments)
 library(latex2exp)
 library(tufte)
 ```
@@ -39,7 +39,6 @@ library(tufte)
 --- 
 
 <a href="./about.html">about</a>  
-<a href="./problemsets.html">problem sets</a>  
 <a href="./datasets.html">data</a>  
 <a href="./addenda.html">addenda</a>
 
