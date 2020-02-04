@@ -24,8 +24,8 @@ library(extraDistr)
 library(gridExtra)
 library(latex2exp)
 library(moments)
-library(bookdown)
-library(rsconnect)
+#library(bookdown)
+#library(rsconnect)
 library(tufte)
 ```
 
@@ -51,7 +51,7 @@ nycheat <- read.csv('./data/nyc-heatwave.csv')
 
 ---
 
-# Learning From Data 
+# 5--1 Learning From Data 
 
 When two (or more) variables are related, you can build a statistical model that identifies the mathematical relationship between them. Data modeling has two important purposes:  
 
@@ -77,7 +77,7 @@ There are many approaches to building models to learn from data. Linear regressi
 
 \ 
 
-# Simple Linear Regression 
+# 5--2 Simple Linear Regression 
 
 Linear regression is a technique for modeling *linear* relationships between variables^[Recall the observed linear association between temperature and vegetation from the NYC heatwave data:].  
 
@@ -268,7 +268,7 @@ If indeed the relationship is nonlinear outside the range of observed data, the 
 
 \ 
 
-# Multiple Regression 
+# 5--3 Multiple Regression 
 
 The linear model demonstrated above is known as a **simple linear model** since only one predictor variable is used to model the behavior of the response variable. In reality a response variable can be influenced by a number of factors--not just one--and thus it is often necessary to build a model with many predictors.  
 
@@ -327,7 +327,7 @@ $$
 
 \ 
 
-# Categorical Predictors in Linear Models
+# 5--4 Categorical Predictors in Linear Models
 
 The examples thus far have demonstrated models with continuous predictor variables. You can also include categorical variables as predictors in linear models. 
 
