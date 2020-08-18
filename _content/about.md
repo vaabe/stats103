@@ -9,7 +9,7 @@ These notes are supplements to STAT-UB 103, an introductory course in statistica
 
 Feedback is most welcome---please get in touch or submit a pull request on <a href="https://github.com/vaabe/stats103">Github</a>.   
 
-More information on the course can be found in the <a href="./addenda/syllabus.pdf" download>syllabus</a>. 
+More information on the course can be found in the <a href="../addenda/syllabus.pdf" download>syllabus</a>. 
 
 Credits to Joshua Loftus. 
 
