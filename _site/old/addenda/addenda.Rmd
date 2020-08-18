@@ -1,0 +1,26 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(knitr)
+library(gridExtra)
+library(extraDistr)
+library(moments)
+library(latex2exp)
+library(rsconnect)
+library(tufte)
+```
+
+---
+
+<a href="./addenda/dplyr-cheatsheet.pdf" download>dplyr cheatsheet</a>  
+
+<a href="./addenda/ggplot2-cheatsheet.pdf" download>ggplot2 cheatsheet</a>   
+
+<a href="./addenda/rmd-cheatsheet.pdf" download>R Markdown cheatsheet</a>  
+
+
+
+
+
+
+

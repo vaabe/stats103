@@ -1,0 +1,160 @@
+\documentclass[10pt]{extarticle}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage[UKenglish]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{graphicx}
+\graphicspath{{./pics/}}
+\usepackage{physics}
+
+
+%% vectors and matrices
+\renewcommand{\v}[1]{{\bm #1}}
+\renewcommand{\dv}[1]{\dot{\bm{#1}}}
+\newcommand{\ddv}[1]{\ddot{\bm{#1}}}
+\newcommand{\hv}[1]{\hat{\bm{#1}}}
+\newcommand{\m}[1]{[ #1 ]}
+\renewcommand{\t}[1]{\widetilde{\bm{#1}}}
+\newcommand{\bfit}[1]{\textbf{\textit{#1}}}
+
+%% differential and integral operators
+\renewcommand{\d}{\text{d}}
+\renewcommand{\dd}[2]{\frac{\d #1}{\d #2}}
+\newcommand{\ddd}[2]{\frac{\d^2 #1}{\d #2^2}}
+\newcommand{\ddt}[1]{\frac{\d #1}{\d t}}
+\newcommand{\dddt}[1]{\frac{\d^2 #1}{\d t^2}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\renewcommand{\grad}{\boldsymbol \nabla} 
+\renewcommand{\div}{\boldsymbol \nabla \cdot}
+\renewcommand{\curl}{\boldsymbol \nabla \times}
+\newcommand{\lap}{\nabla^2}
+
+%% constants
+\newcommand{\eo}{\epsilon_0}
+\newcommand{\muo}{\mu_0}
+
+%% statistics
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\Bias}{\text{Bias}}
+
+%% others
+\newcommand{\La}{\mathcal L}
+
+
+
+\begin{document}
+
+\setlength{\parindent}{0pt}
+
+
+
+
+
+{\bf \huge ps3 --- variability}
+
+\hrulefill \\
+
+{\it questions appended with ``i" are optional} \\
+
+\hfill
+
+
+
+
+
+{\bf \Large I --- convergence of random variables}  \\
+
+By now you should be familiar with the concept of {\bf variance} as a measure of spread of a distribution. 
+
+$$\Var[X] = \frac 1n \sum_i^n (X_i - \bar X)^2 = \E \big[ (X - \E[X])^2 \big]$$ \ 
+
+i.e. the variance is the average of the squared deviations from the mean, or the {\it expected value} of the squared deviations.  
+
+\hfill 
+
+\begin{itemize}
+	
+	\item[1.] Show that variance can also be written $\Var[X] = \E[X^2] - \E[X]^2$. {\it Hint:} start with the definition of variance in terms of expectation, i.e. $\Var[X] = \E \big[ (X - \E[X])^2 \big]$, and expand. Use the fact that $\E[X] = \mu$. \\  
+
+	\item[2.] Suppose $X_1, ..., X_n$ are i.i.d with the same distribution as $X$. Let $S_n = \sum_i^n X_i$, so $\bar X_n = \frac 1n S_n$. What do we need to know or assume about $\E[X_1]$ to conclude that $\bar X_n \longrightarrow \mu$ as $n \longrightarrow \infty$? \\ 
+	
+	\item[3.] Suppose $X$ can only be -1 or 1. What are the lowest and highest possible values of $S_n$? \\ 
+
+	\item[4.] Suppose $n=99$, $\bar X_{99} = 0.01$. We add one new observation to the sample, $X_{100}$, and we know $-1 \leq X_{100} \leq 1$. What are the lowest and highest possible values fo $\bar X_{100}$? \\ 
+
+	\item[5.] At a casino there is a game where the player bets some amount of money $X$ then spins a wheel. If the wheel says they win, they get $X$ dollars. Otherwise they lose and pay $X$ dollars to the casino. I have the perfect gambling strategy to gaurantee that I win this game. On the first round I bet $X_1$. If I win, the payoff is $X_1$ dollars. If I lose, i go ``double or nothing", and bet $X_2 = 2X_1$ on the second game. I repeat this strategy, doubling by bet every time until I win. If I win on the first round, my payoff will be $X_1$. If I win on the $n$th round, my payoff will be $2^n X_1$. Aside from the practical fact that I may run out of money before I win, this sequence of payoffs/losses doesn't saatisfy the assumptions of the law of large numbers---which assumption(s) does it violate? \\ 
+
+	\item[6.] Your roommate suggests rolling a six-sided die to decide who does the cleaning each day. If the die comes up 3 or less, you win, and your roommate does the chores. If it's higher than 3, you do the chores. Let $D$ represent the die, so $D \in \{1, ..., 6\} and let $X_1$ if $D > 3$ and 0 otherwise. Let $D_i$,  $X_i$ represent the result on day $i$, so $X_1, ..., X_n$ are i.i.d with the same distribution as $X$ (and similarly for the $D$'s. What is $\E[X]$? The proportion of times that you do the chores in $n$ days is $\bar X_n$. What will that proportion be in the long run, as $n \rightarrow \infty$? Is this system fair? \\ 
+
+	\item[7.] Next, your roommate suggests a small change in the rules: keep track of the average of the dice $\bar D_n = \frac 1n \sum_i^n D_i$, and then you only need to do the chores whenever this average is higher than 3. Based on this system, in the long run what proportion  of the time will you be doing the chores? \\ 
+
+	\item[9.] A basketball player historically has tended to make one basket for every two shots she takes. During a game in which she takes very many shots there is a period during which she seems to hit every shot; at some point, she makes five shots in a row. The team tries to funnel her the ball to milk their chance at success. Is this good thinking? \\ 
+
+	\item[10.] Eight mutually antagonistic rooks are placed randomly on a chessboard with all arrangements equally likely. Determine the probability that no rook can capture any other rook (i.e. that each rook occupies a distinct row and column). \\ 
+
+	\item[11.] Let $X_1, ..., X_n$ be i.i.d. with mean $\mu$ and variance $\sigma^2$, so $\Var[\bar X] = \frac{\sigma^2}{n}$. Applying Chebyshev's inequality to the mean $\bar X$ tells us that:
+
+$$\P(|\bar X - \mu | \geq \sigma) \leq \frac{1}{\sqrt n}$$
+
+	\item[ ] If we instead apply the CLT we would find:
+ 
+$$\P(| \bar X - \mu | \geq \sigma) \approx 2\Phi (-\sqrt n)$$
+
+	\item[ ] where $\Phi$ is the cdf of the standard normal distribution. We can calculate this in R with the code $\texttt{2*pborm(-sqrt(n))}$. Try both methods for $n=5$ and $n=10$ and compare the results. Which methods gives a stronger conclusion about $\bar X$, Chebyshev or the CLT? \\
+
+	\item[17.] Suppose that the height of men has mean 68 inches and standard deviation 2.6 inches. We draw 100 men at random. Find approximately the probability that the average height of men in our sample will be at least 68 inches. \\  
+
+	\item[12.] Recall that if $Z \sim \mathcal N(\mu, \sigma^2$ then $\P(| Z - \mu| < 3\sigma) = 0.99$. How large does $n$ have to be so that $\bar W$ has 0.5\% probability of being greater than $\mu + \frac{1}{10}$? Simplify as much as you can. \\ 
+
+	\item[19.] A particle starts at the origin of the real line and moves along the line in jumps of one unit. For each jump the probability is p that the particle will jump one unit to the left and the probability is 1-p that the particle will jump one unit to the right. Let Xn be the position of the particle after n units. Find $\E[X_n]$ and $\Var[X_n]$. This is known as a random walk. \\
+
+	\hfill 
+
+	\item[13.] Give an example that refers to the concepts of effect size and practical significance to explain why a confidence interval is (often) preferable to a hypothesis test. \\ 
+
+	\item[14.] For the output of caramel/no cara, choc/no choc, what is the parameter being tested? What are the null and alternative hupotheses? Do you reject the null at the 5\% significance level? \\ 
+
+	\item[15.] If $X$ and $Y$ are indepedendent then $\E[XY} = \E[X]\E[Y]$. Use this fact to show that if $X$ and $Y$ are independent than $\Var[X+Y] = \Var[X] + \Var[Y]$. \\ 
+	
+	\item[16.] Suppose $U \sim Bin(n,p)$ and $V \sim \Bin(m,p)$ are independent binomial RVs. What are $\E[U+V]$ and $\Var[U+V]$? \\ 
+
+	\item[17.] Suppose that the height of men has mean 68 inches and standard deviation 2.6 inches. We draw 100 men at random. Find approximately the probability that the average height of men in our sample will be at least 68 inches. \\ 
+
+	\item[18.] Suppose we have a computer program with $n=100$ pages of code. Let $X_i$ be the number of errors on the $i$th page of code. Suppose that the $X_i$'s are Poisson RVs with mean 1 and that they are independent. Let $Y = \sum_i^n X_i$ be the total number of errors. Use the CLT to approximate $\P(Y < 90)$. \\ 
+
+	\item[19.] A particle starts at the origin of the real line and moves along the line in jumps of one unit. For each jump the probability is p that the particle will jump one unit to the left and the probability is 1-p that the particle will jump one unit to the right. Let Xn be the position of the particle after n units. Find $\E[X_n]$ and $\Var[X_n]$. This is known as a random walk. \\ 
+
+	\item[20.] SUppose we generate a RV $X$ the following way. First we flip a fair coin. If the coin is heads, take $X$ to have be $U \sim (0,1)$, and if the coin is tails, take $X \sim U(3,4)$. Find the mean and s.d. of $X$. \\ 
+
+	\item[21.] Let $Y_1, ...$ be i.i.d. RVs such that $\P(Y_i = 1) = \P(Y_i = -1) = \frac 12$. Let $X_n = \sum_i^n Y_i$. Think of $Y_i = 1$ as being the stock price increased by one dollar, $Y_i = -1$ as the price decresed by one dollar, and $X_n$ as the value of the stock on day $n$. Find $\E[X_n]$ and $\Var[X_n]$. Simulate $X_n$ and plot $X_n$ versus $n$ for $n = 1, 2, ..., 10000$. Repeat the whole simulation several times. Notice two things: first, it's easy to see patterns in the sequence even though it's random. Second, you'll find that the four runs look different even though they were generated the same way. How do the calculations in a explain the second observation? \\ 
+
+	\item[22.] This question is to help you understand the idea of a sampling dis- tribution. Let Xl, . .. ,Xn be lID with mean f.L and variance (}2. Let Xn = n- lL~=l Xi. Then Xn is a statistic, that is, a function of the data. Since X n is a random variable, it has a distribution. This distri- bution is called the sampling distribution of the statistic. Recall from Theorem 3.17 that lE(Xn) = It and V(Xn) = (}2/n. Don't confuse the distribution of the data fx and the distribution of the statistic fx,,' To make this clear, let Xl, ... ,Xn '" Uniform(O, 1).lLet fx be the density of the Uniform(O, 1). Plot fx. Now let Xn = n- L~=l Xi' Find lE(Xn) and V(Xn). Plot them as a function of n. Interpret. Now simulate the distribution of Xn for n = 1,5,25,100. Check that the simulated values oflE(Xn) and V(Xn) agree with your theoretical calculations. What do you notice about the sampling distribution of X n as n increases? \\
+
+	\item[23.] There is a theory that people can postpone their death until after an important event. To test the theory, Phillips and King (1988) collected data on deaths around the Jewish holiday Passover. Of 1919 deaths, 922 died the week before the holiday and 997 died the week after. Think of this as a binomial and test the null hypothesis that e= 1/2. Report and interpret the p-value. Also construct a confidence interval for e. \\ 
+
+	\item[24.] A randomized, double-blind experiment was conducted to assess the effectiveness of several drugs for reducing postoperative nausea. The data are as follows. \\ 
+
+\end{itemize} 
+
+\hfill 
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

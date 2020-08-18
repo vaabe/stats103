@@ -1,0 +1,274 @@
+---
+title: 'chapter 8 The Algebra of Random Variables'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    css: 'tufte.css'
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(tufte)
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+\ 
+
+# 8--1 Random Variables
+
+To recap: a random process is anything that will produce an outcome. When collecting data for an experiment, you often need some way to measure or quantify the outcome(s) you observe. This is where random variables come useful.  
+
+A **random variable** denotes the *value* associated with the outcome(s) of a random process. Typically random variables use numerical values as these are the easiest to directly quantify.   
+
+Usually you define a random variable as the quantity you are measuring/observing in an experiment.  
+
+E.g. if you are measuring the daily cyclist count on the Williamsburg bridge, you can define $X$ as the random variable for the total number of cyclists using the Williamsburg bridge per day. If on a certain day there are 335 cyclists who use the bridge, then for this particular trial $X = 335$. This is an example of a **discrete random variable** since its possible values are integers only.  
+
+E.g. in a game of chance where you get `$`100 for tossing a coin and landing heads, and nothing for landing tails, you can define $X$ as the random variable for the financial outcome of the game. This is another example of a discrete random variable, since $X$ can only take on two values, $X = 100$ or $X = 0$.  
+
+E.g. if you are measuring monthly rainfall, you can define $X$ as the random variable for the total rainfall per month in millimetres. This is a **continuous random variable** since it can take on any value.  
+
+
+
+\ 
+
+# 8--2 Probability Distributions
+
+Once you've defined a random variable for the outcomes of some process, the next thing you'll want to quantify is the *probability* associated with each possible value of the RV (i.e. the probability of each outcome in the experiment).  
+
+A **probability distribution** describes the probability associated with the occurrence of different outcomes (i.e. different values of the RV) in an experiment.  
+
+E.g. if $X$ is the RV for the outcome of rolling a six-sided die, then the probability distribution of $X$ is:
+
+```{r, echo=FALSE}
+table1 = data.frame(cat = c('P'), 
+                    `X=1` = '1/6', `X=2` = '1/6', `X=3` = '1/6', `X=4` = '1/6', `X=5` = '1/6', `X=6` = '1/6')
+kable(table1, col.names = c(' ','X=1','X=2','X=3','X=4','X=5','X=6'))
+```
+
+In this case each outcome has an equal probability (assuming a fair die).  
+
+A probability distribution is defined in terms of an underlying sample space. The sample space in this case is $X = \{ 1,2,3,4,5,6 \}$--these are the possible values the RV can take.  
+
+## Frequency distribution
+
+A frequency distribution describes the observed frequency of outcomes in an experiment.  
+
+E.g. let $X$ be the random variable for the outcome of rolling a six-sided die. If you run the experiment 1000 times, each will yield some outcome, and you can construct a frequency table describing how many times each outcome occurred. It's easy to do this in R:
+
+```{r}
+diceroll = data.frame(X = sample(x = c(1:6), size = 1000, replace = TRUE))
+```
+
+Below are plots of the frequency and relative frequency distributions of $X$ using the sample above: 
+
+```{r, fig.height = 3, fig.width=7}
+plot1 = ggplot(data = diceroll, aes(x = as.factor(X))) + geom_bar(width = 0.3) +
+  ggtitle('frequency distribution of X') + xlab('X') + ylab('frequency') + theme_light()
+
+plot2 = ggplot(data = diceroll, aes(x = as.factor(X))) + geom_bar(width = 0.3, aes(y = (..count..)/sum(..count..))) +
+  ggtitle('relative frequency distribution of X') + xlab('X') + ylab('relative frequency') + theme_light()
+
+grid.arrange(plot1, plot2, ncol = 2)
+```
+
+A frequentist would use the observed relative frequency distribution to determine the probability associated with each outcome. If you ran the above experiment infinitely many times, you would see the relative frequency of each outcome converge to $\frac 16$. Using the frequentist approach you could thus define the probability of each outcome as $\frac 16$.  
+
+## Probability distribution function
+
+This describes the specific functional form of a probability distribution. There are two types:
+
+For discrete RVs, a **probability mass function (pmf):** this gives the probabilities of a discrete RV being exactly equal to a particular value. All values of the function add to 1. E.g. the pmf for rolling a six-sided die: 
+
+```{r, echo=FALSE, fig.width = 5, fig.height=3, fig.align='center'}
+pmf = data.frame(X = rep(c(1,2,3,4,5,6), times = 10))
+
+ggplot(data = pmf, aes(x = as.factor(X))) + 
+  geom_bar(width = 0.1, aes(y = (..count..)/sum(..count..))) +
+  xlab('X') +
+  ylab('probability') +
+  theme_classic()
+```
+
+For continuous RVs, a **probability density function (pdf):** gives the relative likelihood that the value of the RV equals that value. The area under a pdf is 1. E.g. if instead of a six-sided die, you have a random number generator giving real numbers between 1 and 6, its pdf would be:  
+
+```{r, echo=FALSE, fig.width = 5, fig.height=3, fig.align='center'}
+ggplot(data = pmf, aes(x = X)) +
+  geom_histogram(bins = 6, aes(y = ..density..)) +
+  xlab('X') +
+  ylab('probability') +
+  scale_x_continuous(breaks = c(0:6)) +
+  theme_light()
+```
+
+Note for continuous RVs, the *absolute* probability that it equals a particular value is zero (since there is an infinite range of possibility). Thus pdfs are used to predict the probability of a RV falling within a *range* of values.  
+
+
+
+\ 
+
+# 8--3 Expectated Value of a Random Variable
+
+The expected value of a random variable is the weighted average of all possible outcomes/values, using probabilities as weights. This is also the known as the mean of the random variable's distribution:
+
+$$\E[X] = \sum_i P_i X_i = \mu$$
+
+where $\E[\cdot]$ is known as the **expectation operator** and $\mu$ is the mean of the random variable's distribution.  
+
+E.g. if $X$ is the random variable for the outcome of rolling a six-sided die, the expected value is:
+
+$$\E[X] = \sum_i P_i X_i = \frac 16 \cdot 1 + \frac 16 \cdot 2 + \frac 16 \cdot 3 + \frac 16 \cdot 4 + \frac 16 \cdot 5 + \frac 16 \cdot 6 = 3.5$$
+
+Expectation satisfies the property of linearity:
+
+$$\E[aX] = a \E[X]$$
+
+E.g. if you multiplied values on the dice by two, the expected value of the dice throw would also multiply by two:
+
+$$\E[2X] = 2 \E[X] = 2 \cdot 3.5 = 7$$
+
+
+
+\ 
+
+# 8--4 Moments of a Random Variable
+
+You can further generalize the concept of expectation to include higher powers.  
+
+A **moment** is an expectation of a *power* of a random variable (more generally a function). For a random variable $X$, its $n$-th moment is:
+
+$$n \text{-th moment} = \E[X^n] = \sum_i P_i X_i^n$$
+
+E.g. the **first moment** of the RV for a dice throw:  
+
+$$\E[X] = \sum_i P_i X_i = 3.5$$
+
+The **second moment**:
+
+$$\E[X^2] = \sum_i P_i X_i^2 = \frac 16 \cdot 1^2 + \frac 16 \cdot 2^2 + \frac 16 \cdot 3^2 + \frac 16 \cdot 4^2 + \frac 16 \cdot 5^2 + \frac 16 \cdot 6^2 = \frac{91}{6}$$
+
+Higher order moments follow the same form.  
+
+\ 
+
+A **central moment** is an expectation of a power of a random variable about its mean. For a random variable $X$, its $n$-th central moment is:
+
+$$n \text{-th central moment} = \E[(X-\mu)^n]$$
+
+E.g. the **first central moment** of $X$ is:
+
+$$\E[X-\mu]$$
+
+To write a central moment in terms of moments, expand the brackets and recognize that $\mu = E[X]$. This aids in calculation. E.g. the first central moment can be written: 
+
+$$\E[X-\mu] = \E[X] - \E[X] = 0$$
+
+The **second central moment**:
+
+$$\E[(X-\mu)^2]$$
+
+This is an important measure of the spread of a distribution, and is also known as the **variance**.  
+
+Expanding and rearranging:
+
+$$
+\begin{aligned}
+  E[(X-\mu)^2] &= E[(X - E[X])^2] \\ 
+  &= E[X^2 - 2XE[X] + E[X]^2] \\ 
+  &= E[X^2] - 2E[X]E[X] + E[X]^2 \\ 
+  &= E[X^2] - 2E[X]^2 + E[X]^2 \\ 
+  &= E[X^2] - E[X]^2
+\end{aligned}
+$$
+
+In other words, the second central moment is simply the second moment minus the first moment squared.  
+
+The moments of a random variable provide useful information about the shape of the RV's distribution, as you shall see.  
+
+
+
+
+\ 
+
+# 8--5 Describing the Distribution of a RV
+
+The reason to study expectation and moments is they provide measurees to quantify the form and shape of a distribution. Below are some common ones.  
+
+
+## Mean, $\mu$
+
+The weighted average of all possible values of the RV, using probabilities as weights.  
+
+Calculated by taking the first moment (i.e. expectation) of the RV:
+
+$$\mu = \E[X] = \sum_i P_i X_i$$
+
+## Variance, $\sigma^2$
+
+A measure of the spread of the distribution. Denoted $\sigma^2$ or $Var[\cdot]$.  
+
+Calculated by taking the second central moment of the RV:
+
+$$\sigma^2 = \E[(X-\mu)^2] = \E[X^2] - \E[X]^2$$
+
+Note unlike expectation, variance is not linear:  
+
+$$\Var[aX] = a^2 \Var[X]$$
+
+Shifting the distribution left or right leaves the variance unchanged (since variance is a measure of spread):
+
+$$\Var[X+a] = \Var[X]$$
+
+## Standard Deviation, $\sigma$
+
+Square root of the variance.  
+
+$$\sigma = \sqrt{\E[(X-\mu)^2]}$$
+
+## Skewness, $\gamma_1$
+
+A measure of the extent to which a distribution is skewed to one side.  
+
+Defined as the third standardized moment: 
+
+$$\gamma_1 = \E \bigg[ \bigg( \frac{X - \mu}{\sigma} \bigg)^3 \bigg] = \frac{\E[(X-\mu)^3]}{\sigma^3}$$
+
+or the third central moment over the standard deviation cubed.  
+
+## Kurtosis, $\gamma_2$
+
+A measure of the fatness of a distribution's tails. 
+
+Defined as the fourth standardised moment:
+
+$$\gamma_2 = E \bigg[ \bigg( \frac{X - \mu}{\sigma} \bigg)^4 \bigg] = \frac{E[(X-\mu)^4]}{\sigma^4}$$
+
+or the fourth central moment over the 4th power of the standard deviation.  
+
+\ 

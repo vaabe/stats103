@@ -1,0 +1,47 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(knitr)
+library(gridExtra)
+library(extraDistr)
+library(moments)
+library(latex2exp)
+library(rsconnect)
+library(tufte)
+```
+
+---
+
+Problem Set 4---due **Wednesday 18th December**. Responses will be graded both for correctness and clarity of reasoning.   
+
+<a href="./ps/ps4.pdf" download>ps4.pdf</a>
+
+Code:  <a href="./ps/ps4.Rmd" download>ps4.Rmd</a>. Data: <a href="./data/funding-bias.csv" download>funding-bias.csv</a>
+
+\ 
+
+
+Problem Set 3---due **Friday 22nd November**. Responses will be graded both for correctness and clarity of reasoning.   
+
+<a href="./ps/ps3.pdf" download>ps3.pdf</a>
+
+Some code you may find useful: <a href="./ps/ps3.Rmd" download>ps3.Rmd</a>. Data: <a href="./data/emissions.csv" download>emissions.csv</a>
+
+\ 
+
+Problem Set 2---due **Thursday 24th October**. Responses will be graded both for correctness and clarity of reasoning.   
+
+<a href="./ps/ps2.pdf" download>ps2.pdf</a>
+
+\ 
+
+Problem Set 1---due **Thursday 3rd October**. The pdf file has detailed instructions, and the Rmd file has a template for you to complete the exercises in R Markdown.  
+
+<a href="./ps/ps1.pdf" download>ps1.pdf</a>  
+<a href="./ps/ps1.Rmd" download>ps1.Rmd</a>  
+
+Relevant data -- Economic Freedom of the World dataset, sourced from the <a href="https://www.fraserinstitute.org/economic-freedom/">Fraser Institute</a>. Download here:  
+
+<a href="./data/efw.csv" download>efw.csv</a>  
+
+Most of the economic variables are recorded as scores out of 10. More information on how data was collected and how countries were scored can be found <a href="https://www.fraserinstitute.org/economic-freedom/approach">here</a>. 

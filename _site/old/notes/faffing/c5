@@ -1,0 +1,56 @@
+## Prediction from linear models
+
+Once you have computed the regression coefficients, you have a linear model. You can now use this model to predict the value of the response variable for a given value of the predictor variable.  
+
+The predicted value of a regression model is typically denoted $\hat y$, where:
+
+$$\hat y = \beta_0 + \beta_1 x$$
+
+In the above example, the predicted equation is $\hat y = 92.40 - 19.46 \; x$. This model predicts that if the vegetation index of an area is 0.2, its temperature will be $92.40 - 19.46 \cdot 0.2 = ...$.  
+
+In R you can use `predict()` to generate a vector of predicted values (i.e. the model's predicted value for each value of $x$ in the dataset):
+
+```{r}
+nycheat <- nycheat %>%
+  mutate(temperature_predicted = predict(reg1))
+```
+
+
+
+## Extrapolation and its risks
+
+Extrapolation refers to using models for prediction *outside* the range of data used to build the model. Extrapolation is risky since the linearity of the relationship is no longer guaranteed--you are essentially venturing into the unknown. 
+
+In the above example, the relationship is only linear in the range provided. If you extrapolated to a point where vegetation is ..., it would imply that temperature is ..., which is very unlikely, given that temperatures are unlikely to fluctuate this much in one city. 
+
+The true relationship might look something like this:
+
+where there comes a point where the linearity breaks down--at a certain point, adding more/less vegetation doesn't affect temperature as much.  
+
+In general, be wary of extrapolating from linear models. 
+
+
+# Multiple Regression 
+
+In a multiple regresion model, the coefficient on a predictor describes how the response changes for a unit change in that predictor, while holding all the other predictors constant. 
+
+Thus the coefficient on ndvi, -12.92, suggests that when the vegetation index increases by 1, the temperature decreases by 12.92 F, holding albedo, building height, and population density constant. Note how the coeffient on vegetation in the multiple regression model is smaller than that in the simple model--this is because the multiple regression model effectively controls for the other variables, attempting to isolate the singular effect of vegetation on temperature.   
+
+
+
+
+# Categorical Predictors 
+
+Predictor variables do not have to be numeric to be included in a regression model. 
+
+E.g. the following model regresses temperature on ndvi (numeric) and area (categorical): 
+
+```{r}
+reg3 <- lm(formula = temperature ~ ndvi + area, data = nycheat)
+summary(reg3)
+```
+
+Notice how each category appears as a separate predictor, with its own coefficient.  
+
+Note also how one of the categories is missing -- Crown Heights Brooklyn. This is because R uses one of the categories as a baseline which the other coefficients are relative to. The baseline category is omitted from the output.  
+

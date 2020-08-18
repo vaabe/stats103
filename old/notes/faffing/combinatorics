@@ -1,0 +1,31 @@
+# Simple combinatorics  
+
+`this section needs some work`
+
+You toss a coin twice. The outcomes are $\Omega = \{ HH, HT, TH, TT \}$.  
+
+What is the probability of getting 2 heads? You know that 1/4 outcomes correspond to this event, so the probability is simply $\frac 14$. 
+
+Some terminology: the number of outcomes corresponding to an event is called the **multiplicity** of the event. 
+
+To calculate the probability of an event, you divide the multiplicity of the event (a restricted sample space) by the multiplicity of the whole sample space: 
+
+$$P(\text{2 heads}) = \frac{\Omega(\text{2 heads})}{\Omega(\text{all})} = \frac 14 $$
+Finding the multiplicity of an event is easy when the sample space is small (in a 2-coin set, there is only 1 way of arranging 2 heads).  
+
+But say you toss the coin 100 times. Now what is the probability of getting 2 heads? You need to know how many ways you can get 2 heads in a 100-coin set. There are 100 choices for the first coin, and 99 remaining choices for the second coin. And since you can choose any pair in either order, the number of distinct pairs is:
+
+$$\Omega(\text{2 heads, 100-coin set}) = \frac{100 \cdot 99}{2} = 4950$$
+The total number of ways to arrange 100 coins is $2^{100}$ (each coin has two states, and there are 100 coins). Thus the probability of getting 2 heads in a 100-coin set:
+
+$$P(\text{2 heads, 100-coin set}) = \frac{\Omega(\text{2 heads, 100-coin set})}{\Omega(\text{100 coins})} = \frac{4950}{2^{100}} = ...$$
+What about the probability of getting 3 heads? There are 100 choices for the first coin, 99 for the second, and 98 for the third. And for each triplet, there are 3 choices on which one to flip first, and for each of these 2 choices on which to flip second. Thus the number of distinct triplets is:  
+
+$$\Omega(\text{3 heads, 100-coin set}) = \frac{100 \cdot 99 \cdot 98}{3 \cdot 2} = 161700$$
+Hopefully you can see the pattern here. The number of ways to get $k$ coins in a 100 coin set is:
+
+$$\Omega(k \text{ coins, 100-coin set}) = \frac{100 \cdot 99 ... (100 - k + 1)}{k!} = \frac{100!}{k! \; (100-k)!}$$
+If you have $n$ coins, the number of ways you can get $k$ heads is:
+
+$$\Omega(n,k) = \frac{n!}{k! \; (n-k)!} = \begin{pmatrix} n \\ k\end{pmatrix}$$
+This is known as the **binomial coefficient**. It gives the number ways of choosing $k$ elements from an $n$-element set ($n$ choose $k$).  

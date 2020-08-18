@@ -1,0 +1,381 @@
+---
+title: 'chapter 5 Basic Data Modeling'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background','italics']
+    css: '../mytufte.css'
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+#library(bookdown)
+#library(rsconnect)
+library(tufte)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+\usepackage{amsmath}
+
+---
+
+# 5--1 Learning From Data 
+
+When two (or more) variables are related, you can build a statistical model that identifies the mathematical relationship between them. Data modeling has two important purposes:  
+
+- **prediction**--predicting an outcome variable based on a set of predictor variables
+- **causal inference**--determining the causal relationships between variables  
+
+Using models to learn from data is an important part of statistical inference. Some examples of learning problems:
+
+- predicting the price of a stock 6 months from now, using economic data and measures of company performance
+    + https://towardsdatascience.com/machine-learning-techniques-applied-to-stock-price-prediction-6c1994da8001
+- predicting which candidate will win an election, based on poll data 
+    + https://fivethirtyeight.com/features/the-real-story-of-2016/
+- identifying the variables causing global temperature and sea level changes
+    + https://climate.nasa.gov/evidence/
+- identifying and classifying hate speech in a series of social media posts
+    + https://towardsdatascience.com/classifying-hate-speech-an-overview-d307356b9eba
+- identifying patterns in images to train machine-learning algorithms
+    + https://qz.com/495614/computers-can-now-paint-like-van-gogh-and-picasso/
+
+There are many approaches to building models to learn from data. Linear regression is one of the simplest. Although it predates the computer era, and more modern techniques have since been devised--such as neural networks, tree-based models, and ML--linear regression is still an important part of statistics and data science.  
+
+
+
+\ 
+
+# 5--2 Simple Linear Regression 
+
+Linear regression is a technique for modeling *linear* relationships between variables^[Recall the observed linear association between temperature and vegetation from the NYC heatwave data:].  
+
+```{r, echo=FALSE, fig.margin = TRUE}
+ggplot(aes(x = vegetation, y = temperature), data = nycheat) +
+  geom_point(size=0.5) +
+  xlab('vegetation (NDVI)') + ylab('temperature (farenheit)') +
+  theme_bw()
+```
+
+In its simplest form, a linear model has one **response variable** and one **predictor variable**. The response should have some form of linear dependency on the predictor^[i.e. changes in the predictor variable should be associated/correlated with linear changes in the response variable. You can check the linear correlation of two variables by making a scatterplot or computing Pearson's correlation coefficient. In the above example $r=-0.57$.]. 
+
+In linear regression, the relationship between the predictor and response is modeled using a linear function (a straight line). This is known as a **regression line**--you can think of it as essentially a line of best fit for the data. 
+
+The plot below shows the relationship between temperature (response) and vegetation (predictor) from the NYC heatwave data, with a regression line overlaid^[You can overlay a regression line on a scatterplot by specifying  `+ stat_smooth(method='lm')`. The grey region around the line is its **standard error**. You can remove this by specifying `se = FALSE` as an additional argument.]:
+
+```{r}
+ggplot(aes(x = vegetation, y = temperature), data = nycheat) +
+  geom_point(size=0.5) +
+  stat_smooth(method='lm') +           # overlay regression line
+  xlab('vegetation(NDVI)') + ylab('temperature (farenheit)') +
+  theme_bw()
+```
+
+## Functional form 
+
+```{r, echo=FALSE, fig.margin = TRUE, fig.cap = c("A simple linear function, of form $y=mx+c$.", "A linear function used to model the observed relationship between two variables (with error bars shown).")}
+ggplot(aes(x = vegetation, y = temperature), data = nycheat) +
+  geom_point(size=0.5, color = 'white') +
+  stat_smooth(method='lm', se = FALSE) +
+  xlab('x') + ylab('y') +
+  theme_classic() + 
+  theme(axis.text.x = element_blank(), 
+        axis.text.y = element_blank())
+
+reg1 <- lm(formula = temperature ~ vegetation, data = nycheat)
+
+nycheat <- nycheat %>%
+  mutate(temperature_prediction = predict(reg1))
+
+ggplot(data = nycheat, mapping = aes(x = vegetation, y = temperature)) +
+  geom_point(size = 0.7, alpha = 0.5) +
+  stat_smooth(method='lm', se = FALSE) +
+  geom_segment(aes(x = vegetation, xend = vegetation, y = temperature, yend = temperature_prediction), 
+               alpha = 0.3, color = 'black') +
+  xlab("vegetation") + ylab("temperature") + 
+  theme_light()
+```
+
+Any linear function is uniquely parametrized by two quantities--**slope** and **intercept**. You may be familiar with the equation for a straight line, $y=mx+c$, where $m$ is the slope and $c$ is the $y$-intercept. When you assign values to the parameters $m$ and $c$, you can draw a straight line.    
+
+In linear regression there is a slightly different notational convention for describing the relationship between $y$ and $x$:
+
+$$y_i = \beta_0 + \beta_1 x_i + \varepsilon_i$$
+
+where:
+
+- $y$ is the response variable 
+- $x$ is the predictor variable
+- $\beta_0$ is the $y$-intercept of the regression line (the value of $x$ when $y=0$)
+- $\beta_1$ is the slope of the regression line (the change in $y$ for every unit change in $x$)
+- $\varepsilon$ is the error term, or the distance between each data point and the regression line
+- $i$ denotes an individual observation in the data, where $i = 1,...,n$ and $n$ is the number of observations in the dataset
+
+The main difference between this form and $y=mx+c$ is the presence of an error term, $\varepsilon$, in the equation. This is included because data points don't fall *exactly* on the regression line. You can visualize the error term as the distance between the data points and the regression line--see the figure on the right.  
+
+The subscript $i$ denotes an individual observation in the data. Its presence in the equation is essentially for describing the exact position of each data point in the plot. E.g. the 5th observation of $y$ in the data is: $y_{i=5} = \beta_0 + \beta_1 x_{i=5} + \varepsilon_{i=5}$.  
+
+You can also express the regression equation in vector/matrix notation, which omits the $i$ subscript:
+
+`r margin_note("Here bold symbols denote arrays.")`
+
+$$\boldsymbol{y} = \beta_0 + \beta_1 \boldsymbol{x} + \boldsymbol{\varepsilon}$$
+
+where $\boldsymbol{y}$ is a $n \times 1$ matrix of the $y$-observations, $\boldsymbol{x}$ is a $n \times 1$ matrix of the $x$-observations, and $\boldsymbol{\varepsilon}$ is a $n \times 1$ matrix of the error terms, i.e.
+
+$$
+\begin{alignat*}{2}
+  \boldsymbol{y} \hspace{0.5cm} &= \hspace{0.5cm}\beta_0 \hspace{0.3cm} + \hspace{0.3cm} \beta_1 \cdot \hspace{0.4cm} \boldsymbol{x} &&+ \hspace{0.5cm} \boldsymbol{\varepsilon} \\
+  \\ 
+  \begin{bmatrix}
+    y_1 \\ y_2 \\ \vdots \\ y_n
+  \end{bmatrix}
+  &= \hspace{0.5cm} \beta_0 \hspace{0.3cm} + \hspace{0.3cm} \beta_1 \cdot 
+  \begin{bmatrix}
+    x_1 \\ x_2 \\ \vdots \\ x_n
+  \end{bmatrix}
+  &&+
+  \begin{bmatrix}
+    \varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+  \end{bmatrix}
+\end{alignat*}
+$$
+
+## The regression coefficients
+
+The intercept and slope, $\beta_0$ and $\beta_1$, are known as the **coefficients** or **parameters** of a linear model. 
+
+The goal of linear regression (indeed any parametric modeling technique) is to estimate the parameters of the model.
+
+In R, you can use `lm()` to perform linear regression and compute the coefficients. The required arguments are `formula` ^[The regression formula, specifying the response and predictor variables, in the form `y ~ x`.] and `data`. 
+
+E.g. the following code regresses temperature on vegetation from the NYC heatwave data: 
+
+```{r}
+reg1 <- lm(formula = temperature ~ vegetation, data = nycheat)
+```
+
+You can view the results by calling `summary()` on the saved regression data:  
+
+```{r}
+summary(reg1)
+```
+
+The coefficients are printed under `Estimate`. In this case the $y$-intercept of the model is estimated to be $\beta_0 =$ `r toString(round(reg1$coefficients[1],3))` and the slope to be $\beta_1 =$ `r toString(round(reg1$coefficients[2],3))`.
+
+Substituting these values into the regression formula gives the following equation: 
+
+`r margin_note("Note these are the coefficients for the regression line in the example above.")`
+
+$$\Longrightarrow \hspace{0.5cm} y_i = 102.13 -19.46 \; x_i + \varepsilon_i$$
+
+This equation suggests that as the vegetation index increases by 1, temperature decreases by 19.46$^o F$.^[Although variation of this magnitude is not actually observed in the data.]
+
+## Prediction from linear models 
+
+\newcommand{\mhat}[1]{\skew{3}\hat{#1}}
+
+Once you have computed the regression coefficients, you have a linear model. You can now use this model to predict the value of the response variable for a given value of the predictor.    
+
+The predicted values of a linear model are points that lie on the regression line. A predicted value is typically denoted $\mhat{y}$, where:
+
+$$\mhat{y} = \beta_0 + \beta_1 x$$
+
+In the above example the predicted equation is $\mhat y = 92.40 - 19.46 \; x$. This model predicts that if the vegetation index of an area is 0.2, its temperature will be $92.40 - 19.46 \cdot 0.2 = 88.51 \; ^o F$.   
+
+Note that if $\mhat y = \beta_0 + \beta_1 x$, this implies^[Using the fact that $y = \beta_0 + \beta_1 x + \varepsilon$.] that:
+
+$$y = \mhat y + \varepsilon$$
+
+i.e. the observed $y$-value (as seen in the data) is equal to the predicted $y$-value plus an error. Rearranging, you can also see that:
+
+$$\varepsilon = y - \mhat y$$
+
+i.e. the error term is simply the observed $y$-value minus the predicted $y$-value. 
+
+In R you can use `predict()` to generate a vector of predicted values of a model^[Specifically, it generates a set of predicted values for each observation of the predictor variable.]. In the argument you should specify the model you are using for prediction.  
+
+The following code generates a set of predicted values of temperature using the model specified above (`reg1`). The predicted values are assigned to a new variable in the data, `temperature_prediction`:
+
+```{r}
+nycheat <- nycheat %>%
+  mutate(temperature_prediction = predict(reg1))
+```
+
+If you were to plot the predicted response ($\mhat y$) on the predictor ($x$), you would find the data points lie on the regression line:
+
+```{r}
+ggplot(data = nycheat, mapping = aes(x = vegetation, y = temperature_prediction)) +
+  geom_point(size=0.5) +
+  theme_minimal()
+```
+
+## Extrapolation and its risks
+
+Extrapolation refers to using models for prediction *outside* the range of data used to build the model. 
+
+```{r, echo = FALSE, fig.margin = TRUE}
+ggplot(aes(x = vegetation, y = temperature), data = nycheat) +
+  geom_point(size=0.5) +
+  stat_smooth(method='lm', se = FALSE) +           # overlay regression line
+  xlab('NDVI (vegetation index)') + ylab('temperature (farenheit)') +
+  theme_bw()
+```
+
+E.g. in the heatwave data, values of vegetation index range from -0.05 to 0.8 ^[For reference ^]. If you tried to use the model specified above to predict temperature when vegetation index is 1, or -0.5, you would be extrapolating since there is no data to support your prediction for values in that range.    
+
+In general, extrapolation is risky because the linearity of a relationship is not guaranteed outside the range of observed data. In the heatwave data you can't intuit how the relationship between temperature and vegetation evolves for higher or lower values of vegetation index. Theoretically it could look like this: 
+
+```{r, echo=FALSE}
+knitr::include_graphics('./pics/m1c5_pic1.png')
+```
+
+
+If indeed the relationship is nonlinear outside the range of observed data, the linear model will yield invalid predictions of the response variable.  
+
+
+
+\ 
+
+# 5--3 Multiple Regression 
+
+The linear model demonstrated above is known as a **simple linear model** since only one predictor variable is used to model the behavior of the response variable. In reality a response variable can be influenced by a number of factors--not just one--and thus it is often necessary to build a model with many predictors.  
+
+**Multiple regression** is a generalization of the simple linear model to include more than one predictor variable. 
+
+E.g. below is a correlation matrix of the numerical variables in the NYC heatwave data:
+
+```{r, echo=FALSE}
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+kable(cor(nycheat[2:6]))
+```
+
+Clearly temperature is correlated not only with vegetation, but also with albedo, building height, and (to a lesser extent) population density. In the following multiple regression model, all four variables are used as predictors of temperature:
+
+```{r}
+reg2 <- lm(formula = temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
+summary(reg2)
+```
+
+As you can see each predictor has its own coefficient. The coefficient on any one predictor describes the change in the response for every unit change in that predictor, *while holding the other predictors constant.* This is important. In a simple (bivariate) linear model, the coefficient describes the change in the response for every unit change in the predictor. But in a multivariate linear model, the coefficient on a predictor describes its effect on the response, while effectively controlling for the other predictors. This is why the coefficient on vegetation in the multiple model is smaller than that in the simple model (-12.92 vs -19.64). The observed effect of vegetation on temperature is smaller when controlling for other variables. 
+
+Mathematically, a multiple regression model has the following functional form:
+
+$$y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \beta_k x_{ik} + \varepsilon_i$$
+
+where $x_1, x_2, ..., x_k$ are a set of $k$ predictor variables and $\beta_1, \beta_2, ..., \beta_k$ are their coefficients. In this notation $x_{ij}$ denotes the $i$-th observation in the $j$-th predictor variable.  
+
+In matrix notation:
+
+$$\boldsymbol{y} = \boldsymbol{x} \boldsymbol{\beta} + \boldsymbol{\varepsilon}$$
+
+i.e.
+
+$$
+\begin{bmatrix}
+  y_1 \\ y_2 \\ \vdots \\ y_n
+\end{bmatrix}
+= 
+\begin{bmatrix}
+  1 & x_{11} & ... & x_{1k} \\ 
+  1 & x_{21} & ... & x_{2k} \\ 
+  \vdots & \vdots & \ddots & \vdots \\ 
+  1 & x_{n1} & ... & x_{nk}
+\end{bmatrix}
+\cdot 
+\begin{bmatrix}
+  \beta_0 \\ \beta_1 \\ \vdots \\ \beta_k
+\end{bmatrix}
++ 
+\begin{bmatrix}
+  \varepsilon_{1} \\ \varepsilon_{2} \\ \vdots \\ \varepsilon_{n}
+\end{bmatrix}
+$$
+
+
+
+\ 
+
+# 5--4 Categorical Predictors in Linear Models
+
+The examples thus far have demonstrated models with continuous predictor variables. You can also include categorical variables as predictors in linear models. 
+
+E.g. in the heatwave data, the variable `area` is categorical with 6 levels/categories:
+
+```{r}
+unique(nycheat$area)
+```
+
+Now consider the following multiple regression model, which regresses temperature on vegetation (continuous), albedo (continuous), and area (categorical):
+
+```{r}
+reg3 <- lm(formula = temperature ~ vegetation + albedo + area, data = nycheat)
+summary(reg3)
+```
+
+Note how each category appears as a separate predictor, with its own coefficient. Each category should be interpreted a dummy variable^[A dummy variable can only take two values, 0 and 1. E.g. $$\texttt{areafordham bronx} = \cases{1 \;\;\; \text{if area} = \text{fordham} \\ 0 \;\;\; \text{if area} \neq \text{fordham}}$$].  
+
+This effectively creates a different regression equation for each category. E.g. when predicting temperatures in Fordham, the equation is: 
+
+$$\text{temp}_{fordham} = 106.11 - 15.93\text{*veg} - 0.34\text{*albedo} - 2.27$$
+
+When predicting temperatures in Maspeth: 
+
+$$\text{temp}_{maspeth} = 106.11 - 15.93\text{*veg} - 0.34\text{*albedo} - 1.69$$
+
+Note also how one of the categories--Crown Heights Brooklyn--is missing. This is because R uses one of the categories as a baseline which the other coefficients are relative to. The baseline category is omitted from the output.   
+
+Thus when predicting temperatures in Crown Heights:
+
+$$\text{temp}_{crownheights} = 106.11 - 15.93\text{*veg} - 0.34\text{*albedo}$$
+
+
+
+
+\ 
+
+---
+
+\ 
+
+\ 
+
+
+
+
+
+
+
+
+

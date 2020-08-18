@@ -1,0 +1,224 @@
+---
+title: "ps4"
+author: "whomsoever"
+date: "24/11/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Estimator Bias
+
+This question will guide you through a *simulation study* in `R` to understand the bias of a certain estimator.
+
+```{r}
+# This creates a function that calculates sample variance
+# but using n in the denominator instead of n-1
+# you don't need to change anything here
+varn <- function(x) mean((x - mean(x))^2)
+```
+
+## Part a.
+
+The code below generates a sample of size n and calculates both the sample variance and the biased version of sample version (the one that has n in the denominator instead of n-1). Modify the code to change n from 10 to some other value between 10 and 50. 
+
+```{r}
+# Create a sample of data by rolling a 6-sided die n times
+n <- 30
+data <- sample(1:6, n, replace = TRUE)
+data
+# True variance
+35/12
+# Unbiased estimate of variance
+var(data)
+# Biased estimate of variance
+varn(data)
+```
+
+## Part b.
+Repeat the previous experiment many times and find the expected value of each variance estimator.
+
+```{r}
+# Unbiased estimator
+mean(replicate(10000, var(sample(1:6, 15, replace = TRUE))))
+# Biased estimator
+mean(replicate(10000, varn(sample(1:6, 15, replace = TRUE))))
+```
+
+## Part c.
+After running the previous code, which estimator's average value in the simulation is closer to the true value (roughly 2.9167)? 
+
+\ 
+
+Delete this line and type your answer here.
+
+
+## Part d.
+Now go back and change n to another, larger value, and rerun all of the code. Do you notice anything about the average of the biased estimator?
+
+\ 
+
+Delete this line and type your answer here.
+
+## Part e.
+Copy the code from part (b) and paste it below here, then change the `mean` function to be `sd` instead.
+
+```{r}
+sd(replicate(10000, var(sample(1:6, 1000, replace = TRUE))))
+# Biased estimator
+sd(replicate(10000, varn(sample(1:6, 1000, replace = TRUE))))
+```
+
+Delete this sentence and replace with your answer: which estimator has more variability, the biased or unbiased one?
+
+
+
+
+\ 
+
+# Discrimination? 
+
+```{r}
+calidata = read.csv("../data/calidata.csv")
+```
+
+
+```{r}
+library(car)
+
+summary(aov(funding ~ ethnicity, data = calidata))
+```
+
+
+```{r}
+pairwise.t.test(calidata$funding, calidata$ethnicity,
+                 p.adjust.method = "BH", pool.sd = FALSE)
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+reg1 = lm(funding ~ ethnicity, data = calidata)
+summary(reg1)
+```
+
+
+
+
+```{r}
+calidata = read.csv("../data/calidata.csv")
+
+calidata = calidata %>% 
+  mutate(funding = ifelse(ethnicity == "White not Hispanic", funding - 5000, funding)) %>%
+  mutate(funding = ifelse(funding < 0, funding+10000, funding))
+
+calidata = calidata %>% 
+  mutate(funding = ifelse(ethnicity == "White not Hispanic", funding - 3000, funding)) %>%
+  mutate(funding = ifelse(funding < 0, funding+10000, funding)) %>%
+  mutate(age_cohort = ifelse(age_cohort == "12-Jun","6-12", 
+                             ifelse(age_cohort == "0-5","0-5", age_cohort)))
+
+calidata = calidata %>% filter(ethnicity %in% c("White not Hispanic","Hispanic")) %>%
+  mutate(ethnicity = ifelse(ethnicity == "White not Hispanic", "Vester", "Austur")) %>%
+  mutate(gender = ifelse(gender == "Female", "female","male")) %>%
+  select(-id) %>%
+  select(origin = ethnicity, gender, age, age_cohort, funding)
+
+
+unique(calidata$age_cohort)
+
+calidata5 = calidata5 %>%
+  mutate(age_cohort = ifelse(age_cohort == "0 - 5","0-5", 
+                             ifelse(age_cohort == "51 +","51+",
+                                    ifelse(age_cohort == "12-Jun","6-12", age_cohort))))
+
+unique(calidata5$age_cohort)
+
+write.csv(calidata5, "../data/funding-bias.csv")
+```
+
+```{r}
+t.test(funding ~ ethnicity, data = calidata2)
+```
+
+
+```{r}
+reg2 = lm(funding ~ ethnicity, data = calidata2)
+summary(reg2)
+```
+
+```{r}
+cor(calidata2$funding, calidata2$age)
+```
+
+```{r}
+ggplot(data = calidata2, aes(x = age_cohort, y = funding)) + geom_boxplot()
+```
+
+
+```{r}
+reg3 = lm(funding ~ ethnicity + gender + age, data = calidata2)
+summary(reg3)
+```
+
+```{r}
+calidata3 = calidata2 %>% 
+  mutate(funding = ifelse(ethnicity == "White not Hispanic", funding - 5000, funding)) %>%
+  mutate(funding = ifelse(funding < 0, funding+10000, funding))
+```
+
+```{r}
+calidata4 = calidata3 %>% 
+  mutate(funding = ifelse(ethnicity == "White not Hispanic", funding - 3000, funding)) %>%
+  mutate(funding = ifelse(funding < 0, funding+10000, funding))
+```
+
+
+```{r}
+reg3 = lm(funding ~ ethnicity, data = calidata4)
+summary(reg3)
+```
+
+```{r}
+t.test(funding ~ ethnicity, calidata4)
+```
+
+
+
+```{r}
+drinkdata = read.csv("../data/drinkdata.csv")
+```
+
+
+```{r}
+calidata4 = calidata4 %>%
+  mutate(age_cohort = ifelse(age_cohort == "12-Jun","5-12",age_cohort))
+```
+
+
+```{r}
+ggplot(data = calidata4, aes(x = age_cohort, y = funding)) + geom_boxplot()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

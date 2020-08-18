@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stats103</title>
+    <meta name="description" content="an introductory course in statistics and data modeling">
+    <link href='/feed.xml' rel='alternate' type='application/atom+xml'>
+    <link rel="canonical" href="/">
+    <link rel="manifest" href="/manifest.json">
+		<link href='//fonts.googleapis.com/css?family=Lato:400,400italic' rel='stylesheet' type='text/css'>
+    
+    <style>
+        *{text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-kerning:auto}html{font-family:sans-serif;font-size:18px;height:100%;width:99%}@font-face{font-family:"et-book";src:url("/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot");src:url("/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix") format("embedded-opentype"),url("/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff"),url("/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf") format("truetype"),url("/et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg#etbookromanosf") format("svg");font-weight:normal;font-style:normal;font-display:swap}@font-face{font-family:"et-book";src:url("/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot");src:url("/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot?#iefix") format("embedded-opentype"),url("/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff"),url("/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf") format("truetype"),url("/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg#etbookromanosf") format("svg");font-weight:normal;font-style:italic;font-display:swap}@font-face{font-family:"et-book";src:url("/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot");src:url("/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot?#iefix") format("embedded-opentype"),url("/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff"),url("/et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf") format("truetype"),url("/et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg#etbookromanosf") format("svg");font-weight:bold;font-style:bold;font-display:swap}@font-face{font-family:"et-book-roman-old-style";src:url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot");src:url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot?#iefix") format("embedded-opentype"),url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.woff") format("woff"),url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.ttf") format("truetype"),url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.svg#etbookromanosf") format("svg");font-weight:bold;font-style:normal;font-display:swap}body{-webkit-font-smoothing:antialiased;background:#fffff8;color:#000;counter-reset:sidenote-counter;font-family:et-book-roman-old-style,Palatino,"Palatino ET","Palatino Linotype","Palatino LT STD","Book Antiqua",Georgia,serif;width:70%;padding-left:15%;padding-right:15%;line-height:1.45;max-width:1200px}h1{font-weight:400;margin-top:1.0rem;margin-bottom:2.0rem;font-size:2.5rem}h2{font-style:normal;font-weight:600;margin-top:4.0rem;margin-bottom:1.2rem;font-size:1.5rem}h3{font-weight:600;font-size:1.3rem}p{position:relative}.numeral{font-family:et-book-roman-old-style}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{box-sizing:border-box;max-width:65%}.MathJax_SVG_Display{max-width:65% !important}a{color:#000;text-decoration:underline}li ul li,li ol li{list-style:none;max-width:100%}ul,ol{webkit-padding-start:5%;webkit-padding-end:5%}ul.content-listing{padding-top:1.0rem;padding-bottom:1.0rem;padding-left:0;font-size:1.1rem;list-style:none;text-decoration:none}.content-listing a{color:#000;text-decoration:underline}li.listing{padding-bottom:0.9rem;list-style:none}ul.footer-links,.credits{font-size:0.8rem;list-style:none;text-align:left;margin:0 auto;text-decoration:none}ul.footer-links li{display:inline;padding:0.5rem 0.25rem}.credits{padding:0rem 0rem}.credits a{color:#000;text-decoration:none}blockquote{font-style:italic;margin:0;padding:2rem 0 2rem 4rem}figure{align-items:flex-start;display:flex;margin:0;padding:0;position:relative}hr{background-color:#000;border:none;height:0.8px;width:100%;margin:1rem 0 0.6rem 0}pre{font-size:80%;margin:0;padding:1rem;overflow-x:auto}code{font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;font-size:80%}img{height:auto;margin-right:4rem;width:100%}table{border-collapse:separate;border-spacing:1.5rem .5rem;margin:0 6rem 0 -1.5rem;text-align:left;width:100%}table th,table td{font-weight:bold;padding:0}table th:not(:first-child),table td:not(:first-child){text-align:right}table thead th{border-bottom:1px solid #111}.subtitle{font-size:1.8rem;font-style:italic}.sans{font-family:"Lato", "Gill Sans", "Gill Sans MT", Calibri, sans-serif;letter-spacing:.03em}.caps{font-variant:small-caps}.italics{font-style:italic}.marginnote,.sidenote{font-size:80%;left:calc(100% + 4rem);line-height:1.3rem;max-width:400px;padding-top:1rem;position:absolute;top:0;width:50%}.sidenote:before{content:counter(sidenote-counter) " ";font-family:et-book-roman-old-style;position:relative;top:-0.5rem;vertical-align:baseline}.sidenote-number{counter-increment:sidenote-counter}.sidenote-number:after{content:counter(sidenote-counter);font-family:et-book-roman-old-style;font-size:80%;left:0.1rem;position:relative;top:-0.5rem;vertical-align:baseline}figure .marginnote,figure .sidenote{left:auto;position:relative}.mini-note{display:block;font-size:80%;font-style:italic}.epigraph{margin:4rem 0}.epigraph blockquote{font-style:italic;margin:2rem 0}footer{display:block;margin:2em 0 1em 0;font-size:14.4px;text-align:center}footer a{white-space:normal}footer span{white-space:nowrap}#page-container{position:relative;min-height:92vh}#content-wrap{padding-bottom:6.0rem}#footer{position:absolute;bottom:0;width:100%;height:6.0rem}@media (max-width: 1400px){body{width:80%;padding-left:10%;padding-right:10%}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{max-width:65%}.MathJax_SVG_Display{max-width:65% !important}}@media (max-width: 1100px){body{width:90%;padding-left:5%;padding-right:5%}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{max-width:65%}.MathJax_SVG_Display{max-width:65% !important}}@media (max-width: 1000px){body{padding-left:5%;padding-right:5%}p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li{max-width:600px}.MathJax_SVG_Display{max-width:100% !important}figure{flex-direction:column}.marginnote,.sidenote{display:block;left:auto;margin-top:1rem;position:relative;top:auto;width:100%}}
+
+    </style>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: {
+          Macros: {
+            v: ["\\boldsymbol{#1}", 1], 
+						dv: ["\\dot{\\boldsymbol{#1}}", 1],
+						ddv: ["\\ddot{\\boldsymbol{#1}}", 1],
+						hv: ["\\hat{\\boldsymbol{#1}}", 1],
+						d: ["\\text{d}", 0],
+						dd: ["\\frac{\\d{#1}}{\\d{#2}}", 2],
+						ddd: ["\\frac{\\d^2{#1}}{\\d{#2}^2}", 2],
+						pd: ["\\frac{\\partial{#1}}{\\partial{#2}}", 2], 
+						pdd: ["\\frac{\\partial^2{#1}}{\\partial{#2}^2}", 2], 
+						grad: ["\\boldsymbol{\\nabla}", 0], 
+						div: ["\\boldsymbol{\\nabla} \\cdot", 0], 
+						curl: ["\\boldsymbol{\\nabla} \\times", 0], 
+						eo: ["\\epsilon_0", 0], 
+						muo: ["\\mu_0", 0], 
+						Lag: ["\\mathcal{L}", 0], 
+						Ham: ["\\mathcal{H}", 0],
+          }
+        }
+      });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+
+	tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']],
+		processEscapes: true
+	},
+	
+	jax: ["input/TeX","input/MathML","input/AsciiMath","output/CommonHTML"],
+	
+	extensions: ["tex2jax.js","mml2jax.js","asciimath2jax.js","MathMenu.js","MathZoom.js","AssistiveMML.js", "[Contrib]/a11y/accessibility-menu.js"],
+
+	TeX: {
+		extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js", "newcommand.js"],
+		equationNumbers: {
+			autoNumber: "AMS"
+		}
+	}
+});
+</script>
+
+</head>
+<br>
+
+
+<body>
+
+		<div id="page-container">
+			<div id="content-wrap">
+
+				<main>
+
+					<article>
+
+						<h1>stats103</h1>
+
+						<ul class="content-listing">
+
+		<article>
+			<li class="listing">
+				<a href="/about">about</a>
+			</li>
+		</article>
+
+</ul>
+
+<li><h3>Part I &mdash; Elements</h3></li>
+
+chapter 1 &mdash; <a href="./rmd/ch1-intro.html">The R Environment</a><br>
+chapter 2 &mdash; <a href="./rmd/ch2-data-basics.html">Getting Started With Data</a><br>
+chapter 3 &mdash; <a href="./rmd/ch3-wrangle-visualize.html">Wrangling and Visualizing Data</a><br>
+chapter 4 &mdash; <a href="./rmd/ch4-basic-analysis.html">Basic Data Analysis</a><br>
+chapter 5 &mdash; <a href="./rmd/ch5-basic-modeling.html">Basic Data Modeling</a><br>
+
+<li><h3>Part I<span class="math inline">\(\frac 12\)</span> &mdash; A Probabilistic Bridge</h3></li>
+
+chapter 7 &mdash; <a href="./rmd/ch7-probability-elements.html">Elements of Probability</a><br>
+chapter 8 &mdash; <a href="./rmd/ch8-random-variables.html">The Algebra of Random Variables</a><br>
+chapter 9 &mdash; <a href="./rmd/ch9-probability-distributions.html">Distributions of Random Variables</a><br>
+
+<li><h3>Part II &mdash; Variability</h3></li>
+
+chapter 10 &mdash; <a href="./rmd/ch10-sampling.html">Samples, Sampling, and Variability</a><br>
+chapter 11 &mdash; <a href="./rmd/ch11-clt.html">The Central Limit Theorem</a><br>
+chapter 12 &mdash; <a href="./rmd/ch12-intervals.html">Intervals</a><br>
+chapter 13 &mdash; <a href="./rmd/ch13-testing-significance.html">Testing Significance</a><br>
+chapter 14 &mdash; <a href="./rmd/ch14-joint-variability.html">Joint Variability</a><br>
+chapter 15 &mdash; <a href="./rmd/ch15-regression-theory.html">A Little Regression Theory</a><br>
+chapter 16 &mdash; <a href="./rmd/ch16-regression-inference-I.html">Inference from Regression Models, Part I</a><br>
+
+<li><h3>Part III &mdash; Bias</h3></li>
+
+chapter 17 &mdash; <a href="./rmd/ch17-validity-bias.html">Validity and Bias</a><br>
+chapter 18 &mdash; <a href="./rmd/ch18-error-of-an-estimator.html">Quantifying the Error of an Estimator</a><br>
+chapter 19 &mdash; <a href="./rmd/ch19-regression-inference-II.html">Inference from Regression Models, Part II</a><br>
+chapter 20 &mdash; <a href="./rmd/ch20-causal-inference.html">Causal Inference</a><br>
+chapter 21 &mdash; <a href="./rmd/ch21-bias-variance.html">Model Selection and the Bias-Variance Tradeoff</a><br>
+
+<li><h3>Part IV &mdash; Further Topics</h3></li>
+
+chapter 22 &mdash; <a href="./rmd/ch22-logit.html">Logistic Regression</a><br>
+chapter 23 &mdash; Time Series<br>
+chapter 24 &mdash; Maximum Likelihood<br>
+
+<br>
+
+
+					</article>
+
+				</main>
+
+			</div>
+
+    	<br>
+<br>
+<footer id="footer">
+	<hr>
+		<div class="credits">
+		<span><a href="">vinu abeywick 2020</a></span>
+		</div>  
+</footer>
+
+
+
+		</div>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+Every experiment or study is concerned with answering some question. Some (possibly relevant) examples--
+
+- what is the true extent of the gender pay gap?
+- why is New York City insufferably hot in summer?
+
+Conducting a study involves choosing relevant variables to answer the question, collecting empirical data on these variables, and using some method of analysis to draw inferences from the data. 
+
+Every study has a **population**--this is the relevant set of events or observations required to fully answer the question. E.g. if trying to determine the true gender pay gap, the population might be the salary of every single person.  
+
+Before conducting a study, there is often a **hypothesis** or preexisting notion about what the population looks like. The data collected during the study is often used to validate or reject the hypothesis.  
+
+A **sample** is a subset of the events/observations in a population. Most studies are conducted with samples, since it is often impossible to acquire data on a whole population. 
+
+Below are two examples of sample data collected in order to investigate certain research questions. 
+
+
+
+
+
+
+
+
+
+
+
+## Confidence intervals
+
+A confidence interval for a parameter is a range of values that might contain the true parameter. The range of values is associated with a **confidence level**, which describes the approximate probability the true parameter lies in the range specified.^[The theory behind this is explained in part 2.] E.g. a 95\% confidence interval for the mean is a range of values where:
+
+$$\P(LB \leq \mu \leq UB) \approx 0.95$$
+
+$LB$ and $UB$ are the lower and upper bounds of the interval, which have an approximately 95\% probability of containing the true mean.  
+
+For example--
+
+--say you are trying to determine the true mean difference in hourly wages between females and males:
+
+As a point estimate of this parameter you could compute the sample mean of `DiffMeanHourlyPercent`:
+
+```{r}
+mean(paygap$DiffMeanHourlyPercent)
+```
+
+As an interval estimate of this parameter you could compute a 95\% confidence interval for the mean. Here is a function that does this for you:
+
+`r margin_note("Note, this is a user-defined function. For more on writing functions in R, click <a href="https://www.statmethods.net/management/userfunctions.html">here</a>. Running this code will generate a new function called $\\texttt{confidence_interval}$ that will compute a confidence interval for the mean of a sample of data.")`
+
+```{r}
+confidence_interval = function(data, conflevel) {
+  xbar = mean(data)          # sample mean 
+  n = length(data)           # sample size 
+  SE = sd(data) / sqrt(n)    # standard error
+  alpha = 1 - conflevel      # alpha
+  
+  lb = xbar + qt(alpha/2, df = n-1) * SE    # calculate lower bound
+  ub = xbar + qt(1-alpha/2, df = n-1) * SE  # calculate upper bound
+  
+  cat(paste(c('sample mean =', round(xbar,3), '\n', 
+              conflevel*100, '% confidence interval:', '\n', 
+              'lower bound =', round(lb,3), '\n', 
+              'upper bound =', round(ub,3))))
+}
+```
+
+The way this function is written, it takes two arguments:
+
+- `data` -- must be a vector array of numeric data 
+- `conflevel` -- the desired confidence level
+
+You can compute a 95\% confidence interval for the mean difference in hourly wages between females and males as follows:
+
+```{r}
+confidence_interval(paygap$DiffMeanHourlyPercent, conflevel = 0.95)
+```
+
+This suggests there is an approximately 95\% probability the true mean difference in wages is between 13.93\% and 14.47\%. 
+
+Note--a confidence interval computed from sample data (such as the one above) will always be centered on the sample mean, not the true mean. This is why the probability associated with an interval is approximate, not exact--for any given sample of data you cannot tell how close the sample mena actually is to the true mean. 
+
+
+
+\ 
+
+--- 
+
+# Simple Hypothesis Tests
+
+A **hypothesis** is simply an assumption about a population characteristic--it is essentially a model for what a population looks like. A hypothesis can be based on a sample of data or even a hunch.^[However, it is generally discouraged to have statistically unfounded hunches about things.]. But if some new data about the population emerges, and it suggests a different conclusion to the one hypothesized, there may be grounds to reject the initial hypothesis. 
+
+A **hypothesis test** is essentially a comparison between a sample of data and a presupposed model for what the population looks like. The test is used to either validate or reject the model. 
+
+Formally there are two hypotheses in a test: 
+
+- **the null hypothesis**, $H_0$, a proposed model for a population 
+- **the alternative hypothesis**, $H_1$, that the proposed model is not true 
+
+The test is deemed **statistically significant** if the comparison yields a result that is very unlikely under the null hypothesis (i.e. if there is strong evidence to support the alternative hypothesis). This usually leads to **rejecting** the null hypothesis.  
+
+Some simple tests are introduced below. For more theory on hypothesis testing, go here. `insert link`
+
+\ 
+
+## One-sample t-test for a mean 
+
+A one-sample $t$-test compares the mean of a sample of data to some hypothesized value for the population mean. The null and alternative hypotheses are:
+
+- $H_0$: the mean is equal to some specified value $k$
+- $H_1$: the mean is not equal to $k$
+
+E.g. say you hypothesize that the true mean difference in hourly wages between women and men is zero--as perhaps it ought to be. Using the pay gap data, you could test this hypothesis by calculating the mean of `DiffMeanHourlyPercent`. In this test the null and alternative hypotheses are:
+
+$$
+\begin{aligned}
+  H_0: \texttt{mean(DiffMeanHourlyPercent)} = 0 \\ 
+  H_1: \texttt{mean(DiffMeanHourlyPercent)} \neq 0
+\end{aligned}
+$$
+
+In R, you can use `t.test()` to carry out the test. The first argument should be the sample of data you are using, and the second is the proposed value for the mean under the null hypothesis: 
+
+```{r}
+t.test(paygap$DiffMeanHourlyPercent, mu = 0)
+```
+
+The observed value of this test is printed at the bottom: $\bar X =$ 14.1985. This tells you that the mean difference between female and male hourly wages is 14.1985\%, according to this sample.  
+
+Now it is up to you whether to reject the null hypothesis or not, on the basis of this evidence. You can use the $p$-value of the test to help you make a decision.  
+
+**The $p$-value of a test is the probability of getting a value at least as extreme as the observed value under the null hypothesis.** The $p$-value will always be between 0 and 1. A small $p$-value means the observed value is unlikely to occur if the null hypothesis were true. A large $p$-value means the observed value is likely to occur if the null hypothesis were true.  
+
+The $p$-value of the test is printed in the third line. In this case it reads `p-value < 2.2e-16`. This is very small indeed. It means there is a near zero probability of observing a 14\% difference in wages if in reality the true difference in wages is zero.  
+
+In other words, this test gives evidence to reject the null hypothesis. You may thus choose to conclude that the average difference in hourly wages between women and men is not zero, based on the evidence in this sample.  
+
+\ 
+
+## Interpreting p-values 
+
+It is conventional to reject the null hypothesis if the $p$-value of a test is smaller than 0.05. However this is an arbitrary (and disputable) cutoff point, and you should use your own intuition to determine whether rejecting the null is a sensible choice, given the context.  
+
+You can, for instance, use confidence intervals to determine whether rejecting the null is sensible. Note how the output of the $t$-test also gives you a 95\% confidence interval for the true mean, based on the sample data. In the example above, it suggests the true mean difference in wages is somewhere between 13.93\% and 14.47\%. Since this range is still substantially above zero, it supports your decision to reject the null.  
+
+\ 
+
+## Two-sample t-test for a difference in means
+
+```{r, echo=FALSE}
+# use 2019 dataset for this section
+# because the 2018 data has too many observations
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+```
+
+
+A two-sample $t$-test compares the means of two samples of data. The null and alternative hypotheses are as follows:
+
+- $H_0$: the difference in the means of both samples is equal to zero (i.e. the samples have the same mean)
+- $H_1$: the difference in the means of both samples is not equal to zero  (the samples have different means)
+
+E.g. in the pay gap data, the variables `FemaleBonusPercent` and `MaleBonusPercent` record the average percentage bonus at each firm, for females and males respectively. You could construct a two-sample $t$-test on these variables, where the null hypothesis is that the samples have the same mean:
+
+$$
+\begin{aligned}
+  H_0: \texttt{|mean(FemaleBonusPercent) - mean(MaleBonusPercent)|} = 0 \\ 
+  H_1: \texttt{|mean(FemaleBonusPercent) - mean(MaleBonusPercent)|} \neq 0
+\end{aligned}
+$$
+
+In R you can use the `t.test()` function, entering both samples as arguments: 
+
+```{r}
+t.test(paygap$FemaleBonusPercent, paygap$MaleBonusPercent)
+```
+
+The observed values of the test are at the bottom: the average bonus percent is 25.50\% for females and 26.0\% for males, making the absolute difference between the two 0.5\%. Though nonzero, this difference is small.  
+
+The $p$-value of this test is 0.889, i.e. there is an 88.9\% of seeing an observed difference of 0.5\% under the null hypothesis. Since this $p$-value is substantially higher than 0.05, there is not sufficient evidence to reject the null. Moreover, the 95\% confidence interval *contains* the null hypothesis (that the difference is zero).  
+
+You should thus assume the null is true, and conclude that there is no evidence in this sample to suggest the average bonus percent is different for females and males. 
+
+\ 
+
+## Chi-squared test for independence 
+
+...

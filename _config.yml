@@ -1,0 +1,19 @@
+baseurl: 
+title: stats103
+description: an introductory course in statistics and data modeling
+markdown: kramdown
+
+sass:
+  sass_dir: css
+  style:    compressed
+
+permalink: pretty
+timezone: America/New_York
+future: false
+
+collections:
+  content:
+    output: true
+    sort_by: position
+
+exclude: ['preview', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'UploadToGithub.Rakefile', 'README.md']

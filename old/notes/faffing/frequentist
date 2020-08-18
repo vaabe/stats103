@@ -1,0 +1,16 @@
+# The Frequentist Interpretation of Probability
+
+`this section needs to go somewhere else -- put in probability section?`
+
+Most of the probability theory covered thus far is derived from the **frequentist** interpretation of probability. There are other approaches -- such as **Bayesian probability** -- but the frequentist approach is sufficient for understanding and modeling many random processes. You should recognize these features of frequentist probability:
+
+* probability is defined in terms of an event's relative frequency in a probability space (requires a well-defined random process with a fixed set of outcomes)
+* e.g. if you conduct $n$ trials, and $k$ is the number of trials in which event $X$ occurs, the probability of event $X$ is defined as: 
+
+$$P(X) \approx \frac kn$$
+
+* the frequentist approach assumes that data is a repeatable random sample, and if the experiment is repeated many times, the relative frequency of an event will converge to its true probability:
+
+$$P(X) = \lim_{n \rightarrow \infty} \frac kn$$ 
+
+The frequentist approach relies on **repeating** experiments to produce accurate estimates of probability.  

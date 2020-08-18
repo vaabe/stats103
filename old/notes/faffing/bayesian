@@ -1,0 +1,18 @@
+In the Bayesian interpretation, probability is not interpreted as the frequency of a result, but a reasonable expectation representing a state of knowledge. Essentially it allows people to update their beliefs in the evidence of new data.   
+
+That is to say, propositions whose truth or falsity is uncertain. In the Bayesian view, a probability is assigned to a hypothesis, whereas under frequentist inference, a hypothesis is typically tested without being assigned a probability.   
+
+Bayesian probability belongs to the category of evidential probabilities; to evaluate the probability of a hypothesis, the Bayesian probabilist specifies a prior probability. This, in turn, is then updated to a posterior probability in the light of new, relevant data (evidence)  
+
+
+While for the frequentist, a hypothesis is a proposition (which must be either true or false) so that the frequentist probability of a hypothesis is either 0 or 1, in Bayesian statistics, the probability that can be assigned to a hypothesis can also be in a range from 0 to 1 if the truth value is uncertain.  
+
+Demonstration of Bayes' theorem 
+
+\ 
+
+## Bayes' Theorem
+
+
+
+

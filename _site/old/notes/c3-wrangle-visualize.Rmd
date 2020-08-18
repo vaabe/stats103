@@ -1,0 +1,335 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(knitr)
+library(gridExtra)
+library(extraDistr)
+library(moments)
+library(latex2exp)
+library(tufte)
+```
+
+```{r, include=FALSE}
+nycbnb <- read.csv('./data/nyc-airbnb.csv', header = TRUE) %>%
+  mutate(price = as.numeric(price), 
+         cleaningfee = as.numeric(cleaningfee), 
+         availability365 = as.numeric(availability365), 
+         sqft = as.numeric(sqft))
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+---
+
+# 3--1 Wrangling Data
+
+Wrangling data refers to cleaning/manipulating/reorganizing raw data to make it more useful for analysis. The `dplyr` package has a host of functions specifically for this purpose. The following examples will demonstrate a few of them. Here is a dplyr <a href="./downloads/dplyr-cheatsheet.pdf" download>cheatsheet</a>. 
+
+`r margin_note("For more comprehensive notes on dplyr visit https://dplyr.tidyverse.org/.")`
+
+## Indexing
+
+Elements in a vector, matrix, or data frame can be extracted using square brackets (numerical indexing). Indexing in R starts at 1 (in some other languages such as Python indexing starts at 0).   
+
+Below are some examples of indexing from the NYC Airbnb dataset:
+
+```{r}
+# extract element in 1st row and 3th column
+nycbnb[1,3]
+```
+
+```{r}
+# extract rows 5-7 from columns 2-4
+nycbnb[5:7,2:4]
+```
+
+
+
+## Extracting
+
+The extract operator, `$`, can extract a named element from a list. Since a data frame is a kind of list, the `$` operator can be used to extract columns from a data frame:
+
+```{r}
+# extract column 'price' and assign to new object 'prices'
+prices <- nycbnb$price
+```
+
+
+
+## Selecting columns
+
+Use `select()`:  
+
+```{r}
+# select columns 'price' and 'borough' and assign to new object 'prices_and_boroughs'
+prices_and_boroughs <- select(nycbnb, price, borough)
+```
+
+The first argument in the `select()` function is the data frame you are selecting from, and subsequent arguments are variables you want to select.  
+
+
+
+## Renaming columns
+
+Use `rename()`:
+
+`r margin_note("Note since this operation is assigned to an existing object, 'nycbnb', you should find it overwrites the contents of the original data frame. If you want to preserve the original data you should assign your changes to a new data object.")`
+
+```{r}
+# rename 'price' to 'priceUSD'
+nycbnb <- rename(nycbnb, priceUSD = price)
+```
+
+
+
+## Adding/changing columns
+
+Use `mutate()`:
+
+`r margin_note("Where 1 square foot = $\\frac{1}{10.764}$ square metres.")`
+
+```{r}
+# add new column 'sqm'
+nycbnb <- mutate(nycbnb, sqm = sqft / 10.764)
+
+# add new column 'revenueUSD' where revenueUSD = priceUSD*availability365 
+nycbnb <- mutate(nycbnb, revenue = priceUSD*availability365)
+```
+
+
+
+## Filtering data
+
+Use `filter()`:
+
+`r margin_note("Note the double equals sign, $==$. In R (and many other languages) a double equals sign represents equality (LHS equals RHS) while a single equals sign represents variable assignment.")`  
+
+```{r}
+# filter data for brooklyn listings only
+nycbnb_bklyn <- filter(nycbnb, borough == 'Brooklyn')
+```
+
+
+
+## Piping
+
+The pipe operator, `%>%`, is useful for performing functions simultaneously.  
+
+Theoretically: say you have an object, `x`, and you want to perform three functions on it: `f()`, `g()`, and `h()`. You could do:
+
+```
+f(x)
+g(x)
+h(x)
+```
+
+Running these three lines of code sequentially would the run `x` through `f()`, then run the result through `g()`, then run that result through `h()`. A cleaner way to do this is by running it all in one 'pipe':
+
+```
+x %>% f() %>% g() %>% h()
+```
+
+In short, the pipe operator forwards ('pipes') the values on its left hand side into the expression(s) on its right hand side.  
+
+E.g. say you want to filter for Manhattan listings, drop the column `borough`, and add a new column with prices in GBP:  
+
+`r margin_note("Brilliant.")`  
+
+```{r}
+nycbnb_manh <- nycbnb %>%
+  filter(borough == 'Manhattan') %>%
+  select(-borough) %>%
+  mutate(priceGBP = priceUSD*0.82)
+```
+
+If you tried to do the above without piping, it would probably look something like this:
+
+`r margin_note("Abominable.")`  
+
+```{r}
+nycbnb_manh <- filter(nycbnb, borough == 'Manhattan')
+nycbnb_manh <- select(nycbnb_manh, -borough)
+nycbnb_manh <- mutate(nycbnb_manh, priceGBP = priceUSD*0.82)
+```
+
+This is much worse. It's slower and you had to write `nycbnb_manh` a billion times instead of just once. 
+
+Use pipes. 
+
+
+
+## Aggregating data
+
+Aggregating data is useful if you want to find summary statistics across particular categories in the data. When aggregating data you must specify your grouping variable (which should be categorical), and you must perform some function (usually a sum or mean) on the non-grouping variables (which should be numeric).    
+
+There are many ways to aggregate data. One way is using `group_by()` to specify the grouping variable(s) and `summarize()` to specify the function you want to perform on the non-grouping variable(s). Another way is using <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.1/topics/aggregate">`aggregate()`</a>.   
+
+E.g. to compare average prices across borough, use borough as the grouping variable and calculate a mean for price: 
+
+`r margin_note("Note many functions in R accept both US and UK spellings (where there is a difference)--e.g. both $\\texttt{summarize()}$ and $\\texttt{summarise()}$ will work.")`
+
+```{r, warning=FALSE}
+prices_by_borough <- nycbnb %>%
+  select(priceUSD, borough) %>%               # select relevant variables
+  group_by(borough) %>%                       # group by 'borough'
+  summarize(avgpriceUSD = mean(priceUSD))     # aggregate by mean
+```
+
+The aggregated data frame, `prices_by_borough`, should look as follows: 
+
+```{r, echo=FALSE}
+kable(prices_by_borough, caption = 'NYC Airbnb prices aggregated by borough.')
+```
+
+
+
+
+## Dealing with missing data
+
+If your data contains missing values (NA values), some functions may not run as expected:
+
+```{r}
+some_numbers <- c(4,5,6,7,NA,8)
+
+mean(some_numbers)
+```
+
+If you want the function to skip all missing values, you should specify the argument `na.rm = TRUE` (by default it is set to `FALSE` for most functions):
+
+```{r}
+mean(some_numbers, na.rm = TRUE)
+```
+
+
+
+\ 
+
+# 3--2 Visualizing Data
+
+The package `ggplot2` is the main plotting library in R. Its main function call is `ggplot()`. To make a plot you must provide `ggplot()` with two arguments, `data` and `mapping`:
+
+- `data` -- the data frame whose variables you want to plot
+- `mapping` -- an aesthetic mapping for which variable(s) go on which axes  
+
+The following examples will demonstrate how to use `ggplot()`. Here is a ggplot <a href="./downloads/ggplot2-cheatsheet.pdf" download>cheatsheet</a>.
+
+`r margin_note("For more comprehensive notes on ggplot2 visit https://ggplot2.tidyverse.org/.")`
+
+
+
+## Histograms
+
+Histograms are good for visualizing the distribution of data, since they display the frequency (or relative frequency) of observations within specified intervals or 'bins'.  
+
+To plot a histogram you must specify `+ geom_histogram()` after the main function call. Histograms only require one variable (for the $x$-axis; the $y$-axis is simply frequency).  
+
+Below is a histogram of Airbnb prices in NYC:
+
+`r margin_note("Note the argument $\\texttt{bins=20}$ in $\\texttt{geom_histogram()}$. This specifies your histogram will have 20 bins. Alternatively you could use the argument $\\texttt{binwidth=XXX}$ to specify that each bin should have a certain width.")`
+
+```{r}
+ggplot(data = nycbnb, mapping = aes(x = priceUSD)) + 
+  geom_histogram(bins = 20)
+```
+
+If you want relative frequency on the $y$-axis (a density plot) you can specify the aesthetic mapping `y = ..density..` in `geom_histogram()`:
+
+```{r}
+ggplot(data = nycbnb, mapping = aes(x = priceUSD)) + 
+  geom_histogram(bins = 20, aes(y = ..density..))
+```
+
+You can make the plot prettier by adding axis labels and changing the colors and theme:
+
+```{r}
+ggplot(data = nycbnb, mapping = aes(x = priceUSD)) + 
+  geom_histogram(bins = 20, aes(y = ..density..), fill = 'lightblue') +
+  xlab('price (USD)') +
+  ggtitle('distribution of nyc airbnb prices') +
+  theme_light()
+```
+
+
+
+## Scatterplots
+
+Scatterplots are good for visualizing the relationship between two variables. 
+
+To make a scatterplot you must specify `+ geom_point()` after the main function call. Naturally, scatterplots require two variables--one for $x$ and one for $y$. 
+
+Below is a scatterplot of latitude on longitude:
+
+`r margin_note("You can change the size of the scatter points by specifying $\\texttt{size = XXX}$ in $\\texttt{geom_point()}$.")`
+
+```{r}
+ggplot(data = nycbnb, mapping = aes(x = longitude, y = latitude)) + 
+  geom_point(size = 0.1) +
+  theme_light()
+```
+
+To distinguish between boroughs, you can add another argument to the aesthetic mapping, `color = borough`. This will use different colors for data points corresponding to each borough:
+
+`r margin_note("For obvious reasons, the color mapping requires a categorical variable. A different color will be used for each category.")`
+
+```{r}
+ggplot(data = nycbnb, mapping = aes(x = longitude, y = latitude, color = borough)) + 
+  geom_point(size = 0.1) +
+  theme_light()
+```
+
+
+## Box & Whisker Plots 
+
+Box and whisker plots are good for visualizing the distribution of a variable across different categories. 
+
+To make a box and whisker plot you must specify `+ geom_boxplot()` after the main function call. Box and whisker plots require two variables--one should be categorical and the other should be numeric.  
+
+Below is a box and whisker plot of price (numeric) on borough (categorical): 
+
+```{r}
+ggplot(data = nycbnb, mapping = aes(x = borough, y = priceUSD)) +
+  geom_boxplot() +
+  xlab('borough') +
+  ylab('price (USD)') +
+  theme_light()
+```
+
+
+
+## Tables
+
+One way (among many) to create elegant tables in your R Markdown output document is using `kable()`^[From the `knitr` package. Note `kable()` is optimized for pdf output files--you may have issues if your output format is html.]. Below are some examples:
+
+\ 
+
+```{r}
+kable(nycbnb[1:10,2:11], caption = 'Preview of NYC Airbnb dataset.')
+```
+
+\ 
+
+```{r}
+kable(prices_by_borough, caption = 'NYC Airbnb prices aggregated by borough.')
+```
+
+
+
+\ 
+
+---
+
+\ 
+
+\ 
+
+
+

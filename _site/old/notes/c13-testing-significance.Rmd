@@ -1,0 +1,757 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(bookdown)
+library(rsconnect)
+library(tufte)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+--- 
+
+# 13--1 The Hypothesis Testing Framework
+
+A statistical hypothesis is an *assumption* about one or more population parameters. Our task is to use data to determine whether a given hypothesis should be retained or rejected.  
+
+To test a hypothesis we compare two competing models for the population parameter(s). The **null hypothesis** is the *proposed* model---this is the assumption we want to test. The null can be based on anything---the results of a previous experiment, a scientific status quo, or even just a hunch^[Although in general, statistically unfounded hunches are not advisable.] we might have about the population.  
+
+To test the null we compare it to a *competing* model for the population parameter(s), usually in the form of a (new) sample of data. If the competing model yields vastly different results to those predicted by the null, we have evidence to reject the null. The **alternative hypothesis** describes the scenario under which the null is not true.  
+
+- **the null hypothesis**, $H_0$: a proposed model for the population parameter(s)
+- **the alternative hypothesis**, $H_1$: that the null is not true  
+
+There are two possible outcomes from a hypothesis test: either we *reject* the null or we *fail to reject* it---there's no in-between. For this reason hypothesis testing is only appropriate for testing a *well-defined* hypothesis---in other cases estimation and confidence intervals are better tools.  
+
+Note the alternative hypothesis is always stated as a *negation* of the null. Hypothesis tests give a framework for rejecting a given model, but not for uniquely specifying one.  
+
+
+
+\ 
+
+## A simple example
+
+Suppose we develop a hypothesis, using the pay gap data, that the *true* mean hourly wage gap is 12.36\%.^[In the pay gap dataset, the variable `DiffMeanHourlyPercent` has a sample mean $\bar X =$ 12.356.] The null and alternative hypotheses are: 
+
+$$H_0: \mu = 12.356$$
+$$H_1: \mu \neq 12.356$$
+
+Suppose that the following year we collect a new sample of data, which for the same variable yields a sample mean $\bar X = 9.42$. We can now use this new evidence to test our initial hypothesis and determine whether it should be rejected.   
+
+To make this determination we must quantify the *probability* of getting the observed value^[The observed value is the value proposed by the *competing* model.], if the null hypothesis were really true. If this probability is sufficiently low, there's a good chance the null hypothesis is not true.  
+
+The **significance level** ($\alpha$) of a test is the probability threshold below which we *definitively* reject the null. The most common significance level used is $\alpha = 0.05$---this would mean we must reject the null if the observed value lies in the most extreme 5\% of values under the distribution of the null. Sometimes a significance level of $\alpha = 0.01$ is also used.  
+
+The **rejection region** of a test is the range of values for which which we reject the null. The size of the rejection region is determined by the significance level we use. Below are two plots of the distribution of $\mu$ under the null hypothesis (as defined above), with rejection regions for $\alpha = 0.05$ and $\alpha = 0.01$: 
+
+```{r, echo=FALSE, warning=FALSE, fig.width = 8, fig.height=3}
+Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
+s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
+n = nrow(paygap)   #sample size
+SE = s / sqrt(n)   #standard error
+
+x = seq(-4, 4, length = 1000) * SE + Xbar
+y = dnorm(x, Xbar, SE)
+
+df = data.frame(x = x, y = y)
+
+breaks = round(seq(Xbar-4*SE, Xbar+4*SE, SE),2)
+
+alpha5 = 0.05
+alpha1 = 0.01
+
+Z_5 = qnorm(1-alpha5/2)
+Z_1 = qnorm(1-alpha1/2)
+
+plot1 = ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('distribution of $\\mu$ under $H_0$')) +
+  ggtitle(TeX('rejection region for $\\alpha = 0.05$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = 'P = 0.025', x = 8.8, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'P = 0.025', x = 15.7, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'violetred') +
+  theme_bw() +
+  geom_text(label = '-3SE', x = Xbar-3*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '-2SE', x = Xbar-2*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '-1SE', x = Xbar-1*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = TeX('$\\mu$'), x = Xbar, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '+1SE', x = Xbar+1*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '+2SE', x = Xbar+2*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '+3SE', x = Xbar+3*SE, y = 0.025, size=3, color = 'black') +
+  theme_bw()
+
+plot2 = ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('distribution of $\\mu$ under $H_0$')) +
+  ggtitle(TeX('rejection region for $\\alpha = 0.01$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_1*SE, xend = Xbar - Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_1*SE, xend = Xbar + Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = 'P = 0.005', x = 8.4, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'P = 0.005', x = 16.1, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  theme_bw() +
+  geom_text(label = '-3SE', x = Xbar-3*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '-2SE', x = Xbar-2*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '-1SE', x = Xbar-1*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = TeX('$\\mu$'), x = Xbar, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '+1SE', x = Xbar+1*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '+2SE', x = Xbar+2*SE, y = 0.025, size=3, color = 'black') +
+  geom_text(label = '+3SE', x = Xbar+3*SE, y = 0.025, size=3, color = 'black') +
+  theme_bw()
+
+grid.arrange(plot1, plot2, ncol = 2)
+  
+  
+  
+  # geom_text(label = '-3SE', x = Xbar-3*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = '-2SE', x = Xbar-2*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = '-1SE', x = Xbar-1*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = TeX('$\\mu$'), x = Xbar, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = '+1SE', x = Xbar+1*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = '+2SE', x = Xbar+2*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # geom_text(label = '+3SE', x = Xbar+3*SE, y = 0.025, size=3, color = 'darkgrey') +
+  # theme_bw()
+```
+
+The total area occupied by the rejection region is simply the significance level. The **critical values** are the bounds of the rejection region:
+
+$$\bigg\{ \mu - c \cdot \frac{s}{\sqrt n} \;\; , \;\; \mu + c \cdot \frac{s}{\sqrt n} \bigg\}$$
+
+where $\mu$ is the mean under the null distribution. In this case the distribution of null has $\mu = 12.36$, $s = 16.01$, and $n = 153$. If we conduct the test at the $\alpha = 0.05$ level, the critical values are the 2.5th and 97.5th percentiles of the distribution, so $c = t_{\{(1-\alpha/2),df=152\}} = 1.976$.^[Recall you can compute $c$ using $\texttt{qt(0.975, df=152)}$.] Using these values the rejection region is:  
+
+$$\bigg\{ 12.36 - 1.976 \cdot \frac{16.06}{\sqrt{153}} \;\; , \;\; 12.36 + 1.976 \cdot \frac{16.06}{\sqrt{153}} \bigg\}$$
+$$\Longrightarrow \;\; \{ 9.8, 14.9 \}$$
+
+i.e. the rejection region in this test is $\bar X < 9.799$ \& $\bar X > 14.913$. Note the critical values for an $\alpha=0.05$ test are also just the bounds of a 95\% confidence interval.  
+
+A test is **statistically significant** if the observed value falls in the rejection region. In this example, where the observed value is $\bar X = 9.42$ and $\alpha = 0.05$:
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('distribution of $\\mu$ under $H_0$')) +
+  ggtitle(TeX('significance test with $\\alpha = 0.05$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_segment(x = 9.42, xend = 9.42, y = 0, yend = 0.25, color = 'black', linetype = 'dotted') + 
+  geom_text(label = 'observed \n value \n = 9.42', x = 9.42, y = 0.27, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value \n = 9.80', x = Xbar - Z_5*SE, y = 0.13, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value \n = 14.91', x = Xbar + Z_5*SE, y = 0.13, size = 3, color = 'violetred') +
+  theme_bw()
+```
+
+i.e. with the observed value clearly falls in the rejection region. We can thus reject the null at the 5\% significance level, and conclude that true mean hourly wage gap is no 12.35\%.     
+
+Note if we had used a significance level of $\alpha = 0.01$, we would have reached a different conclusion: 
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('distribution of $\\mu$ under $H_0$')) +
+  ggtitle(TeX('significance test with $\\alpha = 0.01$')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_1*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_1*SE, xend = Xbar - Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_1*SE, xend = Xbar + Z_1*SE, y = 0, yend = 0.1, color = 'violetred', linetype = 'dotted') +
+  geom_segment(x = 9.42, xend = 9.42, y = 0, yend = 0.25, color = 'black', linetype = 'dotted') + 
+  geom_text(label = 'observed \n value \n = 9.42', x = 9.42, y = 0.27, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_1*SE, y = 0.12, size = 3, color = 'violetred') +
+  theme_bw()
+```
+
+i.e. with $\alpha = 0.01$, the observed value does *not* fall in the rejection region, and thus we cannot reject the null. The choice of significance level can make or break the fate of a hypothesis.  
+
+## The p-value of a test
+
+Another way to conduct a hypothesis test is by looking at $p$-values.  
+
+The **p-value** of a test is the probability of getting a result *at least as extreme* as the observed value, under the null hypothesis.  
+
+This may sound like a cumbersone definition, but it's easy to visualize. In this example the observed value is $\bar X = 9.42$. The probability of getting a value at least as extreme as $\bar X = 9.42$ is the following region:
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
+p = pnorm(9.42, mean = Xbar, sd = SE)
+Z = -qnorm(p)
+
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('distribution of $\\mu$ under $H_0$')) +
+  ggtitle(TeX('the p-value')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = 9.42, xend = 9.42, y = 0, yend = 0.25, color = 'black', linetype = 'dotted') + 
+  geom_text(label = 'observed \n value \n = 9.42', x = 9.42, y = 0.27, size = 3, color = 'black') +
+  geom_text(label = 'P = 0.0116', x = 8.8, y = -0.005, size = 3, color = 'violetred') + 
+  geom_text(label = 'P = 0.0116', x = 15.7, y = -0.005, size = 3, color = 'violetred') + 
+  theme_bw()
+```
+
+Each region has a probability of 0.0116, which means the total probability of getting a value at least as extreme as the observed value is 0.0233. Thus the $p$-value of this test is 0.0233.  
+
+The test is statistically significant if the $p$-value is smaller than the significance level of the test. If we had used $\alpha = 0.05$, the result would have been statistically significant, and we would have rejected the null; but if we used $\alpha = 0.01$, we couldn't have rejected the null. 
+
+Note this method is equivalent to the previous one (i.e. computing the rejection region and seeing whether it contains the observed value).  
+
+## A workflow 
+
+To summarize: below are the basic steps to follow when conducting a hypothesis test: 
+
+- state the null and alternative hypotheses. The null is the assumption you're testing---it's a *proposed* model for one or more population parameters. The alternative hypothesis describes the scenario where the null is not true. 
+- choose a significance level, $\alpha$, for the test---this is the probability threshold below which you will *definitively* reject the null. Common levels are $\alpha = 0.05$ and $\alpha = 0.01$.  
+
+Then, either: 
+
+- determine the *rejection region* of the test---a range of values that would cause you to reject the null, if the observed value was seen to lie in this range. The bounds of the rejection region are determined by the significance level.  
+- determine whether to reject the null hypothesis based on whether the observed value lies in the rejection region or not
+
+or: 
+
+- compute the $p$-value of the test---the probability of getting a value at least as extreme as the observed value
+- reject the null if the $p$-value is smaller than the significance level
+
+
+
+\ 
+
+# 13--2  Errors and Power
+
+In a hypothesis test, the null is assumed until there is strong evidence to suggest we should reject it. Of course, the outcome of a single hypothesis test does not necessarily lead to the correct result---the $p$-value (or whatever rubric you use) only represents a *likelihood*, and there's always a chance the conclusion we draw from a given test is the *wrong* conclusion, even if the likelihood is very low.   
+
+## Type I and Type II Errors
+
+There are two kinds of error we can make in a hypothesis test:  
+
+- **Type I Error:** rejecting the null, when the null is *actually* true. The probability of type I error is no more than the significance level of a test.^[Can you see why?]
+- **Type II Error:** failing to reject the null, when the null *actually* is false.  
+
+```{r, echo=FALSE}
+hyptests = as.table(rbind(c('$\\checkmark$','type I error'), c('type II error','$\\checkmark$')))
+dimnames(hyptests) = list(' ' = c('$H_0$ true','$H_0$ false'), 
+                           ' ' = c('retain null','reject null'))
+
+kable(hyptests)
+```
+
+The foremost goal in hypothesis testing is ensuring the chance of type I error is low.^[Since most hypothesis tests are out to *disprove* something, it would be particularly terrible if you rejected a null that was actually true.] Since the type I error is determined by the significance level, you must choose a significance level that is appropriate for the context---e.g. if type I errors are particularly dangerous, you should use a small significance level (e.g. $\alpha = 0.01$ or $\alpha = 0.005$), to minimize your chance of rejecting the null when it's actually true.  
+
+The two plots below should help you visualize the type I and type II error. Using the same example as above, the left figure shows the type I error if the true mean wage gap is really 12.36\% (i.e. $H_0$ true). The right figure shows the type II error if the true mean wage gap is really 8\% (i.e. $H_0$ false), with true distribution overlaid in pink:  
+
+```{r, echo=FALSE, warning=FALSE, fig.width=11, fig.height=3.5, fig.fullwidth = TRUE}
+Xbar = mean(paygap$DiffMeanHourlyPercent)   #sample mean
+s = sd(paygap$DiffMeanHourlyPercent)   #sample s.d.
+n = nrow(paygap)   #sample size
+SE = s / sqrt(n)   #standard error
+mu = 8
+
+x = seq(-10, 4, length = 1000) * SE + Xbar
+y = dnorm(x, Xbar, SE)
+y1 = dnorm(x, mu, SE)
+
+df = data.frame(x = x, y = y)
+df1 = data.frame(x = x, y = y1)
+
+breaks = round(seq(Xbar-8*SE, Xbar+4*SE, SE),2)
+
+alpha5 = 0.05
+alpha1 = 0.01
+
+Z_5 = qnorm(1-alpha5/2)
+Z_1 = qnorm(1-alpha1/2)
+
+plot1 = ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(' ') +
+  ggtitle(TeX('Type I Error if $\\mu = 12.36$ ($H_0$ true)')) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='black', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_text(label = TeX('$H_0: \\; \\mu = 12.36$'), x = 13, y = 0.05, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 8.8, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'Type I Error', x = 15.7, y = -0.005, size = 2.5, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  theme_bw()
+
+plot2 = ggplot(data = df1, mapping = aes(x = x, y = y)) +
+  geom_line(color = 'violetred') +
+  geom_line(data = df, aes(x = x, y = y), color = 'black') +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-8*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(' ') +
+  ggtitle(TeX('Type II Error if $\\mu = 8$ ($H_0$ false)')) +
+  geom_area(aes(x = ifelse(x > Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  #geom_area(aes(x = ifelse(x > Xbar + Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_text(label = 'Type II Error', x = 11, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_text(label = TeX('$H_0: \\; \\mu = 12.36$'), x = 13, y = 0.05, size = 2.5, color = 'black') +
+  geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = TeX('$\\mu = 12.36$'), x = 7.5, y = 0.05, size = 2.5, color = 'violetred') +
+  theme_bw()
+
+grid.arrange(plot1, plot2, ncol = 2)
+```
+
+Note that the type I error is simply the rejection region of the test ($\alpha$). From the figure above you should be able to see why reducing the type I error must also increase the type II error.^[Decreasing the chance of type I error increases the chance of type II error, and vice versa---if a judge decided to reduce the number of false convictions by increasing the burden of proof required to demonstrate guilt, this would also inevitably result in more actual criminals getting away with their torts.]
+
+## The power of a test
+
+Another useful concept in hypothsis testing is *power*---this is the probability of *correctly* rejecting a false null. Note that power is the complement of type II error, i.e. Power = 1 - T2E. The secondary goal in hypothesis testing, after choosing the test with the smallest type I error, is to choose the test with maximum power---typically we want power to be greater than 0.8 (i.e. the probability of type II error to be smaller than 0.2).   
+
+Using the same example as above, the power of the test can be visualized as the following region:
+
+```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
+ggplot(data = df1, mapping = aes(x = x, y = y)) +
+  geom_line(color = 'violetred') +
+  geom_line(data = df, aes(x = x, y = y), color = 'black') +
+  scale_x_continuous(breaks = breaks,
+                     limits = c(Xbar-8*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(' ') +
+  ggtitle(TeX('Power if $\\mu = 8$ ($H_0$ false)')) +
+  geom_area(aes(x = ifelse(x > Xbar - Z_5*SE, x, 0)), fill='violetred', alpha=0.4) +
+  geom_area(aes(x = ifelse(x < Xbar - Z_5*SE, x, 0)), fill='blue', alpha=0.4) +
+  geom_segment(x = Xbar - Z_5*SE, xend = Xbar - Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') + 
+  geom_segment(x = Xbar + Z_5*SE, xend = Xbar + Z_5*SE, y = 0, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_text(label = 'Type II Error', x = 11, y = -0.005, size = 2.5, color = 'violetred') +
+  geom_text(label = 'Power', x = 7.1, y = -0.005, size = 2.5, color = 'blue') +
+  geom_text(label = 'critical \n value', x = Xbar - Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_text(label = 'critical \n value', x = Xbar + Z_5*SE, y = 0.12, size = 3, color = 'black') +
+  geom_segment(x = Xbar, xend = Xbar, y = 0, yend = 0.5, color = 'black', linetype = 'dotted') +
+  geom_text(label = TeX('$H_0: \\; \\mu = 12.36$'), x = 13, y = 0.05, size = 2.5, color = 'black') +
+  geom_segment(x = mu, xend = mu, y = 0, yend = 0.5, color = 'violetred', linetype = 'dotted') +
+  geom_text(label = TeX('$\\mu = 8.0$'), x = 7.5, y = 0.05, size = 2.5, color = 'violetred') +
+  theme_bw()
+```
+
+The further away the true mean is from the proposed mean, the higher the power of the test. To see this mathematically, we'll consider something known as the **power function**, $\beta$,^[Not to be confused with the regression coefficient, which is also denoted $\beta$.] which describes the power of a test as a function of the true parameter $\mu$, i.e. $\beta = \beta(\mu)$. Since power is the probability of correctly rejecting the null, the power function for a two-tailed test is:
+
+$$\beta(\mu) = \P(t > c) + \P(t < -c)$$
+
+where $c = t_{\{(1-\alpha/2),df=n-1 \}}$. In full, this can be expressed:
+
+$$
+\begin{aligned}
+  \beta(\mu) &= \P(t > c) + \P(t <  -c)\\ 
+  &= \P \bigg( \frac{(\bar X - \mu_{H_0})}{s/\sqrt n} > c \bigg) + \P \bigg( \frac{(\bar X - \mu_{H_0})}{s/\sqrt n} < -c \bigg)\\ 
+  &= 1- \P \bigg( \frac{(\bar X - \mu_{H_0})}{s/\sqrt n} < c \bigg) + \P \bigg( \frac{(\bar X - \mu_{H_0})}{s/\sqrt n} < -c \bigg)\\ 
+  &= 1- \P \bigg( \frac{(\bar X - \mu_{H_0}) - \mu}{s/\sqrt n} < c - \frac{\mu}{s/\sqrt n} \bigg) + \P \bigg( \frac{(\bar X - \mu_{H_0}) - \mu}{s/\sqrt n} < -c - \frac{\mu}{s/\sqrt n} \bigg) \\ 
+  &= 1- \P \bigg( \frac{\bar X - \mu}{s/\sqrt n} < c - \frac{\mu - \mu_{H_0}}{s/\sqrt n} \bigg) + \P \bigg( \frac{\bar X - \mu}{s/\sqrt n} < -c - \frac{\mu - \mu_{H_0}}{s/\sqrt n} \bigg) \\ 
+  &= 1- \Phi \bigg( c - \frac{\sqrt n (\mu - \mu_{H_0})}{s} \bigg) + \Phi \bigg( -c - \frac{\sqrt n (\mu - \mu_{H_0})}{s} \bigg)
+\end{aligned}
+$$
+
+where $\Phi$ is the cdf of the normal distribution (or the $t$-distribution), $\mu$ is the true mean, $\mu_{H_0}$ is the mean under the null, and $c$ is the $Z_{(1-\alpha/2)}$ or $t_{\{(1-\alpha/2),df=n-1 \}}$ value. Below is a plot of the power as a function of the true mean, for the above example with $\mu_{H_0} = 12.36}$:
+
+```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
+c_null = qnorm(0.975)
+
+muH0 = 12.36
+n = 153
+sqrtn = sqrt(n)
+s = 16
+
+power = function(mu) {
+  1 - pt(c_null - (sqrtn*(mu-muH0))/s, df = 153) + pt(-c_null - (sqrtn*(mu-muH0))/s, df = 153)
+}
+
+xrange = data.frame(mu = seq(from = 5, to = 20, length = 1000))
+
+ggplot(xrange, aes(mu)) + 
+  stat_function(fun = power) +
+  xlab(TeX('$\\mu$')) + ylab(TeX('$\\beta(\\mu)$')) +
+  ggtitle('power as a function of true mean (two-tailed)') +
+  
+  geom_segment(x = 0, xend = 12.36, y = 0.05, yend = 0.05, color  = 'violetred', linetype = 'dotted') +
+  geom_text(x = 7, y = 0.1, label = TeX('$\\alpha = 0.05$'), color = 'violetred') + 
+  
+  geom_segment(x = 12.36, xend = 12.36, y = 0.0, yend = 2, color  = 'black', linetype = 'dotted') +
+  geom_text(x = 12.36, y = 0.75, label = TeX("$H_0: \\; \\mu = 12.36$")) + 
+  
+  theme_light()
+```
+
+We can also introduce another concept: the **size** of a test, which is the largest probability of rejecting $H_0$ when $H_0$ is true. This is also known as the **false rejection rate**. The size of a test is the value of the power function when the true mean is equal to the null mean, which in this case is $\beta(\mu = \mu_{H_0}) = \beta(0) = 0.05$.  
+
+
+
+\ 
+
+# 13--3 Effect Size and Practical Significance 
+
+There is a major issue in hypothesis testing that arises when using large samples. In a two-tailed test the bounds of the rejection region are given by $\mu \pm c \cdot \frac{s}{\sqrt n}$, where $\mu$ is the value of the true mean under the null. Note how the bounds have an inverse dependency on  $n$---that as $n$ becomes larger, the distance between the null value and the rejection region becomes smaller. This means that for very large $n$, we will reject the null for very small deviations of the observed value from the null---even if the deviations are so small that they have no *practical significance*.   
+
+To illustrate this, suppose we are testing the average height in a population, and the null hypothesis is $\mu = 178$ cm. Suppose we have sample data with $\bar X = 179$ cm, $s = 23.5$ cm, and $n = 100$. If we were to conduct the hypothesis test that $\mu \neq 178$ cm at the $\alpha = 0.05$ level, with $c = Z_{(1-\alpha/2)} = 1.96$, we would have a rejection  region as follows:  
+
+$$\Bigg\{ 178 - 1.96 \cdot \frac{23.5}{\sqrt{100}} \;\; , \;\; 178 + 1.96 \cdot \frac{23.5}{\sqrt{100}} \Bigg\}$$
+$$\Longrightarrow \;\;\; \{ 173.39 \; \text{cm},182.61 \; \text{cm} \}$$
+
+i.e. we would reject the null if we observed a value more extreme than 173.39 cm or 182.61 cm. Since our observed value is 179 cm, we do not reject the null, which is an appropriate result since the difference between 178 cm and 179 cm is trivial in the context of people's heights. But if we do the same test with a sample size $n= 10,000$, the rejection region is:
+
+$$\Bigg\{ 178 - 1.96 \cdot \frac{23.5}{\sqrt{10000}} \;\; , \;\; 178 + 1.96 \cdot \frac{23.5}{\sqrt{10000}} \Bigg\}$$
+
+$$\Longrightarrow \;\;\; \{ 177.54 \; \text{cm},178.46 \; \text{cm} \}$$
+
+i.e. with $n = 10,000$ we *would* reject our observed value of 179 cm, even though in reality such a small difference doesn't really warrant concluding that the true mean height is not 178 cm. This is the issue with large-sample hypothesis tests: results that are not *practically* significant can still be considered *statistically* significant, and the larger the sample size, the more this is going to happen.   
+
+One way to control this issue when conducting a study is to *plan* an appropriate sample size---i.e. to *choose* a sample size that will result in practically significant rejections only. First, you must decide what constitutes a practically significant result---e.g. in the above example, suppose we decide that a deviation of at least $\pm 5$ cm from the null mean should permit us to reject the null (i.e. reject if $\bar X < 173$ cm or $\bar X > 183$ cm). What is the sample size necessary to make rejections of this magnitude only, at the $\alpha = 0.05$ level? Simply set the bounds of the rejection equal to the desired values, and solve for $n$, i.e. set $\mu  + c \cdot \tfrac{s}{\sqrt n} = 183$, which you will find gives $n \approx 85$.  
+
+It's also convenient to introduce a quantity called the **effect size**, $d$, defined as follows:
+
+$$d = \frac{\mu_1 - \mu_2}{s}$$
+
+where $\mu_1 - \mu_2$ is the mean difference (i.e. the desired deviation from the null mean, or *effect*).^[Note this definition of effect size is known as *Cohen's* $d$.] E.g.---in the above example the effect size is $d = \frac{5}{23.5} = 0.213$. To determine the appropriate sample size for a study, we must first determine the smallest effect size that would be considered practically significant, then solve for $n$. It can be shown that $n = \big( \tfrac cd \big)^2$.  
+ 
+
+
+
+
+
+
+\ 
+
+# 13--4 One-Tailed Hypothesis Tests
+
+So far we have demonstrated only *two-tailed* hypothesis tests, since we assumed the true value of the parameter could be either above or below the proposed value under the null. This is why, when constructing the rejection region, we split the area equally between the lowest *and* highest extremes of the distribution. Most tests are two-tailed, since generally we don't know the direction of the true value relative to our proposed value.  
+
+But there are select instances when we know (or assume) that the true value could *only* be higher (or lower) than the proposed value---in these contexts it may be more optimal to consider only the upper (or lower) tail of the distribution when conducting the test.  
+
+*Example:* suppose someone tells you the temperature of a room is 0 Kelvin (i.e. absolute zero; there is no possible temperature below this value), and you want to test this claim. In this case you can specify a directionality for the alternative hypothesis, since the true mean temperature cannot be below the proposed value:
+
+$$H_0: \mu = 0$$
+$$H_1: \mu > 0$$
+
+To conduct this one-tailed test at the 5\% significance level, the rejection region comprises only the uppermost extreme 5\% of values under the distribution:
+
+```{r, echo=FALSE, warning=FALSE, fig.height=3.5, fig.width=5, fig.align='center'}
+x = seq(-4, 4, length = 1000)
+y = dnorm(x, mean = 0, sd = 1)
+
+df = data.frame(x = x, y = y)
+
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  xlab('temperature (K)') + 
+  ylab('probability') + 
+  ggtitle(TeX('$\\alpha = 0.05$ rejection region for one-tailed (increase)')) + 
+  theme_classic() +
+  ylim(-0.05,0.42) +
+  theme(axis.text.x=element_blank()) +
+  theme(axis.ticks.x=element_blank()) +
+  geom_area(aes(x = ifelse(x > 1.64, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = 1.64, xend = 1.64, y = 0, yend = 0.3, linetype = 'dotted', color = 'violetred') +
+  geom_segment(x = 0, xend = 0, y = 0, yend = 0.5, linetype = 'dotted', color = 'black') +
+  geom_text(label = TeX('$H_0: \\mu = 0$'), x = 0, y = 0.15,  color = 'black') + 
+  geom_text(label = 'critical value \n = 95th percentile', x = 1.64, y = 0.35,  color = 'violetred') +
+  geom_text(label = 'P =  0.05', x = 2, y = -0.02,  color = 'violetred') 
+```
+
+i.e. with $\alpha = 0.05$ the critical value for a one-tailed test is the 95th percentile of the distribution (in a two-tailed test with $\alpha = 0.05$, the critical values are the 2.5th and 97.5th percentiles).   
+
+
+
+\ 
+
+# 13--5 The t-test 
+
+Below are some examples of hypothesis tests using the $t$-distribution.  
+
+To recap: the $t$-distribution is used to approximate the limiting behavior of a sample mean when the true mean and variance of a population is *unknown*. The $t$-distribution has one parameter, *degrees of freedom*, which describes the exact shape of the bell curve. For a sample of size $n$, the random variable $\frac{\bar X - \mu}{s/\sqrt n}$ follows a $t$-distribution with $n-1$ degrees of freedom. For more on this, see: <a href="https://stats103.org/notes/c11-clt.html#the-t-distribution">$t$-distribution</a>.  
+
+Below are some common examples of hypothesis tests conducted using the $t$-distribution.  
+
+## One-sample t-test
+
+A one-sample $t$-test can be used to test whether the mean of a population is equal to some specified value (the example demonstrated in section 13--1  was a one-sample $t$-test). For a two-sided test, the null and alternative hypotheses are:
+
+$$H_0: \mu = k$$
+$$H_1: \mu \neq k$$
+
+For data with sample mean $\bar X$, sample s.d. $s$, and sample size $n$, the $t$-statistic for this test is:
+
+$$t = \frac{\bar X - k}{\frac{s}{\sqrt n}}$$
+
+For a two-sided test of size $\alpha$, the bounds of the rejection region are:
+
+$$\bigg\{ k - t_{(1-\alpha/2)} \cdot \frac{s}{\sqrt n} \; , \; k + t_{(1-\alpha/2)} \cdot \frac{s}{\sqrt n} \bigg\}$$
+
+To perform the test you can either compute these bounds manually, or you can use the `t.test()` function, entering the array of sample data as one argument, and the proposed null value of the mean as the second argument.  
+
+E.g. for the pay gap data, testing whether the true mean hourly wage gap is zero:
+
+```{r}
+t.test(paygap$DiffMeanHourlyPercent, mu = 0)
+```
+
+## Welch two-sample t-test 
+
+The two-sample $t$-test can be used to test whether two groups have the same mean. The easiest way to do this is to think of the two groups as independent RVs, $X$ and $Y$, and to create a new RV that is a linear combination of both. For a two-sided test, the null and alternative hypotheses are:
+
+$$H_0: \mu_X - \mu_Y = 0$$
+$$H_1: \mu_X - \mu_Y \neq 0$$
+
+where $\mu_X$ denotes the true mean of group $X$ and $\mu_Y$ denotes the true mean of group $Y$. 
+
+The $t$-statistic for the test is:
+
+$$t = \frac{\bar X - \bar Y}{\sqrt{\frac{s_X^2}{n_X}+\frac{s_Y^2}{n_Y}}}$$
+
+where the subscripts $X$ and $Y$ denote the sample parameters for each of the two groups. In this case the distribution of the $t$-statistic follows a $t$-distribution with degrees of freedom as follows: 
+
+$$\text{DoF} = \frac{\bigg( \frac{s_X^2}{n_X} + \frac{s_Y^2}{n_Y} \bigg)^2}{\frac{(s_X^2 / n_X)^2}{n_X-1}+\frac{(s_Y^2 / n_Y)^2}{n_Y-1}}$$
+
+which is known as the Welch-Satterthwaite equation. For simplicity, if doing the computations by hand, you can use the smaller of $n_X-1$ and $n_Y-1$ as the DoF.     
+
+In any case, the `t.test()` function in R will do these cumbersome calculations for you. E.g. testing whether `FemaleBonusPercent` and `MaleBonusPercent` have the same mean:  
+
+```{r}
+t.test(paygap$FemaleBonusPercent, paygap$MaleBonusPercent)
+```
+
+## Two-sample t-test with pooled data
+
+If the two groups under scrutiny have the same population variance (or you have good reason to believe that they do), the difference in their sample means can be better approximated using what's known as the *pooled standard deviation:*
+
+$$s_p = \sqrt{\frac{s_X^2 (n_X - 1)+s_Y^2(n_Y-1)}{n_X+n_Y-2}}$$
+
+The $t$-statistic for this test is:
+
+$$t = \frac{\bar X - \bar Y}{s_p \cdot \sqrt{\frac{1}{n_X}+\frac{1}{n_Y}}}$$
+
+where the $t$-statistic follows a $t$-distribution with $n_X + n_Y - 2$ degrees of freedom. 
+
+Pooling the standard deviation gives an unbiased estimate of the common variance of the two groups, which gives a more accurate model overall. Note that if the two groups don't have the same variance, the Welch two-sample test must be used instead.  
+
+## Two-sample t-test with paired data
+
+Two samples are said to be *paired* if both samples have observations on the *same* subjects (e.g. a group of patients before and after some form of treatment). In this case we can use the *paired difference test*, which has a $t$-statistic:
+
+$$t = \frac{\bar X_D - \mu}{\frac{s_D}{\sqrt{n}}}$$
+
+where the subscript $D$ denotes the sample parameter for the *difference* in measurements for each subject---e.g. $s_D$ is the s.d. of the *difference* in measurements for each subject between the two groups.^[For the $i$th subject, the difference would be something like $D_i = X_{2i} - X_{1i}$.] The $t$-statistic in this case follows a $t$-distribution with $n-1$ degrees of freeedom.  
+
+Using the paired $t$-test increases the overall power of the test (when compared to the unpaired Welch test), and so is beneficial in contexts where it's applicable.    
+
+In R you can perform a paired two-sample $t$ test by specifying the parameter `paired = TRUE` in the `t.test()` function.   
+
+
+
+\ 
+
+# 13--6 Testing Groups: Pearson's $\chi^2$ Test 
+
+The chi-squared test is useful for testing whether groups of categorical resemble each other. Consider the following example, which shows data on blood type and the observed incidence of a particular ailment: 
+
+```{r, echo=FALSE}
+ailment_study = as.table(rbind(c(55,50,7,24), c(7,5,3,13), c(26,32,8,17)))
+dimnames(ailment_study) = list(' ' = c('no ailment','advanced ailment','minimal ailment'), 
+                           ' ' = c('O','A','AB','B'))
+
+kable(ailment_study)
+```
+
+Suppose we're interested in finding whether the incidence ailment is dependent on blood type. To test this, we define the null hypothesis that the incidence of ailment is *not* dependent on blood type (this means the data in different categories *resemble* each other). The alternative hypotheses that incidence of ailment is *dependent* on blood type (the data in different categories is different).  
+
+To perform this test, for each cell in the data we compute the squared difference between the observed count and the expected count, divided by the expected count:
+
+$$\frac{(\text{observed-expected}^2)}{\text{expected}}$$
+
+E.g. for the first cell in the table (the number of subjects with no ailment and blood type O), the observed count is 55 and the expected count is 48.45.^[To calculate the expected count, note that there are 88 subjects in total with blood type O, and 247 subjects in the dataset in total, meaning the proportion of subjects in the study with blood type O is $\frac{88}{247} = 0.356$. Note also there are 136 subjects in in total with no ailment. This the *expected* count for subjects with no ailment and blood type O is $136 \cdot \frac{88}{247}=48.45$.] Thus: 
+
+$$\frac{(55-48.45)^2}{48.45}$$
+
+The chi-squared test-statistic is the sum of these values for each cell in the table:
+
+$$\chi^2 = \sum_i^k \frac{(X_i - \E[X_i])^2}{\E[X_i]}$$
+
+Which, in this case, is:
+
+$$\Longrightarrow \;\; \chi^2 = 15.797$$
+
+## The $\chi^2$ distribution 
+
+The chi-squared test statistic follows the *chi-squared distribution*, which describes the distribution of a *sum* of several independent standard normal distributions. The chi-squared distribution has one parameter, degrees of freedom, calculated as:
+
+$$\text{DoF} = (\text{number of rows - 1})(\text{number of cols - 1})$$
+
+Below is a plot showing the chi-squared distribution for different DoFs:
+
+```{r, echo=FALSE, fig.width=7, fig.height=3.5, fig.align='center'}
+curve(dchisq(x,1),xlim=c(0,15),ylim=c(0,0.6),ylab="chi squared density")
+curve(dchisq(x,2),col="red",add=TRUE)
+curve(dchisq(x,3),col="blue",add=TRUE)
+curve(dchisq(x,5),col="dark green",add=TRUE)
+curve(dchisq(x,10),col="brown",add=TRUE)
+legend(12,0.55,c("DoF=1","DoF=2","DoF=3","DoF=5","DoF=10"),
+       col=c("black","red","blue","dark green","brown"),lty=1:5)
+```
+
+
+## The $\chi^2$-test
+
+In the example above, DoF = $(3-1)(4-1) = 6$. The observed test statistic, $\chi^2 = 15.797$, encloses the following region in a $\chi^2$ distribution with 6 DoFs:
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
+x = seq(0,30, length = 1000)
+y = dchisq(x,6)
+
+df = data.frame(x = x, y = y)
+
+ggplot(data = df, aes(x = x, y = y)) + 
+  geom_line() +
+  geom_area(aes(x = ifelse(x > 15.797, x, 0)), fill='violetred', alpha=0.4) +
+  geom_segment(x = 15.797, xend = 15.797, y = 0, yend = 0.05, color = 'violetred', linetype = 'dotted') +
+  geom_text(x = 15.797, y =  0.06, label = TeX("$\\chi^2 = 15.797$"), color = 'violetred') +
+  ggtitle(TeX('$\\chi^2$ distribution with 6 DoF')) +
+  ylab('density') + 
+  ylim(0,0.14) +
+  theme_light()
+```
+
+The shaded region is the $p$-value of the test, since this region contains values at least as extreme as the observed test statistic. As always, the size of the $p$-value will tell us whether to reject or retain the null, depending on the significance level of the test.  
+
+In R we can perform the test and find the $p$-value using the `chisq.test()` function, as follows:
+
+`r margin_note("Note the $\\texttt{chisq.test()}$ function requires data to be in the matrix or table format. The data should be presented as a <a href='https://en.wikipedia.org/wiki/Contingency_table'>contigency table</a>.")`
+
+```{r, warning=FALSE}
+## make contingency table 
+ailment_study = as.table(rbind(c(55,50,7,24), c(7,5,3,13), c(26,32,8,17)))
+dimnames(ailment_study) = list(' ' = c('no ailment','advanced ailment','minimal ailment'), ' ' = c('O','A','AB','B'))
+ailment_study
+
+## perform chi-squared test
+chisq.test(ailment_study)
+```
+
+The $p$-value of the test is 0.0149, which implies we can reject the null at the 5\% level, and conclude that the incidence of ailment shows *dependency* on blood type.  
+
+Note rather than testing all groups at once (as a single hypothesis) we can also test each group (advanced ailment and minimal ailment) *separately* against the control group for dependence on blood type:
+
+```{r, warning=FALSE}
+## test advanced ailament group against control group
+chisq.test(ailment_study[c(1,2), ])
+```
+
+```{r, warning=FALSE}
+## test minimal ailament group against control group
+chisq.test(ailment_study[c(1,3), ])
+```
+
+Note how each of these groups, when tested *separately* against the control group, yields more variable results: the advanced ailment group has a significant $p$-value of 0.00343, but the minimal ailment group does not have a significant $p$-value. Conducting separate tests for each group is an example of **multiple testing**---some pitfalls of doing this are discussed next.  
+
+
+
+\ 
+
+# 13--7 Multiple Testing 
+
+Testing many hypotheses is known as *multiple testing*. For any one test, the chance of a false rejection (type I error) is $\alpha$. But when conducting many tests simultaneously, the chance of *at least* one false rejection is much larger:
+
+$$\P(\text{at least 1 false rejection in }m \text{ tests}) = 1  - \P(\text{no false rejections in }m \text{ tests}) = 1-(1-\alpha)^m$$
+
+E.g. if you conducted 10 tests simultaneously at the 5\% level, the chance of *at least* one false rejection is:
+
+$$1-(0.95)^{10} = 0.401$$
+
+which is clearly much larger than the chance of false rejection in a single test. This is the **multiple testing problem**---it becomes particularly problematic when conducting a very large number (e.g. thousands or millions) of hypothesis tests simultaneously. The probability of making at least one false rejection in a sequence of hypothesis tests is known as the **familywise error rate**, or FWER.   
+
+Of course, the easiest way to get around this problem is to do as few tests as necessary---this will ensure a small FWER. But in contexts where multiple testing is necessary, there are a number of methods for dealing with this problem. Below we will briefly discuss two: the **Bonferonni** correction and the **Benjamini-Hochberg** correction.   
+
+## The Bonferroni correction
+
+The Bonferonni correction gives a way to control the familywise error rate (FWER). It works as follows.  
+
+Given $m$ tests: 
+
+$$H_{0i} \;\; \text{vs.} \;\; H_{1i} \;\;\;\; \text{for} \;\; i = 1,...,m$$
+
+If $p_1, ..., p_m$ denote the $p$-values for these $m$ tests, then reject the null hypothesis $H_{0i}$ if and only if: 
+
+$$p_i < \frac \alpha m$$
+
+This condition enforces the familywise error rate to be $\text{FWER} \leq \alpha$. To see this:
+
+$$\text{FWER} = \P \Bigg\{ \bigcup_{i=1}^m \bigg( p_i \leq \frac \alpha m \bigg) \Bigg\} \leq \sum_i^m \bigg\{ \P \bigg( p_i \leq \frac \alpha m \bigg) \bigg\} = \sum_i^m \frac \alpha m = \alpha$$
+
+In R, you can adjust a vector of $p$-values with the Bonferonni correction by specifying the function `p.adjust(p, method = p.adjust.methods = 'bonferonni')`, where `p` is a numeric vector of $p$-values.    
+
+One issue with the Bonferroni method is that it's very *conservative*---it tries to make it unlikely that you will make even one false rejection. It's often more reasonable to *control* the false discovery rate (FDR)---this is the basis of the BH correction (next). 
+
+## The Benjamini-Hochberg correction 
+
+The BH correction gives a way to control the false discovery rate (FDR), which is defined as the number of false rejections divided by the number of rejections.  
+
+Given $m$ tests, the BH method works as follows: 
+
+- arrange the observed $p$-values $p_1, ..., p_m$ in increasing order, and assign ranks to each value based on its order, i.e. $p_{(1)}, p_{(2)}, ..., p_{(m)}$
+- for each $p$-value, compute the BH critical value, defined as $\frac im \alpha$, where $\alpha$ is the desired false discovery rate (e.g. 5\% or 10\%), and $i$ is the rank of the $p$-value  
+- compare the set of $p$-values to the BH critical value, and find the largest $p$-value that is smaller than the critical value
+- reject the null hypothesis (i.e. declare discoveries) for all $p$-value smaller than this one  
+
+If this procedure is applied, then regardless of how many null hypotheses are true, then the false discovery rate (FDR) will be:
+
+$$\text{FDR} \leq \alpha$$
+
+In R, you can adjust a vector of $p$-values with the BH correction by setting  `p.adjust(p, method = p.adjust.methods = 'fdr')`.  
+
+
+\ 
+
+--- 
+
+\ 
+
+\ 
+
+
