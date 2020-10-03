@@ -174,7 +174,7 @@ samplemeans = NULL #vector of sample means
 
 for (i in 1:N) {
   diceroll = sample(x = c(1,2,3,4,5,6), size = 30, replace = TRUE)
-  samplemeans[[i]] = mean(diceroll)
+  samplemeans[i] = mean(diceroll)
 }
 
 samplemeans
@@ -187,7 +187,7 @@ Each sample mean is calculated $\bar X = \frac 1n \sum_i^n X_i$, where $X_i$ den
 As it turns out, we can model the sample mean $\bar X$ as a random variable (provided we have a collection of sample means), which gives a **sampling distribution**. Below is a histogram of the 10 sample means computed above: 
 
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
-ggplot(data = as.data.frame(samplemeans), aes(x = samplemeans)) + 
+ggplot(data = as.data.frame(samplemeans), aes(x = samplemeans)) +
   geom_histogram(binwidth = 0.1) + ggtitle(TeX('sampling distribution of $\\bar{X}$ (10 trials)')) + theme_bw()
 ```
 
