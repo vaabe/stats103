@@ -1,16 +1,11 @@
 ---
-title: 'chapter 3 Wrangling and Visualizing Data'
+title: "3 Wrangling and Visualizing Data"
+chapter: "3"  
+part: "pt1"
 output:
-  tufte::tufte_html:
-    tufte_features: ['fonts','background']
+  html_document:
     css: 'tufte.css'
     toc: true
-  tufte::tufte_handout:
-    citation_package: natbib
-    latex_engine: xelatex
-  tufte::tufte_book:
-    citation_package: natbib
-link-citations: yes
 ---
 
 ```{r setup, include=FALSE}

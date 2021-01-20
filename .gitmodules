@@ -1,0 +1,6 @@
+[submodule "docs/themes/ananke"]
+	path = docs/themes/ananke
+	url = https://github.com/budparr/gohugo-theme-ananke.git
+[submodule "docs/themes/hugo-clinic-notes"]
+	path = docs/themes/hugo-clinic-notes
+	url = https://github.com/jmablog/hugo-clinic-notes.git

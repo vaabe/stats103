@@ -1,0 +1,361 @@
+---
+title: 'chapter 16 Inference from Regression Models, Part I'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    css: 'tufte.css'
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(tufte)
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+\newcommand{\mhat}[1]{\skew{3}\hat{#1}}
+
+
+\ 
+
+# 16--1 Confidence intervals for regression coefficients
+
+Sample-derived regression coefficients are *point estimates* of the true regression coefficients. In the same way that we construct confidence intervals for means, we can also construct confidence intervals for regression coefficients, as *interval estimates* of the true coefficients.  
+
+Consider the simple regression model of temperature on building height from the NYC heatwave data:
+
+```{r}
+reg1 = lm(temperature ~ building_height, data = nycheat)
+summary(reg1)
+```
+
+The estimated coefficient for building height is 0.48. The column `Std. Error` gives the standard error of this estimate. Recall that using the standard error we can construct a 95\% confidence interval on a point estimate, with the lower and upper bounds approximately $2 \; \SE$ below and above the estimate.  
+
+In R you can use the `confint()` function to compute confidence intervals for the coefficients of a regression model:
+
+```{r}
+confint(reg1)
+```
+
+To get a 99\% confidence interval:
+
+```{r}
+confint(reg1, level = 0.99)
+```
+
+## Generating a prediction interval 
+
+After we've specified a regression model (i.e. estimated values for the coefficients), we can use it to predict the value of the response variable for given values of the predictors. The predicted value of a regression model, denoted $\mhat y$, is a *point estimate* of the model's prediction. We can generate an *interval estimate* of the model's prediction using the **residual standard error**.  
+
+Consider the simple regression model of temperature on albedo, as depicted below, with the regression line overlaid in blue:
+
+```{r, fig.height=3.5, fig.width=5, fig.align='center', include=FALSE}
+ggplot(aes(x = albedo, y = temperature), data = nycheat) +
+  geom_point(size=0.5) +
+  stat_smooth(method='lm', se = FALSE) +           # overlay regression line
+  xlab('albedo (% solar reflectivity)') + ylab('temperature (farenheit)') +
+  theme_bw()
+
+ggsave('./pics/c15-pic2.png')
+```
+
+```{r, fig.height=3.5, fig.width=5, fig.align='center', echo=FALSE}
+knitr::include_graphics('./pics/c15-pic3.png')
+```
+
+
+The CLT allows us to model the errors of a regression model as *normally distributed* with mean 0 and standard deviation equal to the *residual standard error*. The residual standard error is assumed to be constant (homoscedastic errors). In the above plot, the distribution of the residuals is depicted in red at two points in the data. Below is the regression output for temperature on albedo:
+
+```{r}
+reg2 = lm(temperature ~ albedo, data = nycheat)
+summary(reg2)
+```
+
+The third line from the bottom shows the residual standard error of this model: 3.984. Using this we can generate a 95\% **prediction interval** for the temperature for a given value of albedo. You can either do this manually (using the standard expression for a confidence interval) or you can use the `predict()` function in R.  
+
+E.g. below is a 95\% prediction interval for the value of temperature when albedo = 10: 
+
+```{r}
+predict(reg2, newdata = data.frame(albedo=10), interval = 'predict', level = 0.95)
+```
+
+Here `fit` refers to the fitted value of the model, and `lwr` and `upr` are the lower and upper bounds of the prediction interval.  
+
+
+
+\ 
+
+# 16--2 Goodness of Fit 
+
+In reegression models we often want to characterize how well the model "fits" the data. A useful statistic is the **coefficient of determination**, denoted $R^2$, which is defined as the proportion of variability in the response variable that is *explained* by the model.   
+
+In the regression output, the second line from the bottom gives two measures of $R^2$: the *multiple* $R^2$ and the *adjusted* $R^2$. These can be extracted manually from the regression summary as follows: 
+
+```{r}
+## r squared
+summary(reg2)$r.squared
+
+## adjusted r squared
+summary(reg2)$adj.r.squared
+```
+
+i.e. in the simple regression of temperature on albedo, approximately 37\% of the variability in temperature is explained by variable albedo.  
+
+To understand how the $R^2$ value is computed, it's useful to introduce a few terms that describe the variability in a regression model: 
+
+The **total sum of squares**, or TSS, represents the variability in the response variable:
+
+$$\text{TSS} = \sum_i (y_i - \bar y)^2$$
+
+The **regression sum of squares**, or RSS, represents the variability in the *predicted* values of the model: 
+
+$$\text{RSS} = \sum_i (\mhat y - \bar y)^2$$
+
+The **sum of squared residuals**, or SSR (aka sum of squared *errors*, SSE), represents the variability in the *residuals* of the model:
+
+$$\text{SSR} = \sum_i e_i $$
+
+Using these, the **coefficient of determination**, $R^2$, is defined as follows:
+
+$$R^2 = \frac{RSS}{TSS} = 1 - \frac{SSR}{TSS}$$
+
+i.e. the $R^2$ value is the regression sum of squares divided by the total sum of squares---or the *proportion* of variability in the response variable that is *explained* by the model (the predictor variables). This is why $R^2$ is often called a measure of a model's *goodness-of-fit*.  
+
+Adding more relevant predictors to a regression model can increase the model's overall goodness-of-fit. We saw above that in the simple regression of temperature on albedo, 37\% of the variability in the response variable is explained by the model. Now let's consider a multiple regression model for temperature, using the predictors vegetation, albedo, building height, and population density. Watch what happens to the $R^2$:
+
+```{r}
+reg3 = lm(temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
+summary(reg3)
+```
+
+i.e. adding the three predictors increased the $R^2$ to 0.53, suggesting these three predictors help explain the variation in the response variable, and are thus useful to the model.   
+
+One pitfall of $R^2$ is that by definition it increases any time a predictor is added to the model, regardless of how useful or *significant* the predictor actually is to the model. Of course, the more useful the predictor, the larger the subsequent increase in $R^2$. But it turns out $R^2$ still increases marginally even when adding a non-useful predictor. This can sometimes give an overinflated sense of how "good" a model really is---you could theoretically add thousands of irrelevant predictors to a model, resulting in a very high $R^2$ value even though the model in  reality is not quite so impressive (this is known as *overfitting* a model).  
+
+A solution to this problem is provided by the adjusted $R^2$, often denoted $\bar R^2$, which incorporates a penalty on the number of predictors in the model. The adjusted $R^2$ is defined as follows:
+
+$$\bar R^2 = 1-(1-R^2) \frac{n-1}{n-k-1}$$
+
+where $k$ is the number of predictor variables in the model. The adjusted $R^2$ only increases if the contribution of the new variable more than offsets the correction for the loss of a DoF. In general you should always use the adjusted $R^2$ when evaluating multiple regression models.  
+
+
+
+\ 
+
+# 16--3 Hypothesis tests on regression coefficients
+
+We can use the hypothesis testing framework to determine whether each of the predictor variables in a given model is really significant. Consider the multiple regression model for temperature, using vegetation, albedo, building height, and population density as predictors:
+
+```{r}
+reg3 = lm(temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
+summary(reg3)
+```
+
+To test whether the observed coefficient on a predictor is significant, we first define the the null hypothesis that the *true* coefficient is zero (i.e. the predictor has *no* effect on the response): 
+
+$$H_0: \beta = 0$$ 
+$$H_1: \beta \neq 0$$
+
+The $t$-statistic for each observed coefficient is defined as follows: 
+
+$$t = \frac{b_k - \beta_k}{\sqrt{\frac{s^2}{\sum_i^n (X_i - \bar X)}}}$$
+
+where $b_k$ is the least squares coefficient on the $k$th predictor, $\beta_k$ is the proposed null coefficient for the $k$th predictor (which is zero), and $t$ follows a $t$-distribution with $n-k$ degrees of freedom. The observed $t$-statistic for each predictor is given in the column `t value`.  
+
+The $p$-value represents the likelihood of getting a value as extreme as the observed coefficient if the null were true (i.e. if the coefficient were really zero). The observed $p$-value for each predictor is given in the column `Pr(>|t|)`. In the output above, you can see the first three predictors have very low $p$-values, suggesting we can easily reject the null and assume the coefficients on these predictors are significant. Note how the $p$-value for `pop_density` is larger than the others, at 0.02, and is thus significant only at the 5\% level.   
+
+## Testing joint hypotheses with the $F$-test
+
+Performing independent tests on each coefficient, as demonstrated above, is useful for determing whether *individual* predictors are significant. But sometimes we want to test whether the model *as a whole* is significant---this involves *jointly* testing the hypotheses $\beta_1 = \beta_2 = ... = \beta_k = 0$ against the alternative that at least one of the coefficients is $\neq 0$. Testing a joint hypothesis with independent tests will not give the correct type I error (due to the multiple testing problem), and moreover, things get especially messy if the $\beta$'s are correlated (which they may well be, in a multiple regression model). To resolve this issue we need a test statistic that combines the hypotheses to perform a *joint* hypothesis test (as opposed to multiple individual tests).  
+
+The $F$-statistic serves exactly this purpose. When there are several groups (or parameters) to be tested jointly, the $F$-statistic compares the **between-group variability** (the explained variability) to the **within-group variability** (the unexplained variability). If the former is much larger than the latter, it implies the model is overall useful (the larger the $F$-statistic, the higher the proportion of explained variability in the model).  The $F$-statistic follows the <a href="https://en.wikipedia.org/wiki/F-distribution">$F$-distribution</a> with the two degrees of freedom parameters $d_1 = k-1$ and $d_2 = n-k$, where $n$ is sample size and $k$ is the number of predictors.  
+
+In the multiple regression model above, the $F$-statistic is 287.7:
+
+```{r}
+summary(reg3)$fstatistic
+```
+
+Not only is this $F$-statistic large, but the associated $p$-value is small (see the regression output above), suggesting the model is overall useful (we reject the null hypothesis and conclude that at least one of the predictors is significant).  
+
+## Comparing nested models with ANOVA  
+
+One useful application of the $F$-test is in ANOVA (Analysis Of Variance) problems to determine which of a series of nested models is best. A nested model is a *subset* or *restriction* of a larger model, e.g. 
+
+```{r}
+## full model
+reg4 = lm(temperature ~ vegetation + albedo + building_height + pop_density, data = nycheat)
+
+## restricted model
+reg5 = lm(temperature ~ vegetation + albedo + building_height, data = nycheat)
+```
+
+In this case the model `reg5` is a nested model since it loses one predictor, `pop_density`, when compared to the "full" model. We can use the $F$-test to determine whether the extra predictor(s) in the full model provide a significant improvement over the simpler model (if not, we prefer the simpler model, as it contains fewer irrelevant variables).  
+
+The $F$-statistic for comparing these two models is:
+
+$$F = \frac{\bigg( \frac{SSR_{\text{sub}}-SSR_{\text{full}}}{q-k}\bigg)}{\bigg(\frac{SSR_{\text{full}}}{n-q} \bigg)}$$
+
+where $q$ is the number of predictors in the full model and $k$ is the number of predictors in the restricted model.   
+
+In R we can use the `anova()` function to compare the two models:
+
+```{r}
+anova(reg4, reg5)
+```
+
+The ANOVA output suggests that the extra predictor in the full model provides a significant improvement over the restricted model, with a $p$-value of 0.02.  
+
+
+
+
+\ 
+
+# 16--4 Checking Residuals and Outliers 
+
+The `autoplot()` function from the `ggfortify` package provides these four diagnostic plots which are useful for checking the residuals for unusual patterns and outliers in the data: 
+
+```{r, include = FALSE, results="hide"}
+library(ggfortify)
+autoplot(reg3)
+```
+
+```{r, echo=FALSE}
+autoplot(reg3, size=0.3) + theme_light()
+```
+
+Here's what to look for in each of the plots:
+
+**Residuals vs Fitted Values** (top left)  
+
+- look for an even spread of points throughout the plot. An uneven spread (like a triangle pointing left or right) indicates the model has heteroscedastic errors (the errors have non-constant variance)
+- look for patterns between the residuals and fitted values, which may indicate nonlinear relationships present in the model (a violation of the least squares assumptions) 
+
+**Normal Q-Q** (top right)  
+
+- look for points spread along the diagonal line. Points that deviate from the diagonal indicate residuals that aren't normally distributed. 
+
+**Scale Location** (bottom left)
+
+- intepret similarly to top left---note this plot has the *standardized residuals* on the fitted values, which means the residuals have been normalized
+- look for points that are greater than 3 standard errors from zero---these points might be outliers
+
+**Residuals vs Leverage** (bottom right)
+
+- points far toward the right have high leverage, and if the values of their residuals are also large (far from 0 in either direction) then those points may be outliers
+
+
+
+
+\ 
+
+# 16--5 The Problem of Multicollinearity 
+
+Here we run a simulation showing how multicollinearity in the data can affect the variability in the estimated regression coefficients.  
+
+In the code below, the function `collinear_datagen()` generates a data for a regression model with the equation:
+
+$$y = x_1 - 2x_2 + 3x_3$$
+
+where the variable $x_3$ is linearly dependent on $x_1$ and $x_2$ (more so with the $x_1$ than $x_2$---see the code). The constant `r` determines the extent of the multicollinearity---the smaller it is, the higher the multicollinearity between the variables.  
+
+The function `sim` runs the simulation `N` times and saves the regression coefficients, their standard errors, and their $p$-values. Below are histograms showing the variability in the estimated coefficients $b_1$, $b_2$, and $b_3$, under two values of $r$: 0.1 (lower multicollinearity) and 0.01 (higher multicollinearity).  
+
+```{r, fig.width=11, fig.height=5, fig.fullwidth=TRUE}
+## generate collinear data
+collinear_datagen = function(n,r) {
+  
+  x1 = rnorm(n)
+  x2 = rnorm(n)
+  x3 = 0.8*x1 + 0.2*x2 + sqrt(r)*rnorm(n)
+  y = x1 - 2*x2 + 3*x3 + rnorm(n)
+  
+  sample = data.frame(y,x1,x2,x3)
+  
+  model = summary(lm(y ~ x1 + x2 + x3, data = sample))
+  modeldata = as.list(data.frame(model$coefficients[-1,c(1,2,4)]))
+}
+
+## run simulation
+sim = function(N,n,r) {
+  
+  simulation = replicate(N, collinear_datagen(n,r))
+  betas = do.call(rbind, simulation[1,])
+  SEs =  do.call(rbind, simulation[2,])
+  pvals =  do.call(rbind, simulation[3,])
+  results = data.frame(cbind(betas, SEs, pvals))
+  names(results) = c("b_1", "b_2", "b_3", "SE_1", "SE_2", "SE_3", "pval_1", "pval_2", "pval_3")
+  results
+  
+}
+
+## save simulation data
+mc1 = sim(500,100,0.1) #coefficient simulation with lower multicollinearity
+mc01 = sim(500,100,0.01) #coefficient simulation with higher multicollinearity 
+mc1$r = "0.1"
+mc01$r = "0.01"
+
+Rsq1 = sim(500,100,0.1)
+Rsq01 = sim(500,100,0.01)
+Rsq1$r = "0.1"
+Rsq01$r = "0.01"
+
+mc = rbind(mc1,mc01)
+
+## plots
+plot1 = ggplot(mc, aes(b_1)) + geom_histogram(bins=30) + xlab(TeX("$b_1$")) + facet_grid(r~.) + geom_vline(xintercept = 1) + theme_light()
+plot2 = ggplot(mc, aes(b_2)) + geom_histogram(bins=30) + xlab(TeX("$b_2$")) + facet_grid(r~.) + geom_vline(xintercept = -2) + theme_light()
+plot3 = ggplot(mc, aes(b_3)) + geom_histogram(bins=30) + xlab(TeX("$b_3$")) + facet_grid(r~.) + geom_vline(xintercept = 3) + theme_light()
+
+grid.arrange(plot1, plot2, plot3, ncol=3)
+```
+
+The vertical lines on the plots show the population coefficients---which are $\beta_1 = 1$, $\beta_2 = -2$, and $\beta_3 = 3$. It's clear from these plots that the data with higher multicollinearity (with r = 0.01) has higher variability in its coefficient estimates.  
+
+Below is a correlation matrix that summarizes the pairwise correlations between the variables $x_1$, $x_2$, and $x_3$. Notice how $x_1$ and $x_3$ are strongly correlated with each other: 
+
+```{r}
+kable(cor(mc[ ,1:3]))
+```
+
+To see how this affects power, below is a table summarizing the power of each cofficient under $r=0.01$ and $r=0.1$:
+
+```{r}
+# see how this is reflected in the power
+power = mc %>% group_by(r) %>% summarize(power_b1 = mean(pval_1 < 0.05), power_b2 = mean(pval_2 < 0.05), power_b3 = mean(pval_3 < 0.05))
+kable(power)
+```
+
+\ 

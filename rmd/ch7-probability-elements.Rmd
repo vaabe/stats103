@@ -1,17 +1,11 @@
 ---
-title: 'chapter 7 Elements of Probability'
+title: "7 Probability Spaces, Axioms"
+chapter: "7"
+part: "pt2"
 output:
-  tufte::tufte_html:
-    tufte_features: ['fonts','background']
+  html_document:
     css: 'tufte.css'
     toc: true
-    toc_depth: 2
-  tufte::tufte_handout:
-    citation_package: natbib
-    latex_engine: xelatex
-  tufte::tufte_book:
-    citation_package: natbib
-link-citations: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -38,19 +32,17 @@ library(tufte)
 
 \ 
 
-# 7--1 Wherefore Probability? 
+# 7--1 Probability 
 
-Statistical inference is based on ideas from probability theory. Discussion of probability was mostly avoided in Part I--this was in a bid to visually demonstrate the power and relevance of statistical methods, while unencumbered by (arduous) theory. Of course, in order to actually understand these methods you'll need some of the formalism--thus these three chapters are intended to introduce some of the basic ideas of probability behind statistical inference. 
-
-
+Statistical inference is based on ideas from probability theory. These chapters will introduce some of the basic formalism. 
 
 \ 
 
 # 7--2 Random Processes
 
-You can think of a random process as anything that gives rise to an **outcome**. Tossing a coin or rolling a die are two classic examples.  
+A random process as anything that gives rise to an **outcome**. Tossing a coin or rolling a die are two classic examples.  
 
-In fact, many experiments/phenomena can be modeled as random processes--even ones whose outcomes are seemingly nonrandom. E.g.--whether the stock market will go up or down tomorrow, or whether a certain candidate will win an election, or whether the sun will rise tomorrow--can be thought of as random processes in the sense that there will *necessarily* be an outcome, even if the outcome may appear to have a deterministic bent.     
+Many experiments/phenomena can be modeled as random processes, even ones whose outcomes seem nonrandom. E.g.--whether the stock market will go up or down tomorrow, or whether a certain candidate will win an election, or whether the sun will rise tomorrow--can be thought of as random processes in the sense that there will *necessarily* be an outcome, even if the outcome may appear to have a deterministic bent.     
 
 Broadly speaking, **probability** is a measure that quantifies the likelihood that a certain outcome (or set of outcomes) will occur. Though there are many ways to interpret probability^[Click <a href="https://plato.stanford.edu/entries/probability-interpret/">here</a> for more.], most modern applications use the mathematical formalism developed last century, which defines probability in terms of an underlying **probability space** that gives rise to a set of axioms (see below).  
 
@@ -207,9 +199,5 @@ prop.table(table(cointoss))
 The output shows that of the 100,000 tosses, almost exactly half were heads and half were tails. If you conclude from this that the probability of landing heads is a half, you have used the frequentist interpretation of probability.  
 
 The frequentist approach doesn't conflict with the mathematical axioms of probability introduced above--it only provides a "way" to interpret probability and apply these axioms to real-world processes.  
-
-## The Bayesian approach 
-
-`to be added`
 
 \ 

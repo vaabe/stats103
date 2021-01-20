@@ -1,17 +1,11 @@
 ---
-title: 'chapter 22 Classification with Logistic Regression'
+title: "22 Logistic Regression"
+chapter: "22"
+part: "pt5"
 output:
-  tufte::tufte_html:
-    tufte_features: ['fonts','background']
+  html_document:
     css: 'tufte.css'
     toc: true
-    toc_depth: 2
-  tufte::tufte_handout:
-    citation_package: natbib
-    latex_engine: xelatex
-  tufte::tufte_book:
-    citation_package: natbib
-link-citations: yes
 ---
 
 ```{r setup, include=FALSE}

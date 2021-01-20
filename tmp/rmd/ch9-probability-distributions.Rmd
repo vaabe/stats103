@@ -1,0 +1,300 @@
+---
+title: 'chapter 9 Distributions of Random Variables'
+output:
+  tufte::tufte_html:
+    tufte_features: ['fonts','background']
+    css: 'tufte.css'
+    toc: true
+    toc_depth: 2
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(moments)
+library(tufte)
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+\ 
+
+In this chapter we introduce a few *known* probability distributions that are often used to model random processes. For each of these distributions there is a specific mathematical function that describes the entire distribution---which allows us to explicitly calculate the probability associated with any value or interval on the distribution.  
+
+
+\ 
+
+# 9--1 The Normal Distribution 
+
+The normal distribution (or Gaussian distribution) describes a symmetric, bell-shaped curve, as follows:
+
+```{r, echo=FALSE, fig.width = 5, fig.height=3, fig.align='center'}
+x = seq(-4, 4, length = 1000)
+y = dnorm(x, mean = 0, sd = 1)
+
+df = data.frame(x = x, y = y)
+
+breaks = round(seq(-4, 4, 1),3)
+
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks, 
+                     limits = c(-4, 4)) +
+  ylab('probability') + xlab(TeX('$X$')) + 
+  ggtitle(TeX('the standard normal distribution')) + 
+  # geom_text(label = TeX('$-3 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-3*SE, y = 0.025, size=3, color = 'darkgrey') + 
+  # geom_text(label = TeX('$-2 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-2*SE, y = 0.025, size=3, color = 'darkgrey') + 
+  # geom_text(label = TeX('$-1 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-1*SE, y = 0.025, size=3, color = 'darkgrey') + 
+  # geom_text(label = TeX('$+1 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+1*SE, y = 0.025, size=3, color = 'darkgrey') + 
+  # geom_text(label = TeX('$+2 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+2*SE, y = 0.025, size=3, color = 'darkgrey') + 
+  # geom_text(label = TeX('$+3 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+3*SE, y = 0.025, size=3, color = 'darkgrey') + 
+  theme_light()
+```
+
+The exact form of the normal probability density function is given by:
+
+$$\text{pdf}(X) = \frac{1}{\sqrt{2\pi}\sigma} e^{-(X-\mu)^2/2\sigma^2}$$
+
+Note that in this formula there are only really two variables---$\mu$ and $\sigma$---for everything else in the formula is just a mathematical constant. It turns out $\mu$ and $\sigma$ are the only parameters required to completely specify the shape of a given normal curve---changing $\mu$ shifts the curve left and right, and increasing $\sigma$ makes the curve wider.  
+
+Thus if the random variable $X$ follows a normal curve, its distribution can be expressed completely in terms of its mean and variance. We typically use the following shorthand notation:
+
+$$X \sim \mathcal N(\mu, \sigma^2)$$
+
+which denotes that $X$ follows (approximately) a normal distribution with mean $\mu$ and variance $\sigma^2$.  
+
+The distribution pictured above is known as the **standard normal distribution**, since it has $\mu = 0$ and $\sigma = 1$. We can calculate probabilities under the normal curve in R using the `pnorm()` function, which gives the cumulative probability that $X \leq k$, where $k$ is some number. E.g. the probability that $X$ is smaller than 0, i.e. $\P(X \leq 0)$, can be computed:
+
+```{r}
+pnorm(0)
+```
+
+The probability that $X$ is between -1 and 1, i.e. $\P(-1 \leq X \leq 1)$, is:
+
+`r margin_note("Note that $\\P(-1 \\leq X \\leq 1)$ can be written $\\P(X \\leq 1) - \\P(X \\leq -1)$.")`
+
+```{r}
+pnorm(1)-pnorm(-1)
+```
+
+Similarly, the probability that $X$ is between -2 and 2:
+
+```{r}
+pnorm(2)-pnorm(-2)
+```
+
+And the probability that $X$ is between -3 and 3:
+
+```{r}
+pnorm(3)-pnorm(-3)
+```
+
+```{r, echo=FALSE, warning=FALSE, fig.margin = TRUE}
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  ylab('probability') + 
+  ggtitle('distribution of values under a normal curve') + 
+  theme_classic() +
+  ylim(-0.05,0.42) +
+  geom_text(label = TeX('$-4 \\sigma$'), x = -4, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$-3 \\sigma$'), x = -3, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$-2 \\sigma$'), x = -2, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$-1 \\sigma$'), x = -1, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$\\mu$'), x = 0, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$+1 \\sigma$'), x = 1, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$+2 \\sigma$'), x = 2, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$+3 \\sigma$'), x = 3, y = -0.025, size=5, color = 'black') +
+  geom_text(label = TeX('$+4 \\sigma$'), x = 4, y = -0.025, size=5, color = 'black') +
+  theme(axis.text.x=element_blank()) +
+  theme(axis.title.x=element_blank()) +
+  geom_area(aes(x = ifelse(x > -1 & x < 1, x, 0)), fill='lightblue', alpha=1) +
+  geom_area(aes(x = ifelse(x > -2 & x < 2, x, 0)), fill='lightblue', alpha=0.6) +
+  geom_area(aes(x = ifelse(x > -3 & x < 3, x, 0)), fill='lightgreen', alpha=0.3) +
+  geom_segment(x = -1, xend = 1, y = 0.3, yend = 0.3, color = 'black', linetype = 'dotted') +
+  geom_segment(x = -1, xend = -1, y = 0.29, yend = 0.31) + geom_segment(x = 1, xend = 1, y = 0.29, yend = 0.31) + 
+  geom_text(label = '~68%', x = 1.5, y = 0.3, size = 6, color = 'black') +
+  geom_segment(x = -2, xend = 2, y = 0.2, yend = 0.2, color = 'black', linetype = 'dotted') +
+  geom_segment(x = -2, xend = -2, y = 0.19, yend = 0.21) + geom_segment(x = 2, xend = 2, y = 0.19, yend = 0.21) + 
+  geom_text(label = '~95%', x = 2.5, y = 0.2, size = 6, color = 'black') +
+  geom_segment(x = -3, xend = 3, y = 0.1, yend = 0.1, color = 'black', linetype = 'dotted') +
+  geom_segment(x = -3, xend = -3, y = 0.09, yend = 0.11) + geom_segment(x = 3, xend = 3, y = 0.09, yend = 0.11) + 
+  geom_text(label = '~99.5%', x = 3.7, y = 0.1, size = 6, color = 'black') 
+```
+
+These probabilities are characteristic of any normal distribution: ~68\% of values lie within 1 standard deviation of the mean, ~95\% of values lie within 2 standard deviations of the mean, and ~99.5\% of values lie within 3 standard deviations of the mean---see the figure on the right.    
+
+Consider now a normally distributed random variable $X$ with $\mu = 10$ and $\sigma = 2$, i.e. $X \sim \mathcal N(10,2^2)$. What is the probability that $X$ is smaller than 7? One way to find this is by determining the $Z$-score of the observed value, which describes how far away it is from the mean in units of standard deviation. The $Z$-score of an observation is given by:
+
+$$Z = \frac{X - \mu}{\sigma}$$
+
+and in this case $Z = -1.5$, i.e. the observed value $X = 7$ is 1.5 standard deviations to the left of the mean. Note that the $Z$-score is essentially a mapping of $X$ onto the standard normal distribution---this means that:
+
+$$\P(X \leq 7) = \P(Z \leq -1.5)$$
+
+And we can simply use `pnorm()` as we did above, plugging in the $Z$-score: 
+
+```{r}
+pnorm(-1.5)
+```
+
+i.e. the probability that $X$ is smaller than 7 is about 6.68\%.  
+
+A faster way to do this, which avoids manually computing the $Z$-score, is to explicitly specify the parameters of the normal distribution as additional arguments in the `pnorm()` function:
+
+```{r}
+pnorm(7, mean = 10, sd = 2)
+```
+
+
+
+\ 
+
+# 9--2 The Uniform Distribution
+
+The uniform distribution (or rectangular distribution) can model a random variable which has an equal probability to take any value in a specified interval.  
+
+The uniform distribution is specified by two parameters, $a$ and $b$, which define the lower and upper bounds of the interval. The probability distribution is given by:
+
+$$X \sim \mathcal U(a,b) \hspace{0.5cm} \longrightarrow \hspace{0.5cm} \text{pdf}(X) = \begin{cases} \frac{1}{b-a} & \text{for}\;\; x \in [a,b] \\ 0 & \text{otherwise} \end{cases}$$
+
+```{r, echo=FALSE, fig.margin=TRUE}
+pmf = data.frame(X = rep(c(1,2,3,4,5,6), times = 10))
+
+ggplot(data = pmf, aes(x = as.factor(X))) + 
+  geom_bar(width = 0.1, aes(y = (..count..)/sum(..count..))) +
+  xlab('X') +
+  ylab('probability') +
+  ggtitle('U[1,6] (discrete)') +
+  theme_classic()
+
+ggplot(data = pmf, aes(x = X)) +
+  geom_histogram(bins = 6, aes(y = ..density..)) +
+  xlab('X') +
+  ylab('probability') +
+  ggtitle('U[1,6] (continuous)') +
+  scale_x_continuous(breaks = c(0:6)) +
+  theme_light()
+```
+
+
+The uniform distribution can be either discrete or continuous. In the discrete case, $X$ can take any integer value between $a$ and $b$ with equal probability, and in the continuous case, $X$ can take *any* value between $a$ and $b$ with equal probability. On the right are the discrete and continuous versions of the uniform distribution between 1 and 6 (as demonstrated last chapter).  
+
+The expected value of a uniform distribution:
+
+$$\E[X] = \frac 12 (a+b)$$
+
+The variance of a uniform distribution:
+
+$$\Var[X] = \frac{(b-a)^2-1}{12} \hspace{0.5cm} \text{(discrete)}$$
+
+$$\Var[X] = \frac{(b-a)^2}{12} \hspace{0.5cm} \text{(continuous)}$$
+
+\ 
+
+
+# 9--3 The Bernoulli Distribution 
+
+The Bernoulli distribution can model a discrete random variable with a binary outcome (e.g. a single coin toss). Bernoulli random variables have the following features:
+
+* one trial
+* two outcomes (success/failure, 1/0, etc.)
+* fixed probability of each outcome 
+
+The Bernoulli distribution is specified by one parameter, $p$, which describes the probability of a success ($X=1$). Naturally, the probability of a failure ($X=0$) is $1-p$. 
+
+The complete probability distribution of a Bernoulli random variable can be expressed as follows:
+
+$$X \sim \text{Ber}(p) \hspace{0.5cm} \longrightarrow \hspace{0.5cm} \text{pmf}(X) = \begin{cases} p & X=1 \;\; \text{(success)} \\ 1-p & X=0 \;\; \text{(failure)}\end{cases}$$
+
+The **expected value** of a Bernoulli random variable:
+
+$$\E[X] = p$$
+
+The **variance** of a Bernoulli random variable:
+
+$$\Var[X] = p(1-p)$$
+
+
+\ 
+
+# 9--4 The Binomial Distribution
+
+The binomial distribution can model multiple occurrences of a Bernoulli process (e.g. several coin tosses). Binomial random variables have the following features:  
+
+* $n$ trials
+* two outcomes (success/failure)
+* fixed probability of each outcome across all trials
+* trials must be independent
+
+The binomial distribution is specified by two parameters, $n$ (number of trials) and $p$ (probability of success), and its probability distribution is given by:
+
+$$X \sim \text{Bin}(n,p) \hspace{0.5cm} \longrightarrow \hspace{0.5cm} \P(X = k) = \begin{pmatrix} n \\ k\end{pmatrix} p^k (1-p)^{n-k}$$
+
+where $\big( \begin{smallmatrix} n \\ k \end{smallmatrix} \big)$ is known as the **binomial coefficient**, and is another way of writing $\frac{n!}{k!(n-k)!}$.  
+
+The **expected value** of a binomial random variable:
+
+$$\E[X] = np$$
+
+The **variance** of a binomial random variable:
+
+
+$$\Var[X] = np(1-p)$$
+
+Note the Bernoulli distribution is a special case of the binomial with $n = 1$.  
+
+ 
+
+\ 
+
+# 9--5 The Poisson Distribution
+
+The Poisson distribution can model a discrete random variable where events that occur a fixed number of times during a given interval. Poisson random variables have the following features: 
+
+* fixed rate at which events occur
+* events cannot occur simultaneously
+* events must occur independently  
+
+The Poisson distribution is specified by one parameter, $\lambda$, known as the **event rate**, which describes the average number of events in a given interval. The probability distribution is given by:
+
+$$X \sim \text{Pois}(\lambda) \hspace{0.5cm} \longrightarrow \hspace{0.5cm} P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!}$$
+
+The **expected value** of a Poisson random variable:
+
+$$\E[X] = \lambda$$
+
+The **variance** of a Poisson random variable:
+
+$$\Var[X] = \lambda$$
+
+
+\ 
+
+
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+basename=$1
+
+if [[ "$basename" != *. ]]; then
+	basename="$1."
+fi
+
+rmdfile="${basename}Rmd"
+htmlfile="${basename}html"
+
+title=`sed "2q;d" $rmdfile | cut -d'"' -f 2 | tr -d "0123456789"`
+chapter=`sed '3q;d' $rmdfile | cut -d'"' -f 2`
+part=`sed '4q;d' $rmdfile | cut -d'"' -f 2`
+
+webdir="../docs/content/$part/"
+webfpath="${webdir}${htmlfile}"
+
+cp $htmlfile "${webdir}${htmlfile}"
+
+echo "---" | cat - $webfpath > tmp && mv tmp $webfpath
+echo "weight: $chapter" | cat - $webfpath > tmp && mv tmp $webfpath
+echo "title: $title" | cat - $webfpath > tmp && mv tmp $webfpath
+echo "---" | cat - $webfpath > tmp && mv tmp $webfpath
