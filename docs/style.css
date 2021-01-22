@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');
+
+@font-face {
+	font-family: "et-book-roman-old-style";
+	src: url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot");
+	src: url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.eot?#iefix") format("embedded-opentype"), url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.woff") format("woff"), url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.ttf") format("truetype"), url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.svg#etbookromanosf") format("svg");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	--sans-font: 'Lato', sans-serif; 
+	--serif-font: et-book-roman-old-style, serif; 
+	--main-font: var(--sans-font); 
+	--contrast-font: var(--serif-font); 
+	--bg-color: #fffff8; 
+	--text-color: #000000; 
+	--contrast-color: #b0409d; 
+}
+
+html {
+	position: relative; 
+	min-height: 100%; 
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	background: var(--bg-color); 
+	color: var(--text-color); 
+	font-family: var(--main-font); 
+	margin-left: auto; 
+	margin-right: auto; 
+	margin-bottom: 100px; 
+	padding-left: 5%; 
+	padding-right: 5%; 
+	line-height: 1.45; 
+	max-width: 700px; 
+}
+
+h1 {
+	font-size: 2.5rem; 
+	font-weight: bold; 
+	font-family: var(--contrast-font); 
+	margin-top: 2.0rem; 
+	margin-bottom: 2.0rem;
+}
+
+h1:after {
+	content: ' '; 
+	display: block; 
+}
+
+h2 {
+	font-size: 1.8rem; 
+	font-weight: bold; 
+	font-family: var(--main-font); 
+	margin-top: 4.0rem; 
+	margin-bottom: 1.0rem;
+}	
+
+h3 {
+	font-size: 1.2rem; 
+	font-weight: bold; 
+	font-family: var(--main-font); 
+	margin-top: 2.0rem; 
+	margin-bottom: 1.0rem;
+}	
+
+a {
+	color: #000000; 
+	text-decoration: underline; 
+}
+
+pre {
+		background-color: #dddddd; 
+		padding: 1em; 
+}
+
+ul {
+		list-style-type: disc; /* upper-roman; */ 
+}
+
+nav a {
+		list-style-type: circle; 
+		font-size: 2.0rem; 
+}
+
+footer.simple-footer {
+	position: absolute; 
+	bottom: 0; 
+	height: 100px; 
+	width: 700px; 
+	overflow: hidden; 
+}
+
+footer.pretentious-footer {
+	position: absolute; 
+	bottom: 0; 
+	left: 0; 
+	right: 0; 
+	height: 100px; 
+	overflow: hidden; 
+	font-size: 0.9rem; 
+	font-family: var(--contrast-font); 
+}
+
+.credits, .credits a {
+	text-decoration: none; 
+	margin-left: auto; 
+	margin-right: auto; 
+	margin-bottom: 100px; 
+	width: 700px; 
+}
+
+.credits a {
+	text-decoration: none;
+}
+
+.math {
+		font-size: 1.0rem; 
+}
+
+.math a {
+		color: #000000; 
+}
+
+@media(min-width: 1400px) {
+	#TableOfContents {
+		position: fixed; 
+		top: 0; 
+		left: 0; 
+		max-width: 300px; 
+		font-size: 0.8rem; 
+	}
+}

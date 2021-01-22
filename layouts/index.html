@@ -1,0 +1,66 @@
+{{ define "main" }}
+
+<h1>{{.Title}}</h1>
+
+{{ range where .Site.RegularPages "Section" "pages" }}
+<a href="{{ .Permalink }}">{{.Title}}</a><br>
+{{ end }}
+
+<a href="https://github.com/vaabe/stats103">github</a>
+
+<h3>
+	{{ with .Site.GetPage "section" "pt1" }}{{ .Title }}
+	{{ end }}
+</h3>
+
+<!--
+{{ range where .Site.RegularPages "Section" "pt1" }}
+<span>{{.Weight}} &mdash; <a href="{{ .RelPermalink }}">{{.Title}}</a></span><br>
+{{ end }}
+-->
+
+<span>(being revamped, back soon)</span><br><br>
+{{ range where .Site.RegularPages "Section" "pt1" }}
+<span>{{.Weight}} &mdash; {{.Title}}</span><br>
+{{ end }}
+
+<h3>
+	{{ with .Site.GetPage "section" "pt2" }}{{ .Title }}
+	{{ end }}
+</h3>
+
+{{ range where .Site.RegularPages "Section" "pt2" }}
+<span>{{.Weight}} &mdash; <a href="{{ .RelPermalink }}">{{.Title}}</a></span><br>
+{{ end }}
+
+<h3>
+	{{ with .Site.GetPage "section" "pt3" }}{{ .Title }}
+	{{ end }}
+</h3>
+
+{{ range where .Site.RegularPages "Section" "pt3" }}
+<span>{{.Weight}} &mdash; <a href="{{ .RelPermalink }}">{{.Title}}</a></span><br>
+{{ end }}
+
+<h3>
+	{{ with .Site.GetPage "section" "pt4" }}{{ .Title }}
+	{{ end }}
+</h3>
+
+{{ range where .Site.RegularPages "Section" "pt4" }}
+<span>{{.Weight}} &mdash; <a href="{{ .RelPermalink }}">{{.Title}}</a></span><br>
+{{ end }}
+
+<h3>
+	{{ with .Site.GetPage "section" "pt5" }}{{ .Title }}
+	{{ end }}
+</h3>
+
+{{ range where .Site.RegularPages "Section" "pt5" }}
+<span>{{.Weight}} &mdash; <a href="{{ .RelPermalink }}">{{.Title}}</a></span><br>
+{{ end }}
+
+
+{{ partial "pretentious-footer.html" }}
+
+{{ end }}

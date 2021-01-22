@@ -1,0 +1,35 @@
+baseURL = "/"
+languageCode = "en"
+title = "stats103"
+disableKinds = [ "taxonomy", "taxonomyTerm" ]
+publishDir = "docs"
+
+[author]
+	name = "vaabe"
+
+[params]
+	description = "introductory course in probability, statistics, and inference"
+
+[markup]
+	defaultMarkdownHandler = "goldmark"
+	[markup.goldmark]
+		[markup.goldmark.extensions]
+			definitionList = true
+			footnote = true
+			linkify = true
+			strikethrough = true
+			table = true
+			taskList = true
+			typographer = true
+		[markup.goldmark.parser]
+			attribute = true
+			autoHeadingID = true
+			autoHeadingIDType = "github"
+		[markup.goldmark.renderer]
+			hardWraps = false
+			unsafe = false
+			xhtml = false
+	[markup.tableOfContents]
+		    startLevel = 2
+		    endLevel = 3
+		    ordered = false

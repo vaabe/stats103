@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/pt1/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt1/ch1-intro-to-r/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt1/ch2-data-basics/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt2/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt1/ch3-wrangle-visualize/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt4/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt1/ch4-basic-analysis/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt1/ch5-basic-modeling/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt5/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt2/07-probability-spaces-axioms/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt2/08-random-variables/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt2/09-probability-distributions/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/10-sampling/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/11-central-limit-theorem/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/12-interval-estimators/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/13-hypothesis-tests/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/14-joint-variability/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/15-regression-theory/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt3/16-regression-inference-i/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt4/17-validity-bias/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt4/18-error-of-an-estimator/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt4/19-regression-inference-ii/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt4/20-causal-inference/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt4/21-bias-variance-tradeoff/</loc>
+  </url>
+  
+  <url>
+    <loc>/pt5/22-logistic-regression/</loc>
+  </url>
+  
+  <url>
+    <loc>/pages/about/</loc>
+  </url>
+  
+  <url>
+    <loc>/pages/</loc>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+  </url>
+  
+</urlset>
