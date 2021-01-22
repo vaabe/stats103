@@ -1,7 +1,8 @@
-baseURL = "https://stats103.com"
+baseURL = "https://vaabe.github.io/stats103/"
 languageCode = "en"
 title = "stats103"
 disableKinds = [ "taxonomy", "taxonomyTerm" ]
+publishDir = "docs"
 
 [author]
 	name = "vaabe"
