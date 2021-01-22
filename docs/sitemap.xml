@@ -3,119 +3,119 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt1/</loc>
+    <loc>/pt1/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt1/ch1-intro-to-r/</loc>
+    <loc>/the-r-environment/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt1/ch2-data-basics/</loc>
+    <loc>/loading-data/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt2/</loc>
+    <loc>/pt2/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/</loc>
+    <loc>/pt3/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt1/ch3-wrangle-visualize/</loc>
+    <loc>/wrangling-and-visualizing-data/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt4/</loc>
+    <loc>/pt4/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt1/ch4-basic-analysis/</loc>
+    <loc>/data-analysis-basics/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt1/ch5-basic-modeling/</loc>
+    <loc>/linear-regression-part-i-basics/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt5/</loc>
+    <loc>/pt5/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt2/07-probability-spaces-axioms/</loc>
+    <loc>/probability-spaces-axioms/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt2/08-random-variables/</loc>
+    <loc>/random-variables/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt2/09-probability-distributions/</loc>
+    <loc>/distributions-of-random-variables/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/10-sampling/</loc>
+    <loc>/samples-sampling-distributions/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/11-central-limit-theorem/</loc>
+    <loc>/central-limit-theorem/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/12-interval-estimators/</loc>
+    <loc>/confidence-intervals/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/13-hypothesis-tests/</loc>
+    <loc>/hypothesis-tests/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/14-joint-variability/</loc>
+    <loc>/joint-variability/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/15-regression-theory/</loc>
+    <loc>/linear-regression-part-ii-theory/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt3/16-regression-inference-i/</loc>
+    <loc>/regression-inference-part-i/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt4/17-validity-bias/</loc>
+    <loc>/validity-and-bias/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt4/18-error-of-an-estimator/</loc>
+    <loc>/error-of-an-estimator/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt4/19-regression-inference-ii/</loc>
+    <loc>/regression-inference-part-ii/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt4/20-causal-inference/</loc>
+    <loc>/causal-inference/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt4/21-bias-variance-tradeoff/</loc>
+    <loc>/model-selection-bias-variance-tradeoff/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pt5/22-logistic-regression/</loc>
+    <loc>/logistic-regression/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pages/about/</loc>
+    <loc>/about/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/pages/</loc>
+    <loc>/pages/</loc>
   </url>
   
   <url>
-    <loc>https://vaabe.github.io/stats103/</loc>
+    <loc>/</loc>
   </url>
   
 </urlset>

@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pages on stats103</title>
-    <link>https://vaabe.github.io/stats103/pages/</link>
+    <link>/pages/</link>
     <description>Recent content in Pages on stats103</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://vaabe.github.io/stats103/pages/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="/pages/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>about</title>
-      <link>https://vaabe.github.io/stats103/pages/about/</link>
+      <link>/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://vaabe.github.io/stats103/pages/about/</guid>
+      <guid>/about/</guid>
       <description>These notes are supplements to STAT-UB 103, an introductory course in probability, statistics, and regression modeling. We use R to teach the course. The first three notes give a pithy introduction to R programming. Feedback is most welcome&amp;mdash;please get in touch or submit a pull request.
 Made in collaboration with Joshua Loftus. Here is the syllabus. Theme inspired by Tufte Handouts.
 References and further reading Introductory:

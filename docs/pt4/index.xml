@@ -2,52 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Bias on stats103</title>
-    <link>https://vaabe.github.io/stats103/pt4/</link>
+    <link>/pt4/</link>
     <description>Recent content in Bias on stats103</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://vaabe.github.io/stats103/pt4/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="/pt4/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Validity and Bias</title>
-      <link>https://vaabe.github.io/stats103/pt4/17-validity-bias/</link>
+      <link>/validity-and-bias/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://vaabe.github.io/stats103/pt4/17-validity-bias/</guid>
+      <guid>/validity-and-bias/</guid>
       <description>Validity and Bias        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title>Error of an Estimator</title>
-      <link>https://vaabe.github.io/stats103/pt4/18-error-of-an-estimator/</link>
+      <link>/error-of-an-estimator/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://vaabe.github.io/stats103/pt4/18-error-of-an-estimator/</guid>
+      <guid>/error-of-an-estimator/</guid>
       <description>Error of an Estimator        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title> Regression Inference Part II</title>
-      <link>https://vaabe.github.io/stats103/pt4/19-regression-inference-ii/</link>
+      <link>/regression-inference-part-ii/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://vaabe.github.io/stats103/pt4/19-regression-inference-ii/</guid>
+      <guid>/regression-inference-part-ii/</guid>
       <description>19 Regression Inference Part II        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title>Causal Inference</title>
-      <link>https://vaabe.github.io/stats103/pt4/20-causal-inference/</link>
+      <link>/causal-inference/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://vaabe.github.io/stats103/pt4/20-causal-inference/</guid>
+      <guid>/causal-inference/</guid>
       <description>Causal Inference         code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title>Model Selection, Bias Variance Tradeoff</title>
-      <link>https://vaabe.github.io/stats103/pt4/21-bias-variance-tradeoff/</link>
+      <link>/model-selection-bias-variance-tradeoff/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://vaabe.github.io/stats103/pt4/21-bias-variance-tradeoff/</guid>
+      <guid>/model-selection-bias-variance-tradeoff/</guid>
       <description>Model Selection, Bias Variance Tradeoff        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
