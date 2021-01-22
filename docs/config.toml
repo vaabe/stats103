@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://stats103.com"
 languageCode = "en"
 title = "stats103"
 disableKinds = [ "taxonomy", "taxonomyTerm" ]
