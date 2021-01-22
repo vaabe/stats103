@@ -4,7 +4,7 @@ chapter: "7"
 part: "pt2"
 output:
   html_document:
-    css: 'tufte.css'
+    css: "tufteish.css"
     toc: true
     number_sections: true
 ---
@@ -34,20 +34,20 @@ set.seed(5)
 
 # Probability Spaces 
 
-A **random process** is any process that gives rise to an outcome. 
+A **random process** is any process whose outcome is subject in some way to chance (randomness). 
 
 Probability spaces are used to model random processes. They have three components:  
 
 - $\Omega$, a **sample space**, which is the set of all possible outcomes for the process
     + e.g. if you toss a coin twice: $\Omega = \{ HH, HT, TH, TT \}$  
-- $\mathcal F$, a **set of events**, that make up all possible subsets of the sample space
+- $\mathcal F$, a **set of events** (event space), that make up all possible subsets of the sample space
     + e.g. $\mathcal F = \{ \text{getting 1 head, getting 2 heads, ...} \}$
 - $\P$, a **probability function**, that assigns probabilities to each event
     + e.g. the probability of getting 2 heads: $\P(\text{ 2 heads }) = \frac 14$ 
-    
-Tossing a coin is an example of a process with a **discrete** sample space, since its outcomes are countable and finite. 
 
-In R you can simulate a discrete random process using the `sample()` function. You must specify the sample space, the sample size, and whether you want to sample with replacement or not.  
+The sample space of a random process can be **discrete** or **continuous**. Discrete sample spaces have [countable](https://en.wikipedia.org/wiki/Countable_set) and well-defined set of outcomes (tossing a coin, rolling a die, etc.). Continuous sample spaces have an infinite and uncountable set of possible outcomes (temperature of a substance, height of a person, etc.). 
+
+In R you can simulate a discrete random process using the `sample()` function. You must specify the sample space, the sample size, and whether or not you want to sample with replacement.  
 
 E.g. to simulate tossing a coin twice:
 
@@ -57,9 +57,11 @@ sample(x = c('H','T'), size = 2, replace = TRUE)
 
 # Some Probability Axioms 
 
+Probability spaces come with a set of postulates that describe how probabilities are related to each other. These are called the [Kolmogorov axioms](https://en.wikipedia.org/wiki/Probability_axioms). 
+
 ## The complement rule 
 
-The probabilities of all possible events must sum to 1. If $\P(A)$ denotes the probability that event $A$ happens, then the probability of $A$ not happening is:
+The probabilities of all possible events in the event space $\mathcal F$ must sum to 1. If $A$ is an event, and if $\P(A)$ denotes the probability that $A$ happens, then the probability of $A$ not happening is:
 
 $$\P(A^c) = 1 - \P(A)$$
 
@@ -67,13 +69,13 @@ where $A^c$ is the complement of event $A$.
 
 ## Conditional probability
 
-For two events, $A$ and $B$, both from the set of events $\mathcal F$, the probability that $A$ occurs given that $B$ has already occurred is:
+For two events, $A$ and $B$, the probability that $A$ occurs given that $B$ has already occurred is:
 
 $$\P(A | B) = \frac{\P(A \cap B)}{\P(B)}$$
 
 The RHS of this equation essentially restricts the sample space of $A$ and $B$ to only those outcomes where $B$ occurs.   
 
-If you're unfamiliar with set notation [check out this reference](https://www.onlinemathlearning.com/set-notation.html). 
+[Here](https://www.onlinemathlearning.com/set-notation.html) is a reference on set notation.  
 
 ## The multiplication rule 
 
@@ -91,7 +93,7 @@ If $A$ and $B$ are independent:
 
 $$\P(A | B) = \P(A) \hspace{2.0cm}$$
 
-i.e. the probability that $A$ occurs is invariant to whether $B$ has occurred or not.  
+i.e. the probability that $A$ occurs is invariant to whether or not $B$ has occurred.  
 
 This gives the multiplication rule for independent events: 
 
@@ -107,7 +109,7 @@ $$\P(A \cap B) = 0 \hspace{2.0cm}$$
 
 ## The addition rule
 
-This leads to the addition rule: for two mutually exclusive events $A$ and $B$, the probability that at least one will happen:  
+This leads to the addition rule: for two mutually exclusive events $A$ and $B$, the probability that at least one will happen is:  
 
 $$\P(A \cup B) = \P(A) + \P(B) \hspace{2.0cm}$$ 
 
@@ -123,7 +125,7 @@ $$\P(A) = \P(A \cap B) + \P(A \cap B^c)$$
 
 i.e. the probability that $A$ occurs equals the probability that $A$ and $B$ both occur, plus the probability that $A$ occurs and $B$ doesn't occur.   
 
-Using the definition of conditional probability, this can be written:
+Using the definition of conditional probability, this can also be written:
 
 $$\P(A) = \P(A | B) \; \P(B) + \P(A | B^c) \; \P(B^c)$$
 
@@ -137,7 +139,7 @@ where the $B_i = \{B_1, B_2, ... B_n \}$ represent $n$ general partitions of the
 
 There are [many ways](https://en.wikipedia.org/wiki/Probability_interpretations) the concept of probability can be defined and interpreted. The most common is the frequentist interpretation. 
 
-These are the main tenets of the frequentist approach: 
+These are the main tenets of the frequentist probability: 
 
 - probability is defined in terms of an event's relative frequency in a large number of trials  
 - e.g. if you conduct $n$ trials, and $k$ is the number of trials in which event $X$ occurs, the probability of event $X$ is defined as: 
@@ -148,7 +150,7 @@ $$\P(X) \approx \frac kn$$
 
 $$\P(X) = \lim_{n \rightarrow \infty} \frac kn$$
 
-E.g. the reason we "know" that the probability of a coin toss giving heads is one half---if indeed we really know this at all---is because when the process is observed many times, we find that the proportion of heads tends to converge empirically to one roughly half.  
+E.g. the reason we "know" that the probability of a coin toss giving heads is one half---if indeed we really know this at all---is because when the process is observed many times, we find empirically that the proportion of heads tends to converge roughly to one half.  
 
 In R:
 
@@ -157,5 +159,5 @@ cointoss = sample(x = c('H','T'), size = 100000, replace = TRUE)
 prop.table(table(cointoss))
 ```
 
-The frequentist approach doesn't conflict with the mathematical axioms of probability introduced above--it only provides a "way" to interpret probability and apply these axioms to real-world processes.  
+The frequentist approach doesn't conflict with the axioms of probability. It only provides a "way" to interpret probability and apply these axioms to real-world processes.  
 

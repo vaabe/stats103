@@ -1,0 +1,320 @@
+---
+title: "Central Limit Theorem"
+chapter: "11"
+part: "pt3"
+output:
+  html_document:
+    css: "tufteish.css"
+    toc: true
+    number_sections: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+set.seed(5)
+ggtheme = theme_light() +
+	theme(panel.background = element_rect(fill = '#fffff8')) +
+	theme(plot.background = element_rect(fill = '#fffff8'))
+ggplot = function(...) ggplot2::ggplot(...) + ggtheme
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+# The Central Limit Theorem
+
+In chapter 10 we demonstrated three important properties about the distribution of a sample mean:
+
+- it can be approximated by a normal curve when $n$ is large  
+- its expected value is the true mean, i.e. $\E[\bar X] = \mu$
+- its variance is inversely dependent on sample size, i.e. $\Var[\bar X] = \frac{\sigma^2}{n}$
+
+These facts can be summarized in the following statement, called the **central limit theorem:**
+
+If $X_1, X_2, ... X_n$ are i.i.d. random variables, and $n$ is large enough, the distribution of the sample mean becomes approximately normal, with mean $\mu$ and variance $\frac{\sigma^2}{n}$:
+
+$$\bar X \sim \mathcal N \bigg( \mu, \frac{\sigma^2}{n} \bigg)$$
+
+## A semantic conundrum
+
+Don't conflate the terms *population distribution*, *sample distribution*, and *sampling distribution*. They mean different things:  
+
+The **population distribution** is the true/theoretical distribution of the underlying population. Each RV should theoretically follow this distribution. It does not necessarily have to be normal (or even known) for us to make inferences about it.   
+
+A **sample distribution** is the distribution of observations in a single sample of data.  
+
+A **sampling distribution** is the distribution of a sample statistic (e.g. the sample mean $\bar X$) across several different samples. The key claim of the CLT is that the distribution of a sample mean can be approximated by a normal curve with $E[\bar X] = \mu$ and $\Var[\bar X] = \sigma^2 / n$, even if the population distribution is not normal.  
+
+The plots below illustrate the difference between the three distributions when the RV is a dice roll:
+
+```{r, echo=FALSE, fig.width=12, fig.height=3.5}
+pop_dist = data.frame(X = c(replicate(1,n=6), 
+                            replicate(2,n=6), 
+                            replicate(3,n=6), 
+                            replicate(4,n=6), 
+                            replicate(5,n=6), 
+                            replicate(6,n=6)))
+
+sample = data.frame(X = rdunif(100, min = 1, max = 6))
+
+samplemeans = data.frame(Xbar = c(replicate(10000, mean(rdunif(n = 100, min = 1, max = 6)))))
+
+plot1 = ggplot(data = pop_dist, aes(x = as.factor(X))) +
+  geom_bar(aes(y = stat(count)/36)) +
+  xlab('X') + 
+  ylab('density') +
+  ggtitle('population distribution of X') 
+
+plot2 = ggplot(data = sample, aes(x = as.factor(X))) +
+  geom_bar(aes(y = stat(count)/100)) +
+  xlab('X') +
+  ylab('density') +
+  ggtitle('sample distribution of X') 
+
+plot3 = ggplot(data = samplemeans, aes(x = Xbar)) + 
+  geom_histogram(binwidth = 0.05, aes(y = stat(density))) +
+  xlab(TeX('$\\bar{X}$')) +
+  ylab('density') +
+  ggtitle(TeX('sampling distribution of $\\bar{X}$')) 
+
+grid.arrange(plot1, plot2, plot3, ncol=3)
+```
+
+Below are summary statistics for each distribution: 
+
+```{r, echo=FALSE}
+results = data.frame(distribution = c('population', 'one random sample', 'sampling distribution of the mean'), 
+                     mean = c(3.5, round(mean(sample$X),3), round(mean(samplemeans$Xbar),3)), 
+                     sd = c(1.708, round(sd(sample$X),3), round(sd(samplemeans$Xbar),3)))
+
+kable(results)
+```
+
+You can see the s.d. of the sampling distribution is smaller the population s.d. by a factor of roughly 10. This makes sense, since in this case we used $n=100$, and the CLT thus predicts the s.d. of the sample mean to be $\sigma / \sqrt n = \sigma / \sqrt{100}$. 
+
+## Where the CLT comes from
+
+The CLT describes a [convolution](https://en.wikipedia.org/wiki/Convolution) of the densities of the individual RVs. Whatever the shape of the population distribution, when $n$ is large enough the joint density of many RVs will converge to a normal. 
+
+## Conditions of the CLT
+
+The CLT should be valid for any random variable under the following conditions:
+
+- the sample observations are i.i.d.
+- the sample size is large: $n > 30$ is a good rule of thumb, but strongly skewed population distributions may require even larger $n$
+
+Note if the original RVs are normally distributed, then the sampling distribution is *exactly* normal, no matter what $n$ is. The CLT describes an approximate convergence to normality for any set of RVs, but the convergence is exact when the RVs are normal.  
+
+## Chebyshev's inequality 
+
+Under the CLT, the dispersion of the sampling distribution decreases with factor $1 / \sqrt n$.  
+
+An alternative convergence condition for probability distributions is provided by Chebyshev's inequality: 
+
+$$P \bigg( \big| \bar X - \mu \big| \geq k \frac{\sigma}{\sqrt n} \bigg) \leq \frac{1}{k^2}$$
+
+Unlike the CLT, Chebyshev's inequality works for any probability distribution (with large enough $n$). It's useful in situations where the conditions of the CLT are not met (the CLT has stronger conditions than Chebyshev's inequality, e.g. independence).  
+
+# Using the CLT in Practice
+
+Under the CLT:
+
+$$\bar X \sim \mathcal N \bigg( \mu, \frac{\sigma^2}{n} \bigg)$$
+
+Under this distribution, the $Z$-statistic of an observed sample mean $\bar X$ is:
+
+$$Z = \frac{\bar X - \mu}{\frac{\sigma}{\sqrt n}}$$
+
+This can be used to calculate probabilities associated with any observed sample mean in a given experiment.  
+
+In many situations you only have a sample, and don't know the population mean and variance. This doesn't prevent you from using the CLT---it turns out you can simply substitute your sample values of mean and variance instead, as **plug-in estimates**.  
+
+## The plug-in principle
+
+According to the plug-in principle, the features of a population distribution can be approximated by the same features of a sample distribution.  
+
+Using plug-in estimates of mean and variance, the CLT can be restated as:
+
+$$\bar X \sim \mathcal N \bigg( \bar X, \frac{s^2}{n} \bigg) \hspace{0.5cm} \text{or} \hspace{0.5cm} \bar X \sim \mathcal N \big( \bar X, \text{SE}^2 \big)$$
+
+where $\bar X$ is the sample mean, $s^2$ is the sample variance, and $\SE = \frac{s}{\sqrt n}$.    
+
+## Probability calculations 
+
+With the plug-in principle, it's easy to perform probability calculations with a sample distribution. 
+
+Using the pay gap data (from chapter 4), below is the sample distribution of the variable `DiffMeanHourlyPercent` (percentage difference in hourly wages between women and men): 
+
+```{r, include=FALSE}
+paygap = read.csv('./data/gender-paygap-2019.csv') 
+paygap = paygap %>%
+  subset(DiffMeanHourlyPercent < 99 & DiffMeanHourlyPercent > -50)
+```
+
+```{r, fig.height=3.5, fig.width=5, fig.align='center', class.source='fold-hide'}
+ggplot(aes(x = DiffMeanHourlyPercent), data = paygap) +
+  geom_histogram(bins = 50, aes(y = ..density..)) +
+  xlab('% difference in mean hourly wages') 
+```
+
+For this sample distribution, $\bar X = 12.354$, $s = 12.556$, $n = 151$, and $\SE = \frac{s}{\sqrt n} = 1.022$.  
+
+Using these as plug-in estimates for the CLT, you can construct the following normal approximation for the distribution of $\bar X$:  
+
+$$\bar X \sim \mathcal N \big( \bar X, \text{SE}^2 \big) \hspace{0.3cm} \Longrightarrow \hspace{0.3cm}\bar X \sim \mathcal N \big( 12.354, 1.022^2 \big)$$
+
+You can visualize this normal approximation as follows: 
+
+```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
+Xbar = mean(paygap$DiffMeanHourlyPercent)
+s = sd(paygap$DiffMeanHourlyPercent)
+n = nrow(paygap)
+SE = s/sqrt(n)
+
+x = seq(-4, 4, length = 1000) * SE + Xbar
+y = dnorm(x, Xbar, SE)
+
+df = data.frame(x = x, y = y)
+
+breaks = round(seq(Xbar-4*SE, Xbar+4*SE, SE),3)
+
+ggplot(data = df, mapping = aes(x = x, y = y)) +
+  geom_line() +
+  scale_x_continuous(breaks = breaks, 
+                     limits = c(Xbar-4*SE, Xbar+4*SE)) +
+  ylab('probability') + xlab(TeX('$\\bar{X}$')) + 
+  ggtitle(TeX('Distribution of $\\bar{X}$')) + 
+  geom_text(label = TeX('$-3 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-3*SE, y = 0.025, size=3, color = 'darkgrey') +
+  geom_text(label = TeX('$-2 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-2*SE, y = 0.025, size=3, color = 'darkgrey') +
+  geom_text(label = TeX('$-1 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar-1*SE, y = 0.025, size=3, color = 'darkgrey') +
+  geom_text(label = TeX('$+1 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+1*SE, y = 0.025, size=3, color = 'darkgrey') +
+  geom_text(label = TeX('$+2 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+2*SE, y = 0.025, size=3, color = 'darkgrey') +
+  geom_text(label = TeX('$+3 \\frac{ s }{ \\sqrt{n} }$'), x = Xbar+3*SE, y = 0.025, size=3, color = 'darkgrey') 
+```
+
+Now you can use `pnorm()` to make probability calculations.  
+
+The probability that the mean hourly wage difference is less than 10.5:
+
+```{r, class.source='fold-show'}
+Xbar = mean(paygap$DiffMeanHourlyPercent)  # sample mean
+s = sd(paygap$DiffMeanHourlyPercent)  # sample s.d.
+n = nrow(paygap)  # sample size
+SE = s/sqrt(n)  # standard error
+
+pnorm(10.5, mean = Xbar, sd = SE)
+```
+
+The probability that the mean hourly wage difference is between 10 and 13:
+
+```{r, class.source='fold-show'}
+pnorm(13, mean = Xbar, sd = SE) - pnorm(11, mean = Xbar, sd = SE)
+```
+
+# When Sample Size is Small
+
+What do you do when $n < 30$? (asides from getting more data)
+
+## The degrees-of-freedom adjustment
+
+In previous chapters we mentioned that there are slightly different formulae for the sample s.d. and population s.d.:
+
+$$s = \sqrt{\frac{1}{n-1} \sum_i^n (X_i - \bar X)^2} \hspace{1cm} \sigma = \sqrt{\frac 1n \sum_i^n (X_i - \bar X)^2}$$
+
+The use of $n-1$ instead of $n$ in the formula for sample s.d. is called a degrees of freedom adjustment. When data is a sample, it turns out that dividing by $n$ underestimates the true standard deviation. Read more about this [here](https://stats103.org/pt4/17-validity-bias.html#bias). This bias can be rectified by dividing by $n-1$ instead.   
+
+Strictly speaking, you should always use the DoF-adjusted formula any time you are using sample data. But in reality, when $n$ is large, the  difference between $1 / n$ and $1 / (n - 1)$ is negligibly small, so using either formula is acceptable. Note the `sd()` in R function uses the DoF-adjustment formula by default.  
+
+## The t-distribution 
+
+When sample size is small, the normal distribution no longer provides a valid approximation for the sample mean under the CLT. Instead you should use the $t$-distribution, which is similar to the normal, but designed to correct for small samples. 
+
+The $t$-distribution is symmetric and bell-shaped, like the normal. The key difference is that the $t$-distribution uses the DoF-adjusted standard deviation to calculate probabilities, meaning it has heavier tails than the normal. The $t$-distribution is designed to approximate the limiting behavior of the sample mean when the sample size is small ($n<30$).  
+
+Just as the normal distribution produces a $Z$-statistic, calculated $Z = (\bar X - \mu) / (\sigma / \sqrt n)$, the $t$-distribution produces a $t$-statistic:
+
+$$t = \frac{\bar X - \mu}{\frac{s}{\sqrt n}}$$
+
+where $s$ is the DoF-adjusted sample standard deviation.  
+
+The $t$-distribution has only one parameter: $\text{DoF}$ (degrees of freedom), where $\text{DoF} = n-1$.  
+
+E.g. if your sample has 12 observations, you should use the $t$-distribution with $\text{DoF} = 11$. If $n=20$, use the $t$-distribution with $\text{DoF} = 19$, and so on. 
+
+The plots below show the pdf of the $t$-distribution for different DoFs, with the normal curve overlaid in black for comparison: 
+
+```{r, echo=FALSE, fig.height=4, fig.width=5, fig.align='center'}
+x <- seq(-4, 4, length=100)
+hx <- dnorm(x)
+
+degf <- c(30, 8, 3, 1)
+colors <- c("red", "orange", "yellow", "green","black")
+labels <- c("DoF=30", "DoF=8", "DoF=3", "DoF=1","normal")
+
+plot(x, hx, type="l", lty=2, xlab=TeX("t"),
+  ylab="density", main=TeX("various $t$-distributions"))
+
+for (i in 1:4){
+  lines(x, dt(x,degf[i]), lwd=2, col=colors[i])
+}
+
+legend("topright", inset=.01,
+  labels, lwd=2, lty=c(1, 1, 1, 1, 2), col=colors)
+```
+
+Note that for $\text{DoF}=30$, the $t$-distribution is almost exactly the same as the normal curve. The difference between the two curves is only significant for small $n$. 
+
+In R you can use `pt()` to compute probabilities assoociated with a $t$-
+
+distribution. The probability that $t < -2$ under a $t$-distribution with 10 DoF:
+
+```{r}
+pt(-2, df = 10)
+```
+
+Compare this to the probability that $Z < -2$ under a standard normal distribution:
+
+```{r}
+pnorm(-2)
+```
+
+i.e. the $t$-distribution has fatter tails than the equivalent normal, and produces more conservative estimates of probability. 
+
+With 30 DoF, the probability that $t < -2$ becomes:
+
+```{r}
+pt(-2, df = 30)
+```
+
+i.e. when $n = 30$ the $t$-distribution is essentially the same as the normal.  
+
+## When to use the t-distribution
+
+- if sample size is small $n < 30$
+- the population mean $\mu$ and variance $\sigma^2$ are unknown
+- the RVs are i.i.d. 
+- **the RVs are normally distributed**
+
+The last condition is important: the $t$-distribution only provides a valid approximation for small samples if the population is normally distributed. This condition can be relaxed when $n$ is large enough.  

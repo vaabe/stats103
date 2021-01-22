@@ -1,0 +1,247 @@
+---
+title: "Random Variables"
+chapter: "8"
+part: "pt2"
+output:
+  html_document:
+    css: "tufteish.css"
+    toc: true
+    number_sections: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(knitr)
+library(gridExtra)
+library(latex2exp)
+ggtheme = theme_light() +
+	theme(panel.background = element_rect(fill = '#fffff8')) +
+	theme(plot.background = element_rect(fill = '#fffff8'))
+ggplot = function(...) ggplot2::ggplot(...) + ggtheme
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\nn}{\nonumber}
+
+# Random Variables
+
+Random variables (RVs) are used to represent the numeric value associated with the outcome(s) of a random process. [Strictly speaking an RV is a function that maps each outcome in the sample space to a real number]. 
+
+A **discrete** RV can only take values from a countable set: 
+
+- Observing a coin toss. The sample space is $\Omega = \{ H, T \}$. Suppose you win 10 points for $H$, lose 5 for $T$. You could let $X$ be the RV for the value of the payoff:
+
+$$X = \begin{cases} 10 & \text{if} \; H \\ -5 & \text{if} \; T \end{cases}$$
+
+- Observing the number of cyclists who cross a bridge on a certain day. The sample space is infinite, $\Omega = \{0, 1, 2, ... \}$ but still countable. In this case it makes sense to let the RV be equal to number of cyclists: 
+
+$$X = \{ 0, 1, 2, \cdots, \infty \}$$
+
+A **continuous** RV can take an infinite number of possible values from an uncountable set. E.g. measuring the amount of rainfall on a particular day. The RV could be any positive real number: 
+
+$$X \in \mathbb R_{+}$$
+
+# Probability Distributions
+
+A probability distribution is a function that gives the probability associated with each outcome in the experiment. 
+
+## Frequency distribution
+
+A frequency distribution shows the observed frequency of specific outcomes over multiple trials of an experiment. 
+
+E.g. let $X$ be the RV for the outcome of rolling a six-sided die. Suppose we run the experiment 1000 times, and construct a frequency table showing how many times each outcome occurred: 
+
+```{r, fig.height=3, fig.align='center', class.source='fold-hide'}
+diceroll = data.frame(X = sample(x = c(1:6), size = 1000, replace = TRUE))
+
+plot1 = ggplot(data = diceroll, aes(x = as.factor(X))) + 
+	geom_bar(width = 0.3) +
+  	ggtitle('frequency distribution of X') + 
+	xlab('X') + ylab('frequency') 
+
+plot2 = ggplot(data = diceroll, aes(x = as.factor(X))) + 
+	geom_bar(width = 0.3, aes(y = (..count..)/sum(..count..))) +
+  	ggtitle('relative frequency distribution of X') + 
+	xlab('X') + ylab('relative frequency') 
+
+grid.arrange(plot1, plot2, ncol = 2)
+```
+
+If you ran the above experiment infinitely many times, you would observe the relative frequency of each outcome converge to $\frac 16$. Under the frequentist definition of probability you would define the probability of each outcome as $\frac 16$.  
+
+You can construct a frequency distribution for a continuous RV by discretizing the sample space into intervals ("bins") and measuring the frequency of observations in each interval.  
+
+## Probability distribution function
+
+Is the specific functional form of a probability distribution. There are two types:
+
+For discrete RVs, a **probability mass function (pmf):** gives the specific probability of each value the RV can take. All probabilities add to 1. 
+
+E.g. the theoretical pmf for rolling a six-sided die: 
+
+```{r, fig.width = 5, fig.height=3, fig.align='center', echo=F}
+pmf = data.frame(X = rep(c(1,2,3,4,5,6), times = 10))
+
+ggplot(data = pmf, aes(x = as.factor(X))) + 
+  geom_bar(width = 0.1, aes(y = (..count..)/sum(..count..))) +
+  xlab('X') + ylab('probability') 
+```
+
+For continuous RVs, a **probability density function (pdf):** gives the relative likelihood associated with each point in the sample space. The area under a pdf is 1. E.g. if instead of a six-sided die, you had a random number generator giving real numbers between 1 and 6, its pdf would be:  
+
+```{r, fig.width = 5, fig.height=3, fig.align='center', echo=F}
+ggplot(data = pmf, aes(x = X)) +
+  geom_histogram(bins = 6, aes(y = ..density..)) +
+  xlab('X') + ylab('probability') +
+  scale_x_continuous(breaks = c(1:6)) 
+```
+
+For continuous RVs, the absolute probability that it equals a particular value is zero, since there is an infinite range of possibility. Thus pdfs are used to predict the probability of an RV falling within a range of values, rather than on a specific value.  
+
+# Expectated Value 
+
+The expected value of a random variable is the weighted average of all possible outcomes, using probabilities as weights. Also known as the mean: 
+
+$$\E[X] = \sum_i P_i X_i = \mu$$
+
+where $\E[\cdot]$ is the expectation operator and $\mu$ denotes the mean of $X$.  
+
+E.g. if you roll a six-sided die the expected value of $X$ is:
+
+$$\E[X] = \sum_i P_i X_i = \frac 16 \cdot 1 + \frac 16 \cdot 2 + \frac 16 \cdot 3 + \frac 16 \cdot 4 + \frac 16 \cdot 5 + \frac 16 \cdot 6 = 3.5$$
+
+## Linearity
+
+Expectation is linear:
+
+$$\E[aX] = a \E[X]$$
+
+e.g. if you multiplied values on the die by two, the expected value would also multiply by two:
+
+$$\E[2X] = 2 \E[X] = 2 \cdot 3.5 = 7$$
+
+## Additivity
+
+Expectation is additive: 
+
+$$\E[X + Y] = \E[X] + \E[Y]$$
+
+e.g. if you rolled two dice, and let $X$ be the RV for one and $Y$ the other, then 
+
+$$\E[X + Y] = 3.5 + 3.5 = 7$$
+
+## Non-multiplicativity
+
+In general the expected value of two RVs is not multiplicative, i.e.
+
+$$\E[XY] \neq \E[X] \; \E[Y]$$
+
+The only exception is if $X$ and $Y$ are independent, in which case $\E[XY] = \E[X] \; \E[Y]$. 
+
+# Moments 
+
+The concept of expectation can be generalized to include higher powers.  
+
+A **moment** is an expectation of a *power* of a random variable. The moment of an RV is defined as:
+
+$$n \text{-th moment of } X = \E[X^n] = \sum_i P_i X_i^n$$
+
+E.g. for a six-sixed die roll:
+
+- the first moment of $X$ is just the expected value:
+
+$$\E[X] = \sum_i P_i X_i = 3.5 = \mu$$
+
+- the second moment of $X$ is:
+
+$$\E[X^2] = \sum_i P_i X_i^2 = \frac 16 \cdot 1^2 + \frac 16 \cdot 2^2 + \frac 16 \cdot 3^2 + \frac 16 \cdot 4^2 + \frac 16 \cdot 5^2 + \frac 16 \cdot 6^2 = \frac{91}{6}$$
+
+- and higher order moments follow the same form.  
+
+A **central moment** is an expectation of a power of a random variable *about its mean.* The central moment of an RV is defined as:
+
+$$n \text{-th central moment of } X = \E[(X-\mu)^n]$$
+
+The first central moment of $X$ is:
+
+$$\E[X - \mu] = \E[X] - \E[X] = 0$$
+
+The second central moment of $X$ is:
+
+$$\E[(X-\mu)^2] \label{secondCentralMoment}$$
+
+This is also known as the **variance** of $X$. 
+
+Expanding $\eqref{secondCentralMoment}$ and using the fact that $\mu = \E[X]$, 
+
+$$
+\begin{align}
+  E[(X-\mu)^2] &= E[(X - E[X])^2] \nn \\ 
+  &= E[X^2 - 2XE[X] + E[X]^2] \nn \\ 
+  &= E[X^2] - 2E[X]E[X] + E[X]^2 \nn \\ 
+  &= E[X^2] - 2E[X]^2 + E[X]^2 \nn \\ 
+  &= E[X^2] - E[X]^2 \label{variance}
+\end{align}
+$$
+
+Equations $\eqref{secondCentralMoment}$ and $\eqref{variance}$ are both common expressions for the variance of a random variable. 
+
+Moments give useful information about the properties of a random variable's probability distribution (next).  
+
+# Summary Statistics for Distributions
+
+A summary statistic is a single value that summarizes some property of a distribution. Below are some common summary statistics used for describing the the distribution of random variables.  
+
+## Mean
+
+A measure of central tendency. Defined as the weighted average of all possible values of the RV, using probabilities as weights.  
+
+Calculated by taking the first moment (expected vale) of the RV:
+
+$$\mu = \E[X] = \sum_i P_i X_i$$
+
+## Variance
+
+A measure of the spread of the distribution. Denoted $\sigma^2$ or $\Var[\cdot]$.  
+
+Calculated by taking the second central moment of the RV:
+
+$$\sigma^2 = \E[(X-\mu)^2] = \E[X^2] - \E[X]^2$$
+
+Unlike expectation, variance is not linear:  
+
+$$\Var[aX] = a^2 \Var[X]$$
+
+Shifting the distribution left or right leaves the variance unchanged, since variance is a measure of spread:
+
+$$\Var[X+a] = \Var[X]$$
+
+## Standard Deviation
+
+Square root of the variance.  
+
+$$\sigma = \sqrt{\E[(X-\mu)^2]}$$
+
+## Skewness
+
+A measure of the extent to which a distribution is skewed to one side.  
+
+Defined as the third standardized moment of the RV: 
+
+$$\gamma_1 = \E \bigg[ \bigg( \frac{X - \mu}{\sigma} \bigg)^3 \bigg] = \frac{\E[(X-\mu)^3]}{\sigma^3}$$
+
+## Kurtosis
+
+A measure of the "fatness" of the tails of the distribution.  
+
+Defined as the fourth standardized moment:
+
+$$\gamma_2 = E \bigg[ \bigg( \frac{X - \mu}{\sigma} \bigg)^4 \bigg] = \frac{E[(X-\mu)^4]}{\sigma^4}$$
+

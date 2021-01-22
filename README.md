@@ -2,7 +2,7 @@
 
 These notes are supplements to STAT-UB 103, an introductory course in probability, statistics, and regression modeling. We use R to teach the course. The first three notes give a pithy introduction to R programming. Feedback is most welcome. 
 
-Made in collaboration with [Joshua Loftus](https://joshualoftus.com). Here is the [syllabus](https://github.com/vaabe/stats103/blob/v2/syllabus.pdf). Theme inspired by [Tufte Handout](https://rstudio.github.io/tufte/). 
+Made in collaboration with [Joshua Loftus](https://joshualoftus.com). Here is the [syllabus](https://github.com/vaabe/stats103/blob/v2/syllabus.pdf). Theme inspired by [Tufte Handouts](https://rstudio.github.io/tufte/). 
 
 ### References and further reading
 

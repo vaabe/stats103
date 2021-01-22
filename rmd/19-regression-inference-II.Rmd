@@ -1,0 +1,255 @@
+---
+title: "19 Regression Inference Part II"
+chapter: "19"
+part: "pt4"
+output:
+  html_document:
+    css: "tufteish.css"
+    toc: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = FALSE)
+library(tidyverse)
+library(knitr)
+library(extraDistr)
+library(gridExtra)
+library(latex2exp)
+library(ggfortify)
+set.seed(5)
+ggtheme = theme_light() +
+	theme(panel.background = element_rect(fill = '#fffff8')) +
+	theme(plot.background = element_rect(fill = '#fffff8'))
+ggplot = function(...) ggplot2::ggplot(...) + ggtheme
+```
+
+```{r, include=FALSE}
+paygap <- read.csv('./data/gender-paygap-2019.csv')
+paygap <- paygap %>%
+  mutate(EmployerSize = factor(EmployerSize, levels = c('0-249','250-499','500-999','1000-4999','5000-19999','20000+')))
+nycheat <- read.csv('./data/nyc-heatwave.csv')
+```
+
+\newcommand{\E}{\text{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\SD}{\text{SD}}
+\newcommand{\SE}{\text{SE}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\Cor}{\text{Cor}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\sumin}{\sum_i^n}
+\newcommand{\Bias}{\text{Bias}}
+
+\newcommand{\SSR}{\text{SSR}}
+
+\newcommand{\mhat}[1]{\skew{3}\hat{#1}}
+
+\renewcommand{\v}[1]{{\boldsymbol #1}}
+\renewcommand{\dv}[1]{\dot{\boldsymbol{#1}}}
+\newcommand{\ddv}[1]{\ddot{\boldsymbol{#1}}}
+\newcommand{\hv}[1]{\hat{\boldsymbol{#1}}}
+\newcommand{\m}[1]{[ #1 ]}
+\renewcommand{\t}[1]{\widetilde{\boldsymbol{#1}}}
+\newcommand{\bfit}[1]{\textbf{\textit{#1}}}
+
+# Regression Validity
+
+Now we'll examine validity and sources of bias in regression models.  
+
+*__External Validity__*---that the observed effect holds true in other settings; that it depends on non-modeled conditions. Questions to ask: is the sample representative? Are the assumptions portable? 
+
+*__Internal Validity__*---that the observed effect is properly identified; that the assumptions of least squares regression are met.  
+
+The most important assumption for regression validity is that the errors are uncorrelated with the predictors:
+
+$$\E[\v \varepsilon | \v X] = 0$$
+
+Violations of this assumption will cause LS estimates to become biased. To see this, recall that the regression function $\v y = \v X \v \beta + \v \varepsilon$ can be expressed: 
+
+$$
+\begin{aligned}
+  \E[\v y | \v X] &= \E[\v X \v \beta + \v \varepsilon | \v X] \\ 
+  &= \v X \v \beta + \v \varepsilon | \v X \\ 
+  &= \v X \v \beta 
+\end{aligned}
+$$
+
+i.e. in order for $\E[\v y | \v X] = \v X \v \beta$, it's necessary that $\E[\v \varepsilon | \v X] = 0$, otherwise the estimates will be biased.  
+
+Common sources of bias that cause $\E[\v \varepsilon | \v X] \neq 0$:
+
+- omitted variable bias
+- specification bias (nonlinear relationships)
+- measurement error bias (noise)
+- sample selection bias (sample not representative)
+- simultaneity bias ($X$ and $Y$ cause each other)
+
+# Omitted Variable Bias 
+
+**The problem:** correlation between omitted variable(s) and observed predictors makes LS estimates biased.  
+
+E.g. if the *true* model is:
+
+$$\v y = \beta_0 + \beta_1 \v x_1 + \beta_2 \v x_2 + \v \varepsilon$$
+
+but instead we use the following model for $y$:
+
+$$\v y = \beta_0 + \beta_1 \v x_1 + \tilde {\v \varepsilon}$$
+
+i.e. in our model we *omit* the variable $\v x_2$. The error term in our flawed model is $\tilde {\v \varepsilon} = \beta_2 \v x_2 + \v \varepsilon$, i.e. it comprises the error of the true model *and* the effect of omitted variable(s). The LS estimator for $\beta_1$ in our model would be:
+
+$$\v b_1 = (\v x_1^T \v x_1)^{-1} \v y = (\v x_1^T \v x_1)^{-1} \v x_1^T \v x_2 \beta_2 + (\v x_1^T \v x_1)^{-1} \v x_1^T \v \varepsilon$$
+
+and
+
+$$\E[b_1 | \v X] = \beta_1 + (\v x_1^T \v x_1)^{-1} \v x_1^T \v x_2 \beta_2 $$
+
+where the second term on the right represents the bias in the estimate of $b_1$ as a result of omitting $x_2$. Note this term becomes zero if $\v x_1$ and $\v x_2$ are uncorrelated (this would mean $\v x_1^T \v x_2 = 0$). 
+
+**The solution:** include any variables that are correlated with the predictors. These are confounding variables that should be controlled for.  
+
+Here's a very rudimentary example: the following dataset has three variables, recording the mileage, age, and maintenence expenses of some cars. First, let's run a simple regression predicting maintenance expenses from mileage: 
+
+```{r, include=FALSE}
+carexpenses = read.csv("./data/carexpenses.csv")
+```
+
+```{r}
+lm(expenses ~ mileage, data = carexpenses)
+```
+
+Strangely, the coefficient on mileage is negative, suggesting that cars with higher mileage somehow have lower maintenance expenses.   
+
+But when we add age as a predictor, watch what happens:
+
+```{r}
+lm(expenses ~ mileage + age, data = carexpenses)
+```
+
+i.e. after controlling for age, the coefficients show more reasonable results---that maintenance expenses increase with mileage and age.  
+
+This puzzling discrepancy can be resolved by looking at the relationship between mileage and age:   
+
+```{r,echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5, fig.align='center'}
+ggplot(data = carexpenses, aes(x = as.factor(age), y = mileage)) + geom_boxplot() 
+```
+
+Clearly, in this dataset, the newer cars have higher mileage than the older ones. Strange though this may be, this vital piece of missing information explains the aberrant relationship between maintenance expenses and mileage observed in the simple regression---we had *omitted* an important confounding variable, age, which turned out changes the interpretation of the problem completely.       
+
+You can see how omitting variables that are correlated with the predictors can result in a loss of relevant information to the problem. This can cause strongly biased regression coefficients, and severe misunderstandings about the nature of the relationship between two variables.  
+
+Omitted variables are also known as **confounding variables**, as they *confound* the problem with additional complexity, often unbeknown to the experimenter.  
+
+This is another example of the danger of assuming causality. It's important to remember that in general, nonzero regression coefficients only demonstrate association, *not* causation, unless all sources of confounding variables have been controlled for (which in many problems is very hard to do). For more on causal inference and various paradoxes that can arise from wrongly assuming causality, see <a href="http://stats103.org/notes/c20-causal-inference.html">chapter 20</a>.   
+
+# Specification Bias 
+
+**The problem:** there are nonlinear relationships (i.e. the functional form of the model is misspecified; violation of the linearity assumption).  
+
+The linearity assumption requires that each predictor is linear *in parameter* to the response. Sometimes nonlinear relationships can be transformed to become linear, e.g. by taking logs of variables. 
+
+**Solutions:**
+
+- include nonlinear terms (logs or polynomials)
+- include interaction terms (if the issue is that $\beta$ varies)
+- do model selection to avoid overfitting 
+
+E.g. below is a scatterplot of life expectancy vs GDP per capita from the gapminder dataset:
+
+```{r, include=FALSE}
+library(gapminder)
+```
+
+```{r, warning=FALSE, fig.width=5, fig.height=3.5,fig.align='center'}
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = .5) 
+  
+```
+
+The relationship doesn't look very linear.  
+
+However by log-transforming the predictor and outcome variables we can make the relationship more linear. Here's a scatterplot of the log-transformed variables:  
+
+```{r, warning=FALSE, fig.width=5, fig.height=3.5,fig.align='center'}
+ggplot(gapminder, aes(x = log(gdpPercap), y = log(lifeExp))) +
+  geom_point(alpha = .5)  
+  
+```
+
+The log-transformed relationship between life expectancy and GDP per capita is clearly much more linear. For linear regression it is thus more appropriate to use the log-transformed variables, as they will give a better linear fit. You can see this for yourself by comparing the $R^2$ between the log-transformed regression and the base model.  
+
+In general, variables involving money (e.g. GDP) tend to be skewed (due to extreme inequality they often have exponential forms) and so log-transformed variables are often used.  
+
+# Measurement Error Bias
+
+**The problem:** variables are measured with noise---this dampens LS estimates. 
+
+E.g. 
+
+$$\text{truth:} \;\;\; \v y = \beta_0 +  \beta_1 \v x + \v \varepsilon$$
+$$\text{data:} \;\;\; \v y = \beta_0 + \beta_1 \v x^* + \v \varepsilon^*$$
+
+where $\v x^*$ represents a noisy measurement of $\v x$. Noise could arise because of recording errors in data entry, rounding errors, etc.  
+
+Below: "true" data is on the left, "noisy" data is on the right---note how noise dampens the estimated slope.  
+
+```{r, echo=FALSE, fig.align='center',out.width=600, out.height=250}
+knitr::include_graphics("./pics/c20-pic1.png")
+```
+
+**Proof:** 
+
+Measurement error can be expressed as follows:
+
+$$x_i^* = x_i + u_i$$
+
+where $u_i$ (noise) is independent of $x_i$ and $\varepsilon_i$ (since it's just noise). 
+
+$$
+\begin{aligned}
+  y &= \beta_0 + \beta_1 x_i^* + \beta_1 u_i + \varepsilon_i \\ 
+  &= \beta_1 + \beta_1 x_i^* + v_i
+\end{aligned}
+$$
+
+where $v_i$ is the modified error term, $v_i = \beta_1 u_i + \varepsilon_i$. Under this model the LS estimate for $\beta_1$ is:
+
+$$
+\begin{aligned}
+  b_1 &= \frac{\Cov[x^*, y]}{\Var[x^*]} \\ 
+  &= \frac{\Cov[x + u \; , \; \beta_0 + \beta_1 x + \varepsilon]}{\Var[x + u]} \\ 
+  &= \frac{\Cov[x \; , \; \beta_0 + \beta_1 x + \varepsilon] + \Cov[u \; , \; \beta_0 + \beta_1 x + \varepsilon]}{\Var[x + u]} \\ 
+  &= \frac{\beta_1 \Cov[x,x] + 0}{\Var[x+u]} \\ 
+  &= \beta_1 \cdot \frac{\sigma_x^2}{\sigma_x^2 + \sigma_u^2} \\ 
+  &= \beta_1 \cdot \text{attenuation}
+\end{aligned}  
+$$
+
+i.e. the LS estimate converges to the true coefficient multiplied by an attenuation term (which is between 0 and 1). Hence---noise *dampens* the LS estimate (but preserves its sign). 
+ 
+Note:
+
+$$\frac{\sigma_x^2}{\sigma_x^2 + \sigma_u^2} = \frac{1}{1+\sigma_u^2 / \sigma_x^2}$$
+
+The ratio $\frac{\sigma_x^2}{\sigma_u^2}$ is called the **signal to noise ratio**. 
+
+The larger the signal/noise ratio, the smaller the bias.  
+
+**Solution:** use a <a href="https://en.wikipedia.org/wiki/Errors-in-variables_models">measurement error model</a>.  
+
+# Simultaneity Bias 
+
+**The problem:** $x$ and $y$ cause each other. This creates a simultaneous equations model:
+
+$$y_i = \beta_0 + \beta_1 x_i + \varepsilon_i$$
+$$x_i = \gamma_0 + \gamma_1 y_i + \eta_i$$
+
+The LS setimator becomes a weighted average of two components:
+
+- $\beta_1$: the effect of $x$ on $y$
+- $\frac{1}{\gamma_1}$: the feedback loop from $y$ to $x$ back to $y$
+
+This is known as simultaneity bias.  
+
