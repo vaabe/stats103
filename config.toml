@@ -1,4 +1,4 @@
-baseURL = ""
+baseURL = "https://vaabe.github.io/stats103"
 languageCode = "en"
 title = "stats103"
 disableKinds = [ "taxonomy", "taxonomyTerm" ]

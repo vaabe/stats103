@@ -2,52 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Elements on stats103</title>
-    <link>/pt1/</link>
+    <link>https://vaabe.github.io/stats103/pt1/</link>
     <description>Recent content in Elements on stats103</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="/pt1/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="https://vaabe.github.io/stats103/pt1/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The R Environment</title>
-      <link>/pt1/ch1-intro-to-r/</link>
+      <link>https://vaabe.github.io/stats103/pt1/ch1-intro-to-r/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/pt1/ch1-intro-to-r/</guid>
+      <guid>https://vaabe.github.io/stats103/pt1/ch1-intro-to-r/</guid>
       <description>1 The R Environment        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title>Loading Data</title>
-      <link>/pt1/ch2-data-basics/</link>
+      <link>https://vaabe.github.io/stats103/pt1/ch2-data-basics/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/pt1/ch2-data-basics/</guid>
+      <guid>https://vaabe.github.io/stats103/pt1/ch2-data-basics/</guid>
       <description>2 Loading Data        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title>Wrangling and Visualizing Data</title>
-      <link>/pt1/ch3-wrangle-visualize/</link>
+      <link>https://vaabe.github.io/stats103/pt1/ch3-wrangle-visualize/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/pt1/ch3-wrangle-visualize/</guid>
+      <guid>https://vaabe.github.io/stats103/pt1/ch3-wrangle-visualize/</guid>
       <description>3 Wrangling and Visualizing Data        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title>Data Analysis, Basics</title>
-      <link>/pt1/ch4-basic-analysis/</link>
+      <link>https://vaabe.github.io/stats103/pt1/ch4-basic-analysis/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/pt1/ch4-basic-analysis/</guid>
+      <guid>https://vaabe.github.io/stats103/pt1/ch4-basic-analysis/</guid>
       <description>4 Data Analysis, Basics        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
     <item>
       <title> Linear Regression Part I: Basics</title>
-      <link>/pt1/ch5-basic-modeling/</link>
+      <link>https://vaabe.github.io/stats103/pt1/ch5-basic-modeling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/pt1/ch5-basic-modeling/</guid>
+      <guid>https://vaabe.github.io/stats103/pt1/ch5-basic-modeling/</guid>
       <description>5 Linear Regression Part I: Basics        code{white-space: pre;} pre:not([class]) { background-color: white; }  if (window.hljs) { hljs.configure({languages: []}); hljs.initHighlightingOnLoad(); if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) { window.setTimeout(function() { hljs.initHighlighting(); }, 0); } }  h1 { font-size: 34px; } h1.title { font-size: 38px; } h2 { font-size: 30px; } h3 { font-size: 24px; } h4 { font-size: 18px; } h5 { font-size: 16px; } h6 { font-size: 12px; } .</description>
     </item>
     
