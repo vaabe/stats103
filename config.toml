@@ -1,14 +1,16 @@
-baseURL = "https://vaabe.github.io/stats103"
+baseURL = ""
 languageCode = "en"
 title = "stats103"
 disableKinds = [ "taxonomy", "taxonomyTerm" ]
 publishDir = "docs"
+theme = "tufteish"
+relativeURLs = true
 
 [author]
 	name = "vaabe"
 
 [params]
-	description = "introductory course in probability, statistics, and inference"
+	description = "introductory course in probability, statistics, and regression"
 
 [markup]
 	defaultMarkdownHandler = "goldmark"
@@ -33,3 +35,11 @@ publishDir = "docs"
 		    startLevel = 2
 		    endLevel = 3
 		    ordered = false
+
+[permalinks]
+	pages = "/:title/"
+	pt1 = "/:title/"
+	pt2 = "/:title/"
+	pt3 = "/:title/"
+	pt4 = "/:title/"
+	pt5 = "/:title/"

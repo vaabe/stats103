@@ -4,3 +4,11 @@
 [submodule "docs/themes/hugo-clinic-notes"]
 	path = docs/themes/hugo-clinic-notes
 	url = https://github.com/jmablog/hugo-clinic-notes.git
+[submodule "themes/tufteish"]
+	path = themes/tufteish
+	url = ssh://git@github.com/vaabe/tufteish
+	branch = rmdbook
+[submodule "tufteish"]
+	path = tufteish
+	url = ssh://git@github.com/vaabe/tufteish
+	branch = rmdbook
