@@ -137,7 +137,7 @@ where the $B_i = \{B_1, B_2, ... B_n \}$ represent $n$ general partitions of the
 
 # The Frequentist Interpretation of Probability
 
-There are [many ways](https://en.wikipedia.org/wiki/Probability_interpretations) the concept of probability can be defined and interpreted. The most common is the frequentist interpretation. 
+There is [more than one way](https://en.wikipedia.org/wiki/Probability_interpretations) the concept of probability can be interpreted. The most common is the frequentist interpretation. 
 
 These are the main tenets of the frequentist probability: 
 

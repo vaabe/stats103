@@ -15,7 +15,7 @@ title=`sed "2q;d" $rmdfile | cut -d'"' -f 2 | tr -d "0123456789"`
 chapter=`sed '3q;d' $rmdfile | cut -d'"' -f 2`
 part=`sed '4q;d' $rmdfile | cut -d'"' -f 2`
 
-webdir="../docs/content/$part/"
+webdir="../content/$part/"
 webfpath="${webdir}${htmlfile}"
 
 cp $htmlfile "${webdir}${htmlfile}"
